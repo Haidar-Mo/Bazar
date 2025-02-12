@@ -26,7 +26,7 @@ class AdvertisementFactory extends Factory
             'category_id' =>  Category::inRandomOrder()->first()->id,
             'is_special' => $this->faker->boolean(),
             'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
-            'expire_data' => Carbon::now()->addDays(30),
+            'expiry_date' => Carbon::now()->addDays(30),
         ];
     }
 }

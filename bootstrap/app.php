@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'is-admin' => \App\Http\Middleware\IsAdminMiddleware::class,
             'is-client' => \App\Http\Middleware\IsClientMiddleware::class,
             'has-subscription' => \App\Http\Middleware\HasAdsSubscriptionMiddleware::class,
+            'ability' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
+
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
