@@ -20,7 +20,7 @@ class CVLinkFactory extends Factory
         return [
             'cv_id' => CV::inRandomOrder()->first()->id,
             'name' => $this->faker->randomElement(['LinkedIn', 'GitHub', 'Portfolio', 'Personal Website']),
-            'path' =>  $this->faker->url,
+            'link' =>  $this->faker->url,
             'created_at' => now(),
             'updated_at' => now(),
         ];

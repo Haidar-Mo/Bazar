@@ -29,12 +29,13 @@ class UserFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
-            'phone_number' => $this->faker->unique()->phoneNumber(),
             'password' => Hash::make('password'),
             'address' => $this->faker->address(),
+            'birth_date'=>$this->faker->date(),
             'is_verified' => $this->faker->boolean(0),
             'email_verified_at' => $this->faker->optional(0)->dateTime(),
             'remember_token' => Str::random(10),
+            'device_token' => Str::random(50)
         ];
     }
 
@@ -56,7 +57,7 @@ class UserFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (User $user) {
-            $user->assignRole('client');
+            $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->firstOrFail());
         });
     }
 }

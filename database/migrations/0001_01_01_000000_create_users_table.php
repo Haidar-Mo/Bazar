@@ -15,12 +15,14 @@ return new class extends Migration {
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
-            $table->string('phone_number')->unique();
             $table->string('password');
+            $table->date('birth_date');
             $table->text('address')->nullable();
+            $table->enum('gender',['male','female']);
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_blocked')->default(false);
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('device_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -31,14 +33,14 @@ return new class extends Migration {
             $table->timestamp('created_at')->nullable();
         });
 
-        /*  Schema::create('sessions', function (Blueprint $table) {
+          Schema::create('sessions', function (Blueprint $table) {
               $table->string('id')->primary();
               $table->foreignId('user_id')->nullable()->index();
               $table->string('ip_address', 45)->nullable();
               $table->text('user_agent')->nullable();
               $table->longText('payload');
               $table->integer('last_activity')->index();
-          });*/
+          });
     }
 
     /**

@@ -17,9 +17,8 @@ class AdvertisementAttributeFactory extends Factory
      */
     public function definition(): array
     {
-        $adsID = Advertisement::all()->pluck('id')->toArray();
         return [
-            'advertisement_id' => $this->faker->randomElement($adsID),
+            'advertisement_id' => Advertisement::inRandomOrder()->first()->id,
             'name' => $this->faker->name,
             'value' => $this->faker->sentence()
         ];

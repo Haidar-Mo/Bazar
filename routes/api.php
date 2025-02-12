@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', function () {
-    return 'Hello World';
+Route::prefix('v1/')->group(function () {
+
+    include __DIR__ . "/Mobile/V1/Auth.php";
+
 });
