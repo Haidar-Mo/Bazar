@@ -23,6 +23,14 @@ class Advertisement extends Model
     ];
 
 
+    /**
+     * The attributes that should be appends with user
+     * @var array
+     */
+    protected $appends = [
+        'views'
+    ];
+
 
     public function user(): BelongsTo
     {
@@ -46,18 +54,27 @@ class Advertisement extends Model
 
     public function views(): HasMany
     {
-        return $this->HasMany(View::class);
+        return $this->hasMany(View::class);
     }
 
-
+    public function attributes(): HasMany
+    {
+        return $this->hasMany(AdvertisementAttribute::class);
+    }
 
     //! Accessories
-    
+
     public function getViewsAttribute()
     {
         return $this->views()->count();
     }
 
-
+    public function getAttributesAttribute()
+    {
+        return $this->attributes()->get()->map(function ($attribute) {
+            return [$attribute->name => $attribute->value];
+        });
+    }
+    
 
 }

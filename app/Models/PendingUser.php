@@ -11,6 +11,7 @@ class PendingUser extends Model
 
     protected $fillable = [
         'email',
+        'password',
         'verification_code',
         'verification_code_expires_at',
         'verified_at'

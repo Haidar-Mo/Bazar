@@ -17,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
 
-    use HasApiTokens ,HasFactory, HasRoles, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,6 +32,8 @@ class User extends Authenticatable
         'birth_date',
         'gender',
         'address',
+        'provider',
+        'provider_id',
         'device_token',
 
     ];
@@ -51,6 +53,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
+        'role',
         'rate'
     ];
 
@@ -85,10 +88,10 @@ class User extends Authenticatable
         return $this->hasMany(Advertisement::class);
     }
 
-    /*public function images(): MorphMany
+    public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable');
-    }*/
+    }
 
     public function cv(): HasOne
     {
@@ -152,6 +155,10 @@ class User extends Authenticatable
 
     //! Accessories 
 
+    public function getRoleAttribute()
+    {
+        return $this->roles()->first()->name;
+    }
     public function getRateAttribute()
     {
         return $this->rated()->count() > 0 ? $this->rated()->sum('rate') / $this->rated()->count() : 0;
