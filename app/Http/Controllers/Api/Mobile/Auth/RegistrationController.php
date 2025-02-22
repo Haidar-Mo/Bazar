@@ -10,6 +10,7 @@ use App\Notifications\VerificationCodeNotification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -26,18 +27,20 @@ class RegistrationController extends Controller
     public function create(Request $request)
     {
         $data = $request->validate([
-            'email' => ['required', 'unique:users,email', 'email']
+            'email' => ['required', 'unique:users,email', 'email'],
+            'password' => ['required', 'min:6']
         ]);
+
+        $verificationCode = random_int(100000, 999999);
+        $expirationTime = Carbon::now()->addMinutes(10);
         try {
             DB::beginTransaction();
-
-            $verificationCode = Str::random(6);
-            $expirationTime = Carbon::now()->addMinutes(10);
 
             $user = PendingUser::updateOrCreate(
                 ['email' => $data['email']],
                 [
                     'email' => $data['email'],
+                    'password' => $data['password'],
                     'verification_code' => $verificationCode,
                     'verification_code_expires_at' => $expirationTime
                 ]
@@ -45,9 +48,10 @@ class RegistrationController extends Controller
 
             $user->notify(new VerificationCodeNotification($verificationCode));
             DB::commit();
-            return response()->json(['message' => 'Email registration done. Verification email sent.'], 200);
+            return response()->json(['message' => "Email registration done \n Verification email sent "], 200);
         } catch (Exception $e) {
             DB::rollback();
+            report($e);
             return response()->json(['message' => "Error: " . $e->getMessage()], 500);
         }
     }
@@ -108,15 +112,33 @@ class RegistrationController extends Controller
             return response()->json(['message' => 'your verification code is incorrect'], 422);
         }
         try {
-            DB::transaction(function () use ($user) {
+            $new_user = DB::transaction(function () use ($user) {
                 $user->update([
-                    'verified_at' => now(),
+                    'email_verified_at' => now(),
                     'verification_code_expires_at' => null
                 ]);
+                return User::create($user->only('email', 'password','email_verified_at'));
             });
-            return response()->json(['message' => 'Email verified successfully'], 200);
+            $accessToken = $new_user->createToken(
+                'access_token',
+                [TokenAbility::ACCESS_API->value],
+                Carbon::now()->addMinutes(config('sanctum.expiration'))
+            );
+
+            $refreshToken = $new_user->createToken(
+                'refresh_token',
+                [TokenAbility::ISSUE_ACCESS_TOKEN->value],
+                Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
+            );
+
+            return response()->json([
+                'message' => 'Email verified successfully',
+                'access_token' => $accessToken->plainTextToken,
+                'refresh_token' => $refreshToken->plainTextToken,
+                'user' => $new_user,
+            ], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Something went wrong, please try again later'], 500);
+            return response()->json(['message' => 'Something went wrong, please try again later', 'error:' => $e->getMessage()], 500);
         }
     }
 
@@ -132,51 +154,33 @@ class RegistrationController extends Controller
         $request->validate([
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
-            "email" => ['required', 'email', 'exists:pending_users,email'],
-            "password" => ['required', 'confirmed', 'string', 'min:6'],
             'birth_date' => ['required', 'date'],
             "gender" => ['required', 'in:male,female'],
+            "address" => ['required'],
             "device_token" => ['nullable'],
         ]);
-        $pendingUser = PendingUser::where('email', $request->email)->firstOrFail();
-
-        if ($pendingUser->verified_at == null)
-            return response()->json([
-                'message' => 'your Email must be verified first'
-            ], 401);
 
         try {
-            $user = DB::transaction(function () use ($request, $pendingUser) {
-                $user = User::create($request->all());
-                $pendingUser->delete();
+            $user = DB::transaction(function () use ($request) {
+                $user = Auth::user();
+                if ($user->is_full_registered)
+                    throw new Exception("your account is already full registered ", 422);
+                $user->update($request->all());
+
                 $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
 
                 return $user;
             });
 
-            $accessToken = $user->createToken(
-                'access_token',
-                [TokenAbility::ACCESS_API->value],
-                Carbon::now()->addMinutes(config('sanctum.expiration'))
-            );
-
-            $refreshToken = $user->createToken(
-                'refresh_token',
-                [TokenAbility::ISSUE_ACCESS_TOKEN->value],
-                Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
-            );
-
-            $user->load('roles');
-
             return response()->json([
                 'message' => 'Registration is completely done',
-                'access_token' => $accessToken->plainTextToken,
-                'refresh_token' => $refreshToken->plainTextToken,
                 'user' => $user,
             ], 200);
         } catch (Exception $e) {
+            report($e);
             return response()->json([
-                'message' => $e->getMessage(),
+                'message' => 'some thing goes wrong...!',
+                'error' => $e->getMessage(),
             ], 422);
         }
 

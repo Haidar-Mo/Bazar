@@ -13,8 +13,9 @@ return new class extends Migration {
         Schema::create('pending_users', function (Blueprint $table) {
             $table->id();
             $table->string('email')->unique();
+            $table->string('password');
             $table->string('verification_code', 6);
-            $table->dateTime('verified_at')->nullable();
+            $table->dateTime('email_verified_at')->nullable();
             $table->timestamp('verification_code_expires_at')->nullable();
             $table->timestamps();
         });
