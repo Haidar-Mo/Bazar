@@ -24,10 +24,5 @@ class Plan extends Model
         return $this->hasMany(Subscription::class);
     }
 
-    public function feature(): HasMany
-    {
-        return $this->hasMany(PlanFeature::class);
-    }
-
 
 }

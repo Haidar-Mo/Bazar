@@ -14,6 +14,6 @@ class PendingUser extends Model
         'password',
         'verification_code',
         'verification_code_expires_at',
-        'verified_at'
+        'email_verified_at'
     ];
 }

@@ -35,6 +35,7 @@ class User extends Authenticatable
         'provider',
         'provider_id',
         'device_token',
+        'email_verified_at',
 
     ];
 
@@ -54,6 +55,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'role',
+        'is_full_registered',
         'rate'
     ];
 
@@ -157,7 +159,13 @@ class User extends Authenticatable
 
     public function getRoleAttribute()
     {
-        return $this->roles()->first()->name;
+
+        return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
+    }
+
+    public function getIsFullRegisteredAttribute()
+    {
+        return $this->first_name && $this->last_name && $this->gender && $this->birth_date ? 1 : 0;
     }
     public function getRateAttribute()
     {

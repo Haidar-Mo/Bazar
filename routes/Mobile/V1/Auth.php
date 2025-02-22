@@ -18,7 +18,10 @@ Route::prefix('auth')->group(function () {
     Route::post('register', [RegistrationController::class, 'create']);
     Route::post('confirm-email', [RegistrationController::class, 'verifyEmail']);
     Route::post('resend-verification-code', [RegistrationController::class, 'resendVerificationCode']);
-    Route::post('information-fill', [RegistrationController::class, 'informationRegistration']);
+    Route::post('information-fill', [RegistrationController::class, 'informationRegistration'])->middleware([
+        'auth:sanctum',
+        'ability:' . TokenAbility::ACCESS_API->value
+    ]);
     Route::post('forget-password', [ResetPasswordController::class, 'sendResetLink'])->name('password.request');
     Route::post('reset-password', [ResetPasswordController::class, 'resetPassword'])->name('password.reset');
     Route::post('login', [AuthenticationController::class, 'create']);

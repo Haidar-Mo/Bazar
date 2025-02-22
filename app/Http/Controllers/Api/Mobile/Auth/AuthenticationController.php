@@ -49,7 +49,6 @@ class AuthenticationController extends Controller
             Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
         );
 
-        $user->load('roles');
         return response()->json([
             'access_token' => $accessToken->plainTextToken,
             'refresh_token' => $refreshToken->plainTextToken,

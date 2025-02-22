@@ -10,6 +10,7 @@ use App\Notifications\VerificationCodeNotification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -113,10 +114,10 @@ class RegistrationController extends Controller
         try {
             $new_user = DB::transaction(function () use ($user) {
                 $user->update([
-                    'verified_at' => now(),
+                    'email_verified_at' => now(),
                     'verification_code_expires_at' => null
                 ]);
-                return User::create($user->only('email', 'password'));
+                return User::create($user->only('email', 'password','email_verified_at'));
             });
             $accessToken = $new_user->createToken(
                 'access_token',
@@ -137,7 +138,7 @@ class RegistrationController extends Controller
                 'user' => $new_user,
             ], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Something went wrong, please try again later'], 500);
+            return response()->json(['message' => 'Something went wrong, please try again later', 'error:' => $e->getMessage()], 500);
         }
     }
 
@@ -153,23 +154,19 @@ class RegistrationController extends Controller
         $request->validate([
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
-            "email" => ['required', 'email', 'exists:pending_users,email'],
-            "password" => ['required', 'confirmed', 'string', 'min:6'],
             'birth_date' => ['required', 'date'],
             "gender" => ['required', 'in:male,female'],
+            "address" => ['required'],
             "device_token" => ['nullable'],
         ]);
-        $pendingUser = PendingUser::where('email', $request->email)->firstOrFail();
-
-        if ($pendingUser->verified_at == null)
-            return response()->json([
-                'message' => 'your Email must be verified first'
-            ], 401);
 
         try {
-            $user = DB::transaction(function () use ($request, $pendingUser) {
-                $user = User::create($request->all());
-                $pendingUser->delete();
+            $user = DB::transaction(function () use ($request) {
+                $user = Auth::user();
+                if ($user->is_full_registered)
+                    throw new Exception("your account is already full registered ", 422);
+                $user->update($request->all());
+
                 $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
 
                 return $user;
@@ -180,8 +177,10 @@ class RegistrationController extends Controller
                 'user' => $user,
             ], 200);
         } catch (Exception $e) {
+            report($e);
             return response()->json([
-                'message' => $e->getMessage(),
+                'message' => 'some thing goes wrong...!',
+                'error' => $e->getMessage(),
             ], 422);
         }
 
