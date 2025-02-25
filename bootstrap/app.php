@@ -22,10 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
         //     \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
         //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
         // ]);
-
+    
         $middleware->alias([
-            'is-admin' => \App\Http\Middleware\IsAdminMiddleware::class,
-            'is-client' => \App\Http\Middleware\IsClientMiddleware::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'has-subscription' => \App\Http\Middleware\HasAdsSubscriptionMiddleware::class,
             'ability' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
 

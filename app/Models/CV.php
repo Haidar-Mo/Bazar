@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class CV extends Model
+class Cv extends Model
 {
-    /** @use HasFactory<\Database\Factories\CVFactory> */
+    /** @use HasFactory<\Database\Factories\CvFactory> */
     use HasFactory;
 
 
     protected $fillable = [
         'user_id',
-        'cv_path',
         'full_name',
         'summary',
         'image',
@@ -26,8 +26,6 @@ class CV extends Model
         'nationality',
         'birth_date',
         'skills',
-        'education',
-        'experience',
     ];
 
     /**
@@ -48,14 +46,35 @@ class CV extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function file():HasOne
+    {
+        return $this->hasOne(CvFile::class);
+    }
+
     public function documents(): HasMany
     {
-        return $this->hasMany(CVDocument::class);
+        return $this->hasMany(CvDocument::class);
     }
 
     public function links(): HasMany
     {
-        return $this->hasMany(CVLink::class);
+        return $this->hasMany(CvLink::class);
     }
 
+    public function qualification(): HasMany
+    {
+
+        return $this->hasMany(CvQualification::class);
+
+    }
+
+    public function experience(): HasMany
+    {
+        return $this->hasMany(CvExperience::class);
+    }
+
+    public function skill(): HasMany
+    {
+        return $this->hasMany(CvSkill::class);
+    }
 }

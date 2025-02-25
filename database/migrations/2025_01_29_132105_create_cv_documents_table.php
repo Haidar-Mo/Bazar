@@ -10,9 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('c_v_documents', function (Blueprint $table) {
+        Schema::create('cv_documents', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cv_id')->constrained('c_v_s')->cascadeOnDelete();
+            $table->foreignId('cv_id')->constrained('cvs')->cascadeOnDelete();
             $table->string('name');
             $table->string('path');
             $table->timestamps();
@@ -24,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('c_v_documents');
+        Schema::dropIfExists('cv_documents');
     }
 };

@@ -3,63 +3,122 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Mobile\CvUpdateRequest;
+use App\Http\Requests\Mobile\CvCreateRequest;
+use App\Services\Mobile\CVService;
+use App\Traits\HasFiles;
+use App\Traits\ResponseTrait;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class CVController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use ResponseTrait, HasFiles;
+
+    public function __construct(private CVService $service)
     {
-        //
     }
 
+
     /**
-     * Show the form for creating a new resource.
+     * Display the specified resource.
      */
-    public function create()
+    public function show()
     {
-        //
+        $user = Auth::user();
+        $cv = $user->cv()->with([
+            'documents',
+            'links',
+            'qualification',
+            'experience',
+            'skill'
+        ])->first();
+        return $this->showResponse($cv, 'CV retrieved successfully !');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CvCreateRequest $request)
     {
-        //
+        $user = $request->user();
+        if ($user->cv()->first())
+            return $this->showMessage('you already created a CV', 500, false);
+
+        try {
+            $cv = $this->service->create($request, $user);
+            return $this->showResponse($cv, 'CV created successfully !! ');
+        } catch (Exception $e) {
+            return $this->showError($e);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CvUpdateRequest $request)
     {
-        //
+        $user = $request->user();
+        try {
+            $cv = $this->service->update($request, $user);
+            return $this->showResponse($cv, 'CV created successfully !! ');
+        } catch (Exception $e) {
+            return $this->showError($e);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function addCvFile()
     {
-        //
+    }
+
+    public function deleteCvFile()
+    {
+    }
+
+
+    public function addExperiment()
+    {
+    }
+
+    public function deleteExperiment()
+    {
+    }
+
+
+    public function addSkill()
+    {
+    }
+
+    public function deleteSkill()
+    {
+    }
+
+
+    public function addQualification()
+    {
+    }
+
+    public function deleteQualification()
+    {
+    }
+
+
+    public function addLink()
+    {
+    }
+
+    public function deleteLink()
+    {
+    }
+
+
+    public function addDocument()
+    {
+    }
+
+    public function deleteDocument()
+    {
     }
 }
