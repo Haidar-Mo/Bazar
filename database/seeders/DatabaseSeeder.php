@@ -2,9 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\CV;
-use App\Models\CVDocument;
-use App\Models\CVLink;
+use App\Models\Cv;
+use App\Models\CvDocument;
+use App\Models\CvExperience;
+use App\Models\CvFile;
+use App\Models\CvLink;
+use App\Models\CvQualification;
+use App\Models\CvSkill;
 use App\Models\Image;
 use App\Models\User;
 use App\Models\City;
@@ -28,9 +32,13 @@ class DatabaseSeeder extends Seeder
 
         //! User::factory(10)->create();  // do not use it because the CV factory will create user
 
-        CV::factory(10)->create();
-        CVDocument::factory(10)->create();
-        CVLink::factory(20)->create();
+        //! Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
+        CvFile::factory(10);
+        CvDocument::factory(20)->create();
+        CvLink::factory(20)->create();
+        CvExperience::factory(20)->create();
+        CvQualification::factory(20)->create();
+        CvSkill::factory(20)->create();
         City::factory(7)->create();
         Category::factory(7)->create();
         Advertisement::factory(20)->create();

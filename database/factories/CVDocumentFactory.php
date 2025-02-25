@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\CV;
+use App\Models\Cv;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CVDocument>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CvDocument>
  */
-class CVDocumentFactory extends Factory
+class CvDocumentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,7 @@ class CVDocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'cv_id' => CV::inRandomOrder()->first()->id,
+            'cv_id' => Cv::inRandomOrder()->first()->id,
             'name' => $this->faker->word . '.pdf',
             'path' => 'cv_documents/cvDocument.pdf',
             'created_at' => now(),

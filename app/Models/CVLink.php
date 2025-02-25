@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CVLink extends Model
+class CvLink extends Model
 {
     /** @use HasFactory<\Database\Factories\CVLinkFactory> */
     use HasFactory;
@@ -21,6 +21,6 @@ class CVLink extends Model
 
     public function cv(): BelongsTo
     {
-        return $this->belongsTo(CV::class);
+        return $this->belongsTo(Cv::class);
     }
 }

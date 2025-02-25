@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class CvDocument extends Model
+class CvFile extends Model
 {
-    /** @use HasFactory<\Database\Factories\CVDocumentFactory> */
+    /** @use HasFactory<\Database\Factories\CvFileFactory> */
     use HasFactory;
 
 
     protected $fillable = [
         'cv_id',
-        'name',
-        'path'
+        'url'
     ];
 
 
@@ -23,6 +22,4 @@ class CvDocument extends Model
     {
         return $this->belongsTo(Cv::class);
     }
-
-    
 }

@@ -97,7 +97,7 @@ class User extends Authenticatable
 
     public function cv(): HasOne
     {
-        return $this->hasOne(CV::class);
+        return $this->hasOne(Cv::class);
     }
 
     public function chat(): HasMany

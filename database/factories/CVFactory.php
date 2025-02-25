@@ -6,9 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CV>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cv>
  */
-class CVFactory extends Factory
+class CvFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,7 +19,6 @@ class CVFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'cv_path' => 'cvs/cvPdf.pdf', // Simulated file path
             'full_name' => $this->faker->name,
             'summary' => $this->faker->paragraph,
             'image' => 'cvs/cvImage.jpg', // Simulated image path
@@ -29,9 +28,6 @@ class CVFactory extends Factory
             'language' => json_encode([$this->faker->languageCode, $this->faker->languageCode]),
             'nationality' => $this->faker->country,
             'birth_date' => $this->faker->dateTimeBetween('1990-01-01', '2005-01-01'),
-            'skills' => $this->faker->sentence(6),
-            'education' => $this->faker->paragraph(2),
-            'experience' => $this->faker->paragraph(3),
             'created_at' => now(),
             'updated_at' => now(),
         ];
