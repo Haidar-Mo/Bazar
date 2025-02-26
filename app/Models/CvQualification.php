@@ -18,7 +18,8 @@ class CvQualification extends Model
         'university',
         'country',
         'entering_date',
-        'graduation_date'
+        'graduation_date',
+        'still_studying'
     ];
 
 

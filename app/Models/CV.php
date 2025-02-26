@@ -25,7 +25,6 @@ class Cv extends Model
         'language',
         'nationality',
         'birth_date',
-        'skills',
     ];
 
     /**
@@ -33,7 +32,7 @@ class Cv extends Model
      *
      * @return array<string, string>
      */
-    public function casts()
+    protected function casts()
     {
         return [
             'language' => 'array',
@@ -41,22 +40,35 @@ class Cv extends Model
         ];
     }
 
+    /**
+     * The attributes that should be appends with cv
+     * @var array
+     */
+    protected $appends = [
+        'file',
+        'documents',
+        'links',
+        'qualification',
+        'experience',
+        'skill',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function file():HasOne
+    public function file(): HasOne
     {
         return $this->hasOne(CvFile::class);
     }
 
-    public function documents(): HasMany
+    public function document(): HasMany
     {
         return $this->hasMany(CvDocument::class);
     }
 
-    public function links(): HasMany
+    public function link(): HasMany
     {
         return $this->hasMany(CvLink::class);
     }
@@ -76,5 +88,39 @@ class Cv extends Model
     public function skill(): HasMany
     {
         return $this->hasMany(CvSkill::class);
+    }
+
+
+
+    //! Accessories
+
+    public function getFileAttribute()
+    {
+        return $this->file()->get();
+    }
+
+    public function getDocumentsAttribute()
+    {
+        return $this->document()->get();
+    }
+
+    public function getLinksAttribute()
+    {
+        return $this->link()->get();
+    }
+
+    public function getQualificationAttribute()
+    {
+        return $this->qualification()->get();
+    }
+
+    public function getExperienceAttribute()
+    {
+        return $this->experience()->get();
+    }
+
+    public function getSkillAttribute()
+    {
+        return $this->skill()->get();
     }
 }
