@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->boolean('is_special')->default(false);
             $table->enum('status', ['active', 'inactive', 'pending'])->default('pending');
             $table->date('expiry_date');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

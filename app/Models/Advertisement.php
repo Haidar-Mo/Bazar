@@ -7,19 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Advertisement extends Model
 {
     /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
     use HasFactory;
-
+    use SoftDeletes;
 
     protected $fillable = [
         'user_id',
         'city_id',
         'category_id',
         'is_special',
-        'status'
+        'status',
+        'expiry_date'
     ];
 
 
@@ -29,6 +31,10 @@ class Advertisement extends Model
      */
     protected $appends = [
         'views'
+    ];
+
+    protected $hidden = [
+        'deleted_at',
     ];
 
 
@@ -75,6 +81,6 @@ class Advertisement extends Model
             return [$attribute->name => $attribute->value];
         });
     }
-    
+
 
 }
