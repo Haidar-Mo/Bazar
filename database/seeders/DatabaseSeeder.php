@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
         //! User::factory(10)->create();  // do not use it because the CV factory will create user
 
         //! Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
-        CvFile::factory(10);
+      /*  CvFile::factory(10);
         CvDocument::factory(20)->create();
         CvLink::factory(20)->create();
         CvExperience::factory(20)->create();
@@ -44,8 +44,20 @@ class DatabaseSeeder extends Seeder
         Advertisement::factory(20)->create();
         AdvertisementAttribute::factory(150)->create();
         Image::factory(80)->create();
-        View::factory(100)->create();
-
+        View::factory(100)->create();*/
+        User::create([
+            'first_name' => 'mario',
+            'last_name' => 'andrawos',
+            'email' => 'example@gmail.com',
+            'password' => bcrypt('password'),
+            'birth_date' => '1990-01-01',
+            'gender' => 'male',
+            'address' => 'yabroud',
+            'provider' => null,
+            'provider_id' => null,
+            'device_token' => 'k',
+            'email_verified_at' => now(),
+        ]);
 
     }
 }

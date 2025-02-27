@@ -4,23 +4,53 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\AdvertisementCreateRequest;
+use App\Models\Advertisement;
+use App\Traits\{
+    HasFiles,
+    ResponseTrait
+};
+use App\Services\Mobile\AdvertisementService;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class AdvertisementController extends Controller
 {
+    use ResponseTrait;
+
+
+    public function __construct(private AdvertisementService $service)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user=Auth::user();
+        if($request->has('status') && $request->status!=''){
+            $ads = $user->ads()->with('images')->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+        }else {
+
+            $ads = $user->ads()->with('images')->orderBy('created_at', 'desc')->paginate(10);
+        }
+        return $this->showResponse($ads,'done');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AdvertisementCreateRequest $request)
     {
-        //
+        $user=Auth::user();
+        try{
+            $ads=$this->service->create($request,$user);
+            return $this->showResponse($ads, 'create ads successfully ...!');
+        }catch(Exception $e){
+            return $this->showError($e);
+        }
+
     }
 
     /**
@@ -44,6 +74,8 @@ class AdvertisementController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $ad=Advertisement::find($id);
+        $ad->delete();
+        return $this->showMessage('ad deleted successfully...!');
     }
 }
