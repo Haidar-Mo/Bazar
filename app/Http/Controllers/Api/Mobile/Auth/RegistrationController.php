@@ -117,7 +117,7 @@ class RegistrationController extends Controller
                     'email_verified_at' => now(),
                     'verification_code_expires_at' => null
                 ]);
-                return User::create($user->only('email', 'password','email_verified_at'));
+                return User::create($user->only('email', 'password', 'email_verified_at'));
             });
             $accessToken = $new_user->createToken(
                 'access_token',
@@ -155,6 +155,7 @@ class RegistrationController extends Controller
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
             'birth_date' => ['required', 'date'],
+            'description' => ['sometimes', 'string'],
             "gender" => ['required', 'in:male,female'],
             "address" => ['required'],
             "device_token" => ['nullable'],

@@ -31,7 +31,7 @@ trait ResponseTrait
      * @param int $status
      * @return JsonResponse
      */
-    public function showError(\Exception $exception, string $message, int $status = 500): JsonResponse
+    public function showError(\Exception $exception, string $message = 'Operation failed', int $status = 500): JsonResponse
     {
         Log::error('Error occurred: ' . $exception->getMessage());
 
