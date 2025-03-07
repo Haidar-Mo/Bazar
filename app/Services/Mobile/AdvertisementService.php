@@ -16,7 +16,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class AdvertisementService
 {
     use HasFiles;
-    public function create($request,User $user){
+    public function create($request, User $user)
+    {
         $data = $request->validated();
         //return $data;
 
@@ -27,14 +28,14 @@ class AdvertisementService
                     'city_id' => $data['city_id'],
                     'category_id' => $data['category_id'],
                     'is_special' => $data['is_special'],
-                    'price'=>$data['price'],
+                    'price' => $data['price'],
                     'expiry_date' => now()->addDays(30),
                 ]);
-                if(isset($data['images'])){
+                if (isset($data['images'])) {
                     $images = $request->file('images');
-                    foreach($images as $image){
-                         $url=$this->saveFile($image,'ads');
-                         $ad->images()->create(['path'=>$url]);
+                    foreach ($images as $image) {
+                        $url = $this->saveFile($image, 'ads');
+                        $ad->images()->create(['path' => $url]);
                     }
                 }
                 if (isset($data['attributes']) && is_array($data['attributes'])) {

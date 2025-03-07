@@ -113,7 +113,7 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
-    public function verifyRequest(): HasMany
+    public function verificationRequest(): HasMany
     {
         return $this->hasMany(VerificationRequest::class);
     }

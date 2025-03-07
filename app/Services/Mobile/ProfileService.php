@@ -32,8 +32,7 @@ class ProfileService
             $image = $this->saveFile($request->file('image'), 'Profile/Images');
 
         }
-        try {
-            return DB::transaction(function () use ($request, $user, $image) {
+           return DB::transaction(function () use ($request, $user, $image) {
                 $user->update($request->all());
                 if ($image)
                     $user->images()->updateOrCreate([
@@ -41,8 +40,5 @@ class ProfileService
                     ], ['path' => $image]);
                 return $user;
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 }
