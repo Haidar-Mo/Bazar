@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FavoriteListItem extends Model
 {
-    /** @use HasFactory<\Database\Factories\FavoriteListItemFactory> */
+   
     use HasFactory;
 
 
@@ -25,7 +25,7 @@ class FavoriteListItem extends Model
 
     public function ads(): BelongsTo
     {
-        return $this->belongsTo(Advertisement::class);
+        return $this->belongsTo(Advertisement::class,'advertisement_id');
     }
-    
+
 }

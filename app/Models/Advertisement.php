@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Support\Carbon;
 class Advertisement extends Model
 {
     /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
@@ -30,12 +30,18 @@ class Advertisement extends Model
      * @var array
      */
     protected $appends = [
-        'views'
+        'views',
+        'created_from',
+
     ];
 
     protected $hidden = [
         'deleted_at',
     ];
+    public function getCreatedFromAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
 
 
     public function user(): BelongsTo
