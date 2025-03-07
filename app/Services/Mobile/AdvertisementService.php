@@ -20,7 +20,7 @@ class AdvertisementService
         $data = $request->validated();
         //return $data;
 
-        try {
+       
             return DB::transaction(function () use ($user, $request, $data) {
 
                 $ad = $user->ads()->create([
@@ -48,9 +48,6 @@ class AdvertisementService
                 }
                 return $ad;
             });
-        } catch (Exception $e) {
 
-            return $e;
-        }
     }
 }

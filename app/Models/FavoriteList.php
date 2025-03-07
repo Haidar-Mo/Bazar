@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FavoriteList extends Model
 {
-    /** @use HasFactory<\Database\Factories\FavoriteListFactory> */
+    
     use HasFactory;
 
 
