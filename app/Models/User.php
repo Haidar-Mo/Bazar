@@ -157,7 +157,7 @@ class User extends Authenticatable
 
 
 
-    //! Accessories 
+    //! Accessories
 
     public function getRoleAttribute()
     {

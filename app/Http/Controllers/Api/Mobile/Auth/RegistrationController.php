@@ -6,6 +6,7 @@ use App\Enums\TokenAbility;
 use App\Http\Controllers\Controller;
 use App\Models\PendingUser;
 use App\Models\User;
+use App\Models\FavoriteList;
 use App\Notifications\VerificationCodeNotification;
 use Carbon\Carbon;
 use Exception;
@@ -20,7 +21,7 @@ class RegistrationController extends Controller
 
     /**
      * Register an email into the application
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */
@@ -47,6 +48,7 @@ class RegistrationController extends Controller
             );
 
             $user->notify(new VerificationCodeNotification($verificationCode));
+
             DB::commit();
             return response()->json(['message' => "Email registration done \n Verification email sent "], 200);
         } catch (Exception $e) {
@@ -58,7 +60,7 @@ class RegistrationController extends Controller
 
     /**
      * Resend verification code for an deactivated existing email
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */
@@ -90,62 +92,77 @@ class RegistrationController extends Controller
 
     /**
      * Verify the previously registered email.
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function verifyEmail(Request $request)
-    {
-        $data = $request->validate([
-            'email' => ['required', 'email', 'exists:pending_users,email'],
-            'verification_code' => ['required', 'string']
-        ]);
-        $user = PendingUser::where('email', $data['email'])->firstOrFail();
+{
+    $data = $request->validate([
+        'email' => ['required', 'email', 'exists:pending_users,email'],
+        'verification_code' => ['required', 'string']
+    ]);
+    $user = PendingUser::where('email', $data['email'])->firstOrFail();
 
-        if ($user->email_verified_at != null) {
-            return response()->json(['message' => 'your Email is already verified'], 422);
-        }
-        if ($user->verification_code_expires_at <= now()) {
-            return response()->json(['message' => 'your verification code is expired'], 422);
-        }
-        if ($user->verification_code != $data['verification_code']) {
-            return response()->json(['message' => 'your verification code is incorrect'], 422);
-        }
-        try {
-            $new_user = DB::transaction(function () use ($user) {
-                $user->update([
-                    'email_verified_at' => now(),
-                    'verification_code_expires_at' => null
-                ]);
-                return User::create($user->only('email', 'password', 'email_verified_at'));
-            });
-            $accessToken = $new_user->createToken(
-                'access_token',
-                [TokenAbility::ACCESS_API->value],
-                Carbon::now()->addMinutes(config('sanctum.expiration'))
-            );
-
-            $refreshToken = $new_user->createToken(
-                'refresh_token',
-                [TokenAbility::ISSUE_ACCESS_TOKEN->value],
-                Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
-            );
-
-            return response()->json([
-                'message' => 'Email verified successfully',
-                'access_token' => $accessToken->plainTextToken,
-                'refresh_token' => $refreshToken->plainTextToken,
-                'user' => $new_user,
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json(['message' => 'Something went wrong, please try again later', 'error:' => $e->getMessage()], 500);
-        }
+    if ($user->email_verified_at != null) {
+        return response()->json(['message' => 'Your email is already verified'], 422);
     }
+    if ($user->verification_code_expires_at <= now()) {
+        return response()->json(['message' => 'Your verification code is expired'], 422);
+    }
+    if ($user->verification_code != $data['verification_code']) {
+        return response()->json(['message' => 'Your verification code is incorrect'], 422);
+    }
+
+    try {
+        $new_user = DB::transaction(function () use ($user) {
+            $user->update([
+                'email_verified_at' => now(),
+                'verification_code_expires_at' => null
+            ]);
+            $newUser = User::create($user->only('email', 'password', 'email_verified_at'));
+          
+            $favoriteListExists = FavoriteList::where('user_id', $newUser->id)
+                                              ->where('name', 'all')
+                                              ->exists();
+
+            if (!$favoriteListExists) {
+                FavoriteList::create([
+                    'user_id' => $newUser->id,
+                    'name' => 'all'
+                ]);
+            }
+
+            return $newUser;
+        });
+
+        $accessToken = $new_user->createToken(
+            'access_token',
+            [TokenAbility::ACCESS_API->value],
+            Carbon::now()->addMinutes(config('sanctum.expiration'))
+        );
+
+        $refreshToken = $new_user->createToken(
+            'refresh_token',
+            [TokenAbility::ISSUE_ACCESS_TOKEN->value],
+            Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
+        );
+
+        return response()->json([
+            'message' => 'Email verified successfully',
+            'access_token' => $accessToken->plainTextToken,
+            'refresh_token' => $refreshToken->plainTextToken,
+            'user' => $new_user,
+        ], 200);
+    } catch (Exception $e) {
+        return response()->json(['message' => 'Something went wrong, please try again later', 'error:' => $e->getMessage()], 500);
+    }
+}
 
 
     /**
      * Register the rest of the information to the previously registered email.
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return mixed|\Illuminate\Http\JsonResponse
      */

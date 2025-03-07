@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\AdvertisementCreateRequest;
+use App\Http\Requests\{
+    UpdateAdvertmentRequest,
+    AdvertisementCreateRequest
+
+};
 use App\Models\Advertisement;
 use App\Traits\{
     HasFiles,
@@ -47,8 +51,9 @@ class AdvertisementController extends Controller
         try {
             $ads = $this->service->create($request, $user);
             return $this->showResponse($ads, 'create ads successfully ...!');
-        } catch (Exception $e) {
-            return $this->showError($e);
+        }catch(Exception $e){
+            return $this->showError($e,' SomeThing goes wrong....! ');
+
         }
 
     }
@@ -58,15 +63,17 @@ class AdvertisementController extends Controller
      */
     public function show(string $id)
     {
-        //
+         $ad=Advertisement::find($id)->with(['category','city'])->first();
+        return $this->showResponse($ad->append('attributes'));
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateAdvertmentRequest $request, string $id)
     {
-        //
+        
     }
 
     /**
