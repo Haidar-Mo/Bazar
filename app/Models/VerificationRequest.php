@@ -15,11 +15,11 @@ class VerificationRequest extends Model
     protected $fillable = [
         'user_id',
         'phone_number',
-        'profile_image',
         'identity_image',
         'work_register',
         'other_document',
-        'status'
+        'status',
+        'reject_reason'
     ];
 
 

@@ -32,14 +32,14 @@ class AdvertisementController extends Controller
      */
     public function index(Request $request)
     {
-        $user=Auth::user();
-        if($request->has('status') && $request->status!=''){
+        $user = Auth::user();
+        if ($request->has('status') && $request->status != '') {
             $ads = $user->ads()->with('images')->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
-        }else {
+        } else {
 
             $ads = $user->ads()->with('images')->orderBy('created_at', 'desc')->paginate(10);
         }
-        return $this->showResponse($ads,'done');
+        return $this->showResponse($ads, 'done');
     }
 
     /**
@@ -47,12 +47,13 @@ class AdvertisementController extends Controller
      */
     public function store(AdvertisementCreateRequest $request)
     {
-        $user=Auth::user();
-        try{
-            $ads=$this->service->create($request,$user);
+        $user = Auth::user();
+        try {
+            $ads = $this->service->create($request, $user);
             return $this->showResponse($ads, 'create ads successfully ...!');
         }catch(Exception $e){
             return $this->showError($e,' SomeThing goes wrong....! ');
+
         }
 
     }
@@ -80,7 +81,7 @@ class AdvertisementController extends Controller
      */
     public function destroy(string $id)
     {
-        $ad=Advertisement::find($id);
+        $ad = Advertisement::find($id);
         $ad->delete();
         return $this->showMessage('ad deleted successfully...!');
     }

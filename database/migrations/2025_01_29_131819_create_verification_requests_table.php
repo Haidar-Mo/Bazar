@@ -14,11 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('phone_number');
-            $table->string('profile_image');
             $table->string('identity_image');
             $table->string('work_register')->nullable();
             $table->string('other_document')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected']);
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('reject_reason')->nullable();
             $table->timestamps();
         });
     }

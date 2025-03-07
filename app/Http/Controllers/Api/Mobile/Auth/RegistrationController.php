@@ -121,7 +121,7 @@ class RegistrationController extends Controller
                 'verification_code_expires_at' => null
             ]);
             $newUser = User::create($user->only('email', 'password', 'email_verified_at'));
-
+          
             $favoriteListExists = FavoriteList::where('user_id', $newUser->id)
                                               ->where('name', 'all')
                                               ->exists();
@@ -172,6 +172,7 @@ class RegistrationController extends Controller
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
             'birth_date' => ['required', 'date'],
+            'description' => ['sometimes', 'string'],
             "gender" => ['required', 'in:male,female'],
             "address" => ['required'],
             "device_token" => ['nullable'],

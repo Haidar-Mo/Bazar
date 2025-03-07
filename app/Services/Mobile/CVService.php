@@ -26,7 +26,6 @@ class CVService
     public function create(FormRequest $request, User $user)
     {
         $data = $request->all();
-        try {
             return DB::transaction(function () use ($user, $request, $data) {
                 if ($request->hasFile('image'))
                     $data['image'] = $this->saveFile($request->file('image'), 'CV');
@@ -34,10 +33,6 @@ class CVService
                 $cv = $user->cv()->create($data);
                 return $cv;
             });
-
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 
     /**
@@ -49,7 +44,7 @@ class CVService
     public function update(FormRequest $request, User $user)
     {
         $data = $request->all();
-        try {
+        
             return DB::transaction(function () use ($request, $user, $data) {
                 if ($request->hasFile('image')) {
                     if ($user->cv()->first()->image) {
@@ -60,9 +55,6 @@ class CVService
                 return $user->cv()->update($data);
 
             });
-        } catch (Exception $e) {
-            return $e;
-        }
     }
 
 
@@ -74,14 +66,10 @@ class CVService
      */
     public function addFile(Request $request, Cv $cv)
     {
-        try {
             return DB::transaction(function () use ($cv, $request) {
                 $filePath = $this->saveFile($request->file('file'), 'CV/Files');
                 return $cv->file()->create(['url' => $filePath]);
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 
     /**
@@ -92,55 +80,58 @@ class CVService
      */
     public function addExperience(FormRequest $request, Cv $cv)
     {
-        try {
             return DB::transaction(function () use ($request, $cv) {
                 return $cv->experience()->create($request->all());
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 
-
+    /**
+     * Add Qualification to the CV
+     * @param \Illuminate\Foundation\Http\FormRequest $request
+     * @param \App\Models\Cv $cv
+     * @return mixed
+     */
     public function addQualification(FormRequest $request, Cv $cv)
     {
-        try {
             return DB::transaction(function () use ($request, $cv) {
                 return $cv->qualification()->create($request->all());
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 
-
+    /**
+     * Add Skill to the CV
+     * @param array $request
+     * @param \App\Models\Cv $cv
+     * @return mixed
+     */
     public function addSkill(array $request, Cv $cv)
     {
-        try {
             return DB::transaction(function () use ($request, $cv) {
                 return $cv->skill()->create($request);
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 
-
+    /**
+     * Add Link to the CV
+     * @param array $request
+     * @param \App\Models\Cv $cv
+     * @return mixed
+     */
     public function addLink(array $request, Cv $cv)
     {
-        try {
             return DB::transaction(function () use ($request, $cv) {
                 return $cv->link()->create($request);
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 
-
+    /**
+     * Add Document to the CV
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Cv $cv
+     * @return mixed
+     */
     public function addDocument(Request $request, Cv $cv)
     {
-        try {
             return DB::transaction(function () use ($request, $cv) {
                 $file_path = $this->saveFile($request->file('file'), 'CV/Documents');
                 $cv->document()->create([
@@ -149,8 +140,5 @@ class CVService
                 ]);
                 return $cv;
             });
-        } catch (Exception $e) {
-            throw $e;
-        }
     }
 }

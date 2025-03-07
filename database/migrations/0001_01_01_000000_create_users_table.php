@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->date('birth_date')->default(now());
             $table->text('address')->nullable();
             $table->enum('gender', ['male', 'female'])->default('male');
+            $table->text('description')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_blocked')->default(false);
             $table->string('provider')->nullable();

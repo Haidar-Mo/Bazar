@@ -32,6 +32,7 @@ class User extends Authenticatable
         'birth_date',
         'gender',
         'address',
+        'description',
         'provider',
         'provider_id',
         'device_token',
@@ -55,6 +56,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'role',
+        'image',
         'is_full_registered',
         'rate'
     ];
@@ -111,7 +113,7 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
-    public function verifyRequest(): HasMany
+    public function verificationRequest(): HasMany
     {
         return $this->hasMany(VerificationRequest::class);
     }
@@ -161,6 +163,11 @@ class User extends Authenticatable
     {
 
         return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
+    }
+
+    public function getImageAttribute()
+    {
+        return $this->images()->first()->path;
     }
 
     public function getIsFullRegisteredAttribute()

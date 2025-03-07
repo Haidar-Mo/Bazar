@@ -20,6 +20,11 @@ class Rate extends Model
     ];
 
 
+    protected $appends = [
+        'user'
+    ];
+
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -30,4 +35,12 @@ class Rate extends Model
         return $this->belongsTo(User::class, 'rated_user_id');
     }
 
+
+
+    //! Accessories
+
+    public function getUserAttribute()
+    {
+        return $this->user()->get(['first_name', 'last_name'])->makeHidden(['is_full_registered','rate','role']);
+    }
 }
