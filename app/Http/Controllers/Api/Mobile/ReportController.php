@@ -4,10 +4,18 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Category;
+use App\Models\{
+    User,
+    Report
+};
 use App\Traits\ResponseTrait;
+use App\Http\Requests\ReportRequest;
 use Exception;
-class CategoriesController extends Controller
+use Illuminate\Support\Facades\{
+    DB,
+    Auth
+};
+class ReportController extends Controller
 {
     use ResponseTrait;
     /**
@@ -15,28 +23,41 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $Categories = Category::query()->parent()->get();
-        return $this->showResponse($Categories,'done successfully.....!');
-
-
+        //
     }
-
-
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ReportRequest $request)
     {
-        //
+        $user=Auth::user();
+        DB::beginTransaction();
+        try{
+        $report = Report::create([
+            'user_id' => $user->id,
+            'reportable_id' => $request->ads_id,
+            'reportable_type' => User::class,
+            'paragraph' => $request->paragraph,
+        ]);
+        DB::commit();
+        return $this->showMessage('report sent successfully....!');
+
+    }catch(Exception $e){
+        DB::rollBack();
+        return $this->showError($e,'something goes wrong.....!');
+
+    }
+
+
     }
 
     /**
@@ -44,18 +65,8 @@ class CategoriesController extends Controller
      */
     public function show(string $id)
     {
-        try {
-            $category = Category::with(['children'])->findOrFail($id);
-            $ads = $category->ads()
-                ->with(['images','category', 'city'])
-                ->paginate(10);
-            $category->setRelation('ads', $ads);
-            return $this->showResponse($category, 'done successfully....!');
-        } catch(Exception $e) {
-            return $this->showError($e, 'something goes wrong....!');
-        }
+        //
     }
-
 
     /**
      * Show the form for editing the specified resource.

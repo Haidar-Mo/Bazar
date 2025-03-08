@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +32,7 @@ class Advertisement extends Model
     protected $appends = [
         'views',
         'created_from',
+        'is_favorite',
 
     ];
 
@@ -86,6 +87,21 @@ class Advertisement extends Model
         return $this->attributes()->get()->map(function ($attribute) {
             return [$attribute->name => $attribute->value];
         });
+    }
+
+    public function getIsFavoriteAttribute()
+    {
+
+        $user = Auth::user();
+
+        if ($user) {
+            return FavoriteListItem::where('advertisement_id', $this->id)
+                ->whereHas('list', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->exists();
+        }
+
+        return false;
     }
 
 
