@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->decimal('rate', 2, 1);
             $table->text('comment');
             $table->timestamps();
+
+            $table->unique(['user_id', 'rated_user_id']);
         });
     }
 

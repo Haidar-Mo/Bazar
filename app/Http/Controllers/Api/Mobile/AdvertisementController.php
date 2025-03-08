@@ -32,14 +32,21 @@ class AdvertisementController extends Controller
      */
     public function index(Request $request)
     {
+<<<<<<< HEAD
         $user=Auth::user();
         if($request->has('status') && $request->status!=''){
             $ads = $user->ads()->with(['images','category','city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
         }else {
+=======
+        $user = Auth::user();
+        if ($request->has('status') && $request->status != '') {
+            $ads = $user->ads()->with('images')->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+        } else {
+>>>>>>> 87b68f087e1988ada0e6b918e52fb74e26f631db
 
             $ads = $user->ads()->with(['images','category','city'])->orderBy('created_at', 'desc')->paginate(10);
         }
-        return $this->showResponse($ads,'done');
+        return $this->showResponse($ads, 'done');
     }
 
     /**
@@ -47,12 +54,13 @@ class AdvertisementController extends Controller
      */
     public function store(AdvertisementCreateRequest $request)
     {
-        $user=Auth::user();
-        try{
-            $ads=$this->service->create($request,$user);
+        $user = Auth::user();
+        try {
+            $ads = $this->service->create($request, $user);
             return $this->showResponse($ads, 'create ads successfully ...!');
         }catch(Exception $e){
             return $this->showError($e,' SomeThing goes wrong....! ');
+
         }
 
     }
@@ -80,7 +88,7 @@ class AdvertisementController extends Controller
      */
     public function destroy(string $id)
     {
-        $ad=Advertisement::find($id);
+        $ad = Advertisement::find($id);
         $ad->delete();
         return $this->showMessage('ad deleted successfully...!');
     }

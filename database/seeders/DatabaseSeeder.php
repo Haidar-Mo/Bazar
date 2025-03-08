@@ -10,6 +10,7 @@ use App\Models\CvLink;
 use App\Models\CvQualification;
 use App\Models\CvSkill;
 use App\Models\Image;
+use App\Models\Rate;
 use App\Models\User;
 use App\Models\City;
 use App\Models\Category;
@@ -30,9 +31,9 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(PermissionSeeder::class);
 
-        //! User::factory(10)->create();  // do not use it because the CV factory will create user
+        !User::factory(10)->create();  // do not use it because the CV factory will create user
 
-        //! Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
+        !Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
         CvFile::factory(10);
         CvDocument::factory(20)->create();
         CvLink::factory(20)->create();
@@ -45,6 +46,7 @@ class DatabaseSeeder extends Seeder
         AdvertisementAttribute::factory(150)->create();
         Image::factory(80)->create();
         View::factory(100)->create();
+        //Rate::factory(100)->create();
         User::create([
             'first_name' => 'mario',
             'last_name' => 'andrawos',
@@ -52,6 +54,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'birth_date' => '1990-01-01',
             'gender' => 'male',
+            'description' => 'a junior Laravel developer',
             'address' => 'yabroud',
             'provider' => null,
             'provider_id' => null,

@@ -48,6 +48,7 @@ class CategoriesController extends Controller
             $category = Category::with(['children'])->findOrFail($id);
             $ads = $category->ads()
                 ->with(['images','category', 'city'])
+                ->where('status','active')
                 ->paginate(10);
             $category->setRelation('ads', $ads);
             return $this->showResponse($category, 'done successfully....!');

@@ -27,6 +27,8 @@ trait HasFiles
         $filePath = storage_path('app/public/' . $name);
         if (file_exists($filePath) && $name) {
             unlink($filePath);
+            return true;
         }
+        return false;
     }
 }
