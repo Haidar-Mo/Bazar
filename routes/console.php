@@ -8,3 +8,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('app:expires-ads')->everyMinute();
+Schedule::command('app:expires-subscription')->everyMinute();

@@ -154,6 +154,11 @@ class User extends Authenticatable
         return $this->hasMany(NotificationSetting::class);
     }
 
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
 
 
 
