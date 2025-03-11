@@ -19,11 +19,6 @@ class User extends Authenticatable
 
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'first_name',
         'last_name',
@@ -170,10 +165,12 @@ class User extends Authenticatable
         return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
     }
 
-    public function getImageAttribute()
-    {
-        return $this->images()->first()->path;
-    }
+// في نموذج User (User.php)
+public function getImageAttribute()
+{
+    $image = $this->images()->first();
+    return $image ? [$image->path] : [];
+}
 
     public function getIsFullRegisteredAttribute()
     {

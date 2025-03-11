@@ -51,6 +51,7 @@ class PlanController extends Controller
          return $this->showResponse($plan,'done successfully.....!');
     }
     catch(Exception $e){
+        DB::rollBack();
         return $this->showError($e,'SomeThing goes wrong....!');
 
     }
@@ -86,6 +87,7 @@ class PlanController extends Controller
         return $this->showResponse($plan,'plan updated successfully...!');
         }
         catch(Exception $e){
+            DB::rollBack();
             return $this->showError($e,'something goes wrong....!');
         }
 

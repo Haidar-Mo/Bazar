@@ -51,6 +51,7 @@ class SubscriptionController extends Controller
         return $this->showMessage('subscription done successfully.....!');
         }
         catch(Exception $e){
+            DB::rollBack();
             return $this->showError($e,'something goes wrong....!');
 
         }
@@ -90,6 +91,7 @@ class SubscriptionController extends Controller
         return $this->showResponse($subscription,'subscription updated successfully...!');
     }
     catch(Exception $e){
+        DB::rollBack();
         return $this->showError($e,'something goes wrong.....!');
 
     }
@@ -108,6 +110,7 @@ class SubscriptionController extends Controller
         DB::commit();
         return $this->showResponse($subscription,'subscription delete successfully....!');
         }catch(Exception $e){
+            DB::rollBack();
             return $this->showError($e,'something goes wrong....!');
 
         }

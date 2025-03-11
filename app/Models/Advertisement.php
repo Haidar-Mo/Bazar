@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 class Advertisement extends Model
 {
-    /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
     use HasFactory;
     use SoftDeletes;
 

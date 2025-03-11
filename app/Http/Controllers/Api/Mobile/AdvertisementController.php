@@ -16,7 +16,9 @@ use App\Traits\{
 };
 use App\Services\Mobile\AdvertisementService;
 use Exception;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{
+    Auth,DB
+};
 
 class AdvertisementController extends Controller
 {
@@ -65,8 +67,20 @@ class AdvertisementController extends Controller
      */
     public function show(string $id)
     {
-         $ad=Advertisement::find($id)->with(['images','category','city','user.images'])->first();
-        return $this->showResponse($ad->append('attributes'));
+        $user=Auth::user();
+        DB::beginTransaction();
+    try{
+
+        $ad = Advertisement::with(['images', 'category', 'city', 'user'])->where('id', $id)->first();
+         $user->views()->firstOrCreate(['advertisement_id' => $id]);
+        DB::commit();
+            return $this->showResponse($ad->append('attributes'),'done successfully....!');
+        }
+    catch(Exception $e){
+        DB::rollBack();
+            return $this->showError($e,'something goes wrong....!');
+
+        }
 
     }
 
@@ -83,8 +97,17 @@ class AdvertisementController extends Controller
      */
     public function destroy(string $id)
     {
+        DB::beginTransaction();
+        try{
         $ad = Advertisement::find($id);
         $ad->delete();
+        DB::commit();
         return $this->showMessage('ad deleted successfully...!');
+        }
+        catch(Exception $e){
+        DB::rollBack();
+            return $this->showError($e,'something goes wrong....!');
+
+        }
     }
 }
