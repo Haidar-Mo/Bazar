@@ -33,7 +33,9 @@ class AdvertisementCreateRequest extends FormRequest
             'expiry_date'=>['nullable','date'],
             'is_special'=>['nullable'],
             'images' => 'nullable|array|min:1',
-            'images.*' => 'required|image'
+            'images.*' => 'required|image',
+            'attributes'=>'required|array',
+
         ];
 
         $categoryRules = match ($category->name) {
@@ -49,7 +51,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.regional_specifications'=>['required'],
                 'attributes.price_range'=>['required'],
                 'attributes.body_type'=>['required'],
-                'attributes.is_safty'=>['required'],
+                'attributes.is_safety'=>['required'],
                 'attributes.number'=>['required'],
 
                 ///'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],

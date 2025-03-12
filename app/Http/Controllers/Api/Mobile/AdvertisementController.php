@@ -49,12 +49,12 @@ class AdvertisementController extends Controller
      */
     public function store(AdvertisementCreateRequest $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         try {
             $ads = $this->service->create($request, $user);
             return $this->showResponse($ads, 'create ads successfully ...!');
-        }catch(Exception $e){
-            return $this->showError($e,' SomeThing goes wrong....! ');
+        } catch (Exception $e) {
+            return $this->showError($e, ' SomeThing goes wrong....! ');
 
         }
 

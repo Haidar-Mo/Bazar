@@ -35,6 +35,13 @@ return [
         ],
     ],
 
+    'firebase' => [
+        'credentials' => [
+            'file' => storage_path('app\private\firebase_credentials.json')
+        ],
+    ],
+
+
     //** Social authentication
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
