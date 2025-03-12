@@ -32,12 +32,14 @@ class AdvertisementController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
-        if ($request->has('status') && $request->status != '') {
-            $ads = $user->ads()->with('images')->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
-        } else {
 
-            $ads = $user->ads()->with('images')->orderBy('created_at', 'desc')->paginate(10);
+        $user=Auth::user();
+        if($request->has('status') && $request->status!=''){
+            $ads = $user->ads()->with(['images','category','city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+        }else {
+
+
+            $ads = $user->ads()->with(['images','category','city'])->orderBy('created_at', 'desc')->paginate(10);
         }
         return $this->showResponse($ads, 'done');
     }
@@ -63,7 +65,7 @@ class AdvertisementController extends Controller
      */
     public function show(string $id)
     {
-        $ad = Advertisement::find($id)->with(['category', 'city'])->first();
+         $ad=Advertisement::find($id)->with(['images','category','city','user.images'])->first();
         return $this->showResponse($ad->append('attributes'));
 
     }
