@@ -173,6 +173,10 @@ class User extends Authenticatable
         return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
     }
 
+    public function getHasVerificationRequestAttribute()
+    {
+        return $this->verificationRequest()->where('status', 'pending')->first()->id ?? null;
+    }
     public function getImageAttribute()
     {
         return $this->images()->first()->path ?? null;

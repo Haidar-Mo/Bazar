@@ -22,8 +22,9 @@ class AdvertisementFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'city_id' =>  City::inRandomOrder()->first()->id,
-            'category_id' =>  Category::inRandomOrder()->first()->id,
+            'city_id' => City::inRandomOrder()->first()->id,
+            'category_id' => Category::inRandomOrder()->first()->id,
+            'price' => $this->faker->randomNumber(4),
             'is_special' => $this->faker->boolean(),
             'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),
             'expiry_date' => Carbon::now()->addDays(30),

@@ -19,6 +19,8 @@ class Advertisement extends Model
         'user_id',
         'city_id',
         'category_id',
+        'type',
+        'price',
         'is_special',
         'status',
         'expiry_date'

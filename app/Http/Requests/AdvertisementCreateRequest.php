@@ -23,19 +23,20 @@ class AdvertisementCreateRequest extends FormRequest
     public function rules(): array
     {
         $category_id = $this->input('category_id');
-        $category=Category::where('id',$category_id)->first();
+        $category = Category::where('id', $category_id)->first();
 
 
         $commonRules = [
-            'price' => ['required', 'numeric', 'min:0'],
             'category_id' => ['required'],
-            'city_id'=>['required'],
-            'expiry_date'=>['nullable','date'],
-            'is_special'=>['nullable'],
+            'city_id' => ['required'],
+            'type'=>['required','in:offer,order'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'expiry_date' => ['nullable', 'date'],
+            'is_special' => ['nullable'],
             'images' => 'nullable|array|min:1',
             'images.*' => 'required|image',
-            'attributes'=>'required|array',
-
+            'attributes' => 'required|array',
+            
         ];
 
         $categoryRules = match ($category->name) {
@@ -46,13 +47,13 @@ class AdvertisementCreateRequest extends FormRequest
 
             'Vehicle' => [
                 'attributes.mileage' => ['required', 'integer'],
-                'attributes.model'=>['required'],
-                'attributes.category'=>['required'],
-                'attributes.regional_specifications'=>['required'],
-                'attributes.price_range'=>['required'],
-                'attributes.body_type'=>['required'],
-                'attributes.is_safety'=>['required'],
-                'attributes.number'=>['required'],
+                'attributes.model' => ['required'],
+                'attributes.category' => ['required'],
+                'attributes.regional_specifications' => ['required'],
+                'attributes.price_range' => ['required'],
+                'attributes.body_type' => ['required'],
+                'attributes.is_safety' => ['required'],
+                'attributes.number' => ['required'],
 
                 ///'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
             ],
@@ -60,19 +61,19 @@ class AdvertisementCreateRequest extends FormRequest
             'Hyper' => [
                 'attributes.mileage' => ['required', 'integer'],
                 'attributes.address' => ['required'],
-                'attributes.number'=>['required'],
-                'attributes.price'=>['required'],
-                'attributes.description'=>['required'],
-                'attributes.range_of_use'=>['required'],
-                'attributes.price_range'=>['required'],
-                'attributes.seller_type'=>['required'],
-                'attributes.guarantee'=>['required'],
-                'attributes.power_transmission_system'=>['required'],
-                'attributes.number_of_tires'=>['required'],
-                'attributes.manufacture'=>['required'],
-                'attributes.engine_size'=>['required'],
-                'attributes.location'=>['nullable'],
-                'attributes.street_name'=>['nullable'],
+                'attributes.number' => ['required'],
+                'attributes.price' => ['required'],
+                'attributes.description' => ['required'],
+                'attributes.range_of_use' => ['required'],
+                'attributes.price_range' => ['required'],
+                'attributes.seller_type' => ['required'],
+                'attributes.guarantee' => ['required'],
+                'attributes.power_transmission_system' => ['required'],
+                'attributes.number_of_tires' => ['required'],
+                'attributes.manufacture' => ['required'],
+                'attributes.engine_size' => ['required'],
+                'attributes.location' => ['nullable'],
+                'attributes.street_name' => ['nullable'],
 
 
             ],
