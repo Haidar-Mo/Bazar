@@ -30,9 +30,12 @@ class User extends Authenticatable
         'email',
         'password',
         'birth_date',
-        'gender',
         'address',
+        'gender',
+        'job',
         'description',
+        'is_verified',
+        'is_blocked',
         'provider',
         'provider_id',
         'device_token',
@@ -167,7 +170,7 @@ class User extends Authenticatable
 
     public function getImageAttribute()
     {
-        return $this->images()->first()->path;
+        return $this->images()->first()->path ?? null;
     }
 
     public function getIsFullRegisteredAttribute()

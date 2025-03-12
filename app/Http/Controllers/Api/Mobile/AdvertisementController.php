@@ -47,12 +47,12 @@ class AdvertisementController extends Controller
      */
     public function store(AdvertisementCreateRequest $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         try {
             $ads = $this->service->create($request, $user);
             return $this->showResponse($ads, 'create ads successfully ...!');
-        }catch(Exception $e){
-            return $this->showError($e,' SomeThing goes wrong....! ');
+        } catch (Exception $e) {
+            return $this->showError($e, ' SomeThing goes wrong....! ');
 
         }
 
@@ -63,7 +63,7 @@ class AdvertisementController extends Controller
      */
     public function show(string $id)
     {
-         $ad=Advertisement::find($id)->with(['category','city'])->first();
+        $ad = Advertisement::find($id)->with(['category', 'city'])->first();
         return $this->showResponse($ad->append('attributes'));
 
     }
@@ -73,7 +73,7 @@ class AdvertisementController extends Controller
      */
     public function update(UpdateAdvertmentRequest $request, string $id)
     {
-        
+
     }
 
     /**

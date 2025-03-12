@@ -19,13 +19,14 @@ return new class extends Migration {
             $table->date('birth_date')->default(now());
             $table->text('address')->nullable();
             $table->enum('gender', ['male', 'female'])->default('male');
+            $table->string('job')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_blocked')->default(false);
             $table->string('provider')->nullable();
             $table->string('provider_id')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('device_token')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
