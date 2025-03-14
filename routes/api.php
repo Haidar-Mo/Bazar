@@ -9,6 +9,7 @@ Route::prefix('v1/')->group(function () {
 
     include __DIR__ . "/Dashboard/v1/User.php";
     include __DIR__ . "/Dashboard/v1/Notification.php";
+    include __DIR__ . "/Dashboard/V1/Plan.php";
 
     include __DIR__ . "/Mobile/V1/Auth.php";
     include __DIR__ . "/Mobile/V1/Profile.php";
@@ -20,7 +21,6 @@ Route::prefix('v1/')->group(function () {
     include __DIR__ . "/Mobile/V1/Category.php";
     include __DIR__ . "/Mobile/V1/Report.php";
     include __DIR__ . "/Mobile/V1/Rate.php";
-    include __DIR__ . "/Mobile/V1/Plan.php";
     include __DIR__ . "/Mobile/V1/Subscription.php";
 
 });
