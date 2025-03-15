@@ -31,12 +31,12 @@ class HomePageController extends Controller
                 ->with(['images'])
                 ->orderByRaw('is_special DESC, created_at DESC')
                 ->where('status','active')
-                ->paginate(10);
+                ->paginate(1);
         } else {
             $ads = Advertisement::with(['images'])
                 ->orderByRaw('is_special DESC, created_at DESC')
                 ->where('status','active')
-                ->paginate(10);
+                ->paginate(1);
         }
         DB::commit();
         return $this->showResponse(AdvertisementResource::collection($ads),'done successfully...!') ;
