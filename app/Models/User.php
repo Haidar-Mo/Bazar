@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -33,6 +35,7 @@ class User extends Authenticatable
         'address',
         'gender',
         'job',
+        'company',
         'description',
         'is_verified',
         'is_blocked',
@@ -60,6 +63,8 @@ class User extends Authenticatable
     protected $appends = [
         'role',
         'image',
+        'age',
+        'plan_name',
         'is_full_registered',
         'rate'
     ];
@@ -73,6 +78,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'created_at' => 'date:Y-m-d',
+            'updated_at' => 'date:Y-m-d',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -163,8 +170,6 @@ class User extends Authenticatable
     }
 
 
-
-
     //! Accessories
 
     public function getRoleAttribute()
@@ -177,9 +182,21 @@ class User extends Authenticatable
     {
         return $this->verificationRequest()->where('status', 'pending')->first()->id ?? null;
     }
+
     public function getImageAttribute()
     {
         return $this->images()->first()->path ?? null;
+    }
+
+    public function getAgeAttribute()
+    {
+        return Carbon::parse($this->birth_date)->age;
+    }
+
+    public function getPlanNameAttribute()
+    {
+        $sub = $this->subscriptions()->where('status', 'running')->latest()->first();
+        return $sub ? $sub->plan()->first()->name : null;
     }
 
     public function getIsFullRegisteredAttribute()

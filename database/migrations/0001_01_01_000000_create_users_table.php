@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->text('address')->nullable();
             $table->enum('gender', ['male', 'female'])->default('male');
             $table->string('job')->nullable();
+            $table->string('company')->nullable();
             $table->text('description')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_blocked')->default(false);

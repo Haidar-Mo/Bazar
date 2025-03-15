@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->enum('type', ['offer', 'order'])->default('offer');
+            $table->string('currency_type');
+            $table->boolean('negotiable')->default(0);
             $table->decimal('price', 16, 2);
             $table->boolean('is_special')->default(false);
             $table->enum('status', ['active', 'inactive', 'pending'])->default('pending');
