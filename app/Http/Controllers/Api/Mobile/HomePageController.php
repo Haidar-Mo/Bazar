@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{
     Advertisement,
-    User
+    User,
+    Category
 };
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Support\Facades\{Auth,DB};
+use App\Http\Resources\AdvertisementResource;
 class HomePageController extends Controller
 {
     use ResponseTrait;
@@ -19,18 +21,31 @@ class HomePageController extends Controller
 
     public function index(Request $request)
     {
-        $user=Auth::user();
-        if($request->has('category_id') && $request->category_id!=''){
-         $ads=Advertisement::with(['images','category','city'])->where('category_id',$request->category_id)->where('status','active')->orderBy('created_at','desc')->paginate(10);
-        }
-        else{
-            $ads=Advertisement::with(['images','category','city'])->where('status','active')->orderBy('created_at','desc')->paginate(10);
+        DB::beginTransaction();
+        try{
+        $categoryId = $request->query('categoryId');
 
+        if ($categoryId) {
+            $category = Category::with('children')->findOrFail($categoryId);
+            $ads = Advertisement::whereIn('category_id', $category->children()->pluck('id')->push($category->id))
+                ->with(['images'])
+                ->orderByRaw('is_special DESC, created_at DESC')
+                ->where('status','active')
+                ->paginate(10);
+        } else {
+            $ads = Advertisement::with(['images'])
+                ->orderByRaw('is_special DESC, created_at DESC')
+                ->where('status','active')
+                ->paginate(10);
         }
-        return $this->showResponse($ads,'done successfully.....!');
+        DB::commit();
+        return $this->showResponse(AdvertisementResource::collection($ads),'done successfully...!') ;
+    }catch(Exception $e){
+        DB::rollBack();
+        return $this->showError($e,'something goes wrong...!');
 
     }
-
+    }
 
 
     public function create()

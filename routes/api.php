@@ -22,5 +22,6 @@ Route::prefix('v1/')->group(function () {
     include __DIR__ . "/Mobile/V1/Report.php";
     include __DIR__ . "/Mobile/V1/Rate.php";
     include __DIR__ . "/Mobile/V1/Subscription.php";
+    include __DIR__ . "/Mobile/V1/Chat.php";
 
 });
