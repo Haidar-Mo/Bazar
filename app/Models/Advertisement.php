@@ -33,6 +33,9 @@ class Advertisement extends Model
         'views',
         'created_from',
         'is_favorite',
+        'parent_category',
+        'city_name',
+        'category_name',
 
     ];
 
@@ -41,7 +44,9 @@ class Advertisement extends Model
     ];
     public function getCreatedFromAttribute()
     {
-        return $this->created_at->diffForHumans();
+
+        Carbon::setLocale('ar');
+        return $this->created_at->locale('ar')->diffForHumans();
     }
 
 
@@ -102,6 +107,21 @@ class Advertisement extends Model
         }
 
         return false;
+    }
+
+    public function getParentCategoryAttribute()
+    {
+        return $this->category->parent->name;
+    }
+
+    public function getCityNameAttribute()
+    {
+        return $this->city()->first()->name;
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category()->first()->name;
     }
 
 

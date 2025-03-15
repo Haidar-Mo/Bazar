@@ -12,6 +12,7 @@ use App\Models\{
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Support\Facades\{Auth,DB};
+use App\Http\Resources\AdvertisementResource;
 class HomePageController extends Controller
 {
     use ResponseTrait;
@@ -27,27 +28,24 @@ class HomePageController extends Controller
         if ($categoryId) {
             $category = Category::with('children')->findOrFail($categoryId);
             $ads = Advertisement::whereIn('category_id', $category->children()->pluck('id')->push($category->id))
-                ->with(['images', 'category', 'city'])
+                ->with(['images'])
                 ->orderByRaw('is_special DESC, created_at DESC')
                 ->where('status','active')
                 ->paginate(10);
         } else {
-            $ads = Advertisement::with(['images', 'category', 'city'])
+            $ads = Advertisement::with(['images'])
                 ->orderByRaw('is_special DESC, created_at DESC')
                 ->where('status','active')
                 ->paginate(10);
         }
         DB::commit();
-        return $this->showResponse($ads, 'done successfully.....!');
+        return $this->showResponse(AdvertisementResource::collection($ads),'done successfully...!') ;
     }catch(Exception $e){
         DB::rollBack();
         return $this->showError($e,'something goes wrong...!');
 
     }
     }
-
-
-
 
 
     public function create()
