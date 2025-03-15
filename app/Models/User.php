@@ -21,11 +21,6 @@ class User extends Authenticatable
 
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'first_name',
         'last_name',
@@ -178,6 +173,7 @@ class User extends Authenticatable
         return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
     }
 
+
     public function getHasVerificationRequestAttribute()
     {
         return $this->verificationRequest()->where('status', 'pending')->first()->id ?? null;
@@ -198,6 +194,7 @@ class User extends Authenticatable
         $sub = $this->subscriptions()->where('status', 'running')->latest()->first();
         return $sub ? $sub->plan()->first()->name : null;
     }
+
 
     public function getIsFullRegisteredAttribute()
     {

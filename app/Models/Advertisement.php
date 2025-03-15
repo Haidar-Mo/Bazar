@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 class Advertisement extends Model
 {
-    /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
     use HasFactory;
     use SoftDeletes;
 
@@ -41,6 +40,9 @@ class Advertisement extends Model
         'views',
         'created_from',
         'is_favorite',
+        'parent_category',
+        'city_name',
+        'category_name',
 
     ];
 
@@ -49,7 +51,9 @@ class Advertisement extends Model
     ];
     public function getCreatedFromAttribute()
     {
-        return $this->created_at->diffForHumans();
+
+        Carbon::setLocale('ar');
+        return $this->created_at->locale('ar')->diffForHumans();
     }
 
 
@@ -125,6 +129,13 @@ class Advertisement extends Model
 
         return false;
     }
+
+    public function getParentCategoryAttribute()
+    {
+        return $this->category->parent->name;
+    }
+
+
 
 
 }
