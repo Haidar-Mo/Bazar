@@ -12,10 +12,12 @@ Route::prefix('Advertisements')
     ])
     ->group(function () {
 
+
         Route::prefix('ads')->group(function () {
-            Route::apiResource('advertisements',AdvertisementController::class);
+            Route::apiResource('advertisements', AdvertisementController::class);
         });
 
+        Route::get('filter', [AdvertisementController::class, 'indexWithFilter']);
 
 
     });

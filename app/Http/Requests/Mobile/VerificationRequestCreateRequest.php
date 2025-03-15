@@ -23,7 +23,7 @@ class VerificationRequestCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone_number' => 'required|string|' . new SyrianPhoneNumberRule(),
+            'phone_number' => ['required', 'string', new SyrianPhoneNumberRule()],
             'identity_image' => 'required|image',
             'work_register' => 'required|file',
             'other_document' => 'sometimes|file',

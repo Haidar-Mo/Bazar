@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Mobile;
+use App\Filters\Mobile\AdvertisementFilter;
 use Illuminate\Support\Facades\DB;
 use App\Models\{
     Advertisement,
@@ -8,19 +9,23 @@ use App\Models\{
     AdvertisementAttribute
 };
 use App\Traits\HasFiles;
-use Exception;
-use Illuminate\Foundation\Http\FormRequest;
+
 /**
  * Class AdvertisementService.
  */
 class AdvertisementService
 {
     use HasFiles;
+
+
+    public function __construct(protected AdvertisementFilter $advertisementFilter)
+    {
+    }
+
+
     public function create($request, User $user)
     {
         $data = $request->validated();
-        //return $data;
-
         return DB::transaction(function () use ($user, $request, $data) {
 
             $ad = $user->ads()->create([
@@ -49,5 +54,13 @@ class AdvertisementService
             return $ad;
         });
 
+    }
+
+
+
+    public function indexWithFilter()
+    {
+        $query = Advertisement::query();
+        return $this->advertisementFilter->apply($query)->get();
     }
 }

@@ -19,6 +19,10 @@ class Advertisement extends Model
         'user_id',
         'city_id',
         'category_id',
+        'type',
+        'price',
+        'currency_type',
+        'negotiable',
         'is_special',
         'status',
         'expiry_date'
@@ -30,6 +34,9 @@ class Advertisement extends Model
      * @var array
      */
     protected $appends = [
+        'city_name',
+        'category_name',
+        'images',
         'attributes',
         'views',
         'created_from',
@@ -78,11 +85,25 @@ class Advertisement extends Model
 
     //! Accessories
 
+    public function getCityNameAttribute()
+    {
+        return $this->city()->first()->name;
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category()->first()->name;
+    }
+
     public function getViewsAttribute()
     {
         return $this->views()->count();
     }
 
+    public function getImagesAttribute()
+    {
+        return $this->images()->get();
+    }
     public function getAttributesAttribute()
     {
         return $this->attributes()->get()->map(function ($attribute) {

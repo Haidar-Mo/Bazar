@@ -37,8 +37,6 @@ class VerificationRequestController extends Controller
     public function store(VerificationRequestCreateRequest $request)
     {
         $user = $request->user();
-        if ($user->is_verified)
-            return $this->showMessage('you are already verified', 400);
         try {
             $verification_request = $this->service->create($request, $user);
             //do: send Notification to admin

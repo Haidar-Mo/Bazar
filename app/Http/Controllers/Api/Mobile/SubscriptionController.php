@@ -3,20 +3,17 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Subscription;
 use App\Http\Requests\{
     SubscriptionUpdateRequest,
     SubscriptionRequest
 };
-use App\Models\Plan;
 use Illuminate\Support\Facades\{
     Auth,DB
 };
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Exception;
-use NunoMaduro\Collision\Adapters\Phpunit\Subscribers\Subscriber;
 
 class SubscriptionController extends Controller
 {

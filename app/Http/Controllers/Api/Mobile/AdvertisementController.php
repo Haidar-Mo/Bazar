@@ -33,13 +33,12 @@ class AdvertisementController extends Controller
     public function index(Request $request)
     {
 
-        $user=Auth::user();
-        if($request->has('status') && $request->status!=''){
-            $ads = $user->ads()->with(['images','category','city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
-        }else {
+        $user = Auth::user();
+        if ($request->has('status') && $request->status != '') {
+            $ads = $user->ads()->with(['images', 'category', 'city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+        } else {
 
-
-            $ads = $user->ads()->with(['images','category','city'])->orderBy('created_at', 'desc')->paginate(10);
+            $ads = $user->ads()->with(['images', 'category', 'city'])->orderBy('created_at', 'desc')->paginate(10);
         }
         return $this->showResponse($ads, 'done');
     }
@@ -65,7 +64,7 @@ class AdvertisementController extends Controller
      */
     public function show(string $id)
     {
-         $ad=Advertisement::find($id)->with(['images','category','city','user.images'])->first();
+        $ad = Advertisement::find($id)->with(['images', 'category', 'city', 'user.images'])->first();
         return $this->showResponse($ad->append('attributes'));
 
     }
@@ -86,5 +85,18 @@ class AdvertisementController extends Controller
         $ad = Advertisement::find($id);
         $ad->delete();
         return $this->showMessage('ad deleted successfully...!');
+    }
+
+
+    public function indexWithFilter(Request $request)
+    {
+        try {
+            $data = $this->service->indexWithFilter();
+            return $this->showResponse($data, 'filtered Ads retrieved successfully !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while filtering the advertisements', 500);
+        }
+
     }
 }

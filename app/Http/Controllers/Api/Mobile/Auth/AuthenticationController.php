@@ -46,7 +46,7 @@ class AuthenticationController extends Controller
         $refreshToken = $user->createToken(
             'refresh_token',
             [TokenAbility::ISSUE_ACCESS_TOKEN->value],
-            Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
+            Carbon::now()->addDays(7)
         );
 
         return response()->json([

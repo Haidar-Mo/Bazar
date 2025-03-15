@@ -8,11 +8,13 @@ use App\Http\Controllers\Api\Mobile\Auth\SocialiteController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('auth')->group(function () {
+Route::prefix('auth/')->group(function () {
 
     //** Socialite Routes
-    Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect']);
-    Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);
+    /* Route::get('/auth/{provider}/redirect', [SocialiteController::class, 'redirect']);
+     Route::get('/auth/{provider}/callback', [SocialiteController::class, 'callback']);*/
+    Route::post('social/{provider}', [SocialiteController::class, 'loginWithSocial']);
+
 
     //** Email Routes
     Route::post('register', [RegistrationController::class, 'create']);
