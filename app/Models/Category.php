@@ -9,17 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 class Category extends Model
 {
-    /** @use HasFactory<\Database\Factories\CategoryFactory> */
     use HasFactory;
-
-
     protected $fillable = [
         'name',
         'parent_id'
     ];
-
-
-
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');

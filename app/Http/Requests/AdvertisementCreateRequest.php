@@ -134,6 +134,53 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.street_name'=>['nullable'],
             ],
 
+            in_array($category->name, [
+                'Air-Conditioning-Heating-Parts',
+                'Batteries',
+                'Brakes',
+                'Engine-Computer-Parts',
+                'Exhaust-Pipe/Air-Conditioning',
+                'Exterior-Parts',
+                'Interior-Parts',
+                'Lighting',
+                'Suspension-System',
+                'Wheels/Tires',
+                'Decorations',
+                'Boat-Accessories',
+                'Car-4x4-Accessories',
+                'Goods',//سلع
+                'Motorcycle-Accessories',
+                'supplies',
+                'Body-Frame',
+                'Brakes-Suspension',
+                'Engines-Components',
+                'Tool-Accessories',
+                'Tool-Kit',//طقم ادوات
+                'Tools',
+                'Accessories-and-spare-parts',//اكسسوالرات و قطع غيار
+                'Electronic-Spare-Parts',
+                'Engine-Spare-Parts',
+                'Swimming-and-Diving-Equipment',
+                'Sailing-Equipment',
+                
+            ]) => [
+            'attributes.title' => ['required'],
+            'attributes.price' => ['required'],
+            'attributes.description' => ['required'],
+            'attributes.phone' => ['required'],
+            'attributes.usage' => ['required'],
+            'attributes.condition' => ['required'],
+            'attributes.seller_type' => ['required'],
+            'attributes.location' => ['nullable'],
+            'attributes.sail_boats' => ['nullable','boolean'],
+            'attributes.motor_internal_boats' => ['nullable','boolean'],
+            'attributes.all_boat_types' => ['nullable','boolean'],
+            'attributes.motor_external_boats' => ['nullable','boolean'],
+            'attributes.other_boat_types' => ['nullable','boolean'],
+            'attributes.oar_boats' => ['nullable','boolean'],
+
+        ],
+
             default => [],
         };
 
