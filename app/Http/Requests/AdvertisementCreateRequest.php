@@ -23,17 +23,20 @@ class AdvertisementCreateRequest extends FormRequest
     public function rules(): array
     {
         $category_id = $this->input('category_id');
-        $category=Category::where('id',$category_id)->first();
+        $category = Category::where('id', $category_id)->first();
 
 
         $commonRules = [
-            'price' => ['required', 'numeric', 'min:0'],
             'category_id' => ['required'],
-            'city_id'=>['required'],
-            'expiry_date'=>['nullable','date'],
-            'is_special'=>['nullable'],
+            'city_id' => ['required'],
+            'type'=>['required','in:offer,order'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'expiry_date' => ['nullable', 'date'],
+            'is_special' => ['nullable'],
             'images' => 'nullable|array|min:1',
-            'images.*' => 'required|image'
+
+            'images.*' => 'required|image',
+            'attributes' => 'required|array',
 
         ];
 
@@ -42,6 +45,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'size' => ['required', 'integer', 'min:1'],
                 'location' => ['required', 'string', 'max:255'],
             ],
+
 
             $category->name === 'Vehicle' => [
                 'attributes.type_model' => ['required'],
@@ -111,6 +115,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.special-coating'=>['nullable','boolean'],
                 'attributes.brake'=>['nullable','boolean'],
                 'attributes.climate-monitoring'=>['nullable','boolean'],
+
             ],
 
             in_array($category->name, ['Hyper', 'Super_motorcycle','super_sports','Adventure_Touring','Chopper_Motorcycle','Off-road Capability',
@@ -118,6 +123,7 @@ class AdvertisementCreateRequest extends FormRequest
             ]) => [
                 'attributes.title' => ['required'],
                 'attributes.address' => ['required'],
+
                 'attributes.phone'=>['required'],
                 'attributes.price'=>['required'],
                 'attributes.description'=>['required'],
@@ -132,6 +138,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.engine_size'=>['required'],
                 'attributes.location'=>['nullable'],
                 'attributes.street_name'=>['nullable'],
+
             ],
 
             in_array($category->name, [
@@ -162,7 +169,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'Engine-Spare-Parts',
                 'Swimming-and-Diving-Equipment',
                 'Sailing-Equipment',
-                
+
             ]) => [
             'attributes.title' => ['required'],
             'attributes.price' => ['required'],

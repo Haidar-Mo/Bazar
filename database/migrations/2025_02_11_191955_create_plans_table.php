@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('duration');
+            $table->string('size');
             $table->decimal('price');
             $table->timestamps();
         });

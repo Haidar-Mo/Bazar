@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -25,9 +27,13 @@ class User extends Authenticatable
         'email',
         'password',
         'birth_date',
-        'gender',
         'address',
+        'gender',
+        'job',
+        'company',
         'description',
+        'is_verified',
+        'is_blocked',
         'provider',
         'provider_id',
         'device_token',
@@ -52,6 +58,8 @@ class User extends Authenticatable
     protected $appends = [
         'role',
         'image',
+        'age',
+        'plan_name',
         'is_full_registered',
         'rate'
     ];
@@ -65,6 +73,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'created_at' => 'date:Y-m-d',
+            'updated_at' => 'date:Y-m-d',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -155,8 +165,6 @@ class User extends Authenticatable
     }
 
 
-
-
     //! Accessories
 
     public function getRoleAttribute()
@@ -165,12 +173,28 @@ class User extends Authenticatable
         return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
     }
 
-// في نموذج User (User.php)
-public function getImageAttribute()
-{
-    $image = $this->images()->first();
-    return $image ? [$image->path] : [];
-}
+
+    public function getHasVerificationRequestAttribute()
+    {
+        return $this->verificationRequest()->where('status', 'pending')->first()->id ?? null;
+    }
+
+    public function getImageAttribute()
+    {
+        return $this->images()->first()->path ?? null;
+    }
+
+    public function getAgeAttribute()
+    {
+        return Carbon::parse($this->birth_date)->age;
+    }
+
+    public function getPlanNameAttribute()
+    {
+        $sub = $this->subscriptions()->where('status', 'running')->latest()->first();
+        return $sub ? $sub->plan()->first()->name : null;
+    }
+
 
     public function getIsFullRegisteredAttribute()
     {

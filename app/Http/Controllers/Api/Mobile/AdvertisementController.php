@@ -35,13 +35,12 @@ class AdvertisementController extends Controller
     public function index(Request $request)
     {
 
-        $user=Auth::user();
-        if($request->has('status') && $request->status!=''){
-            $ads = $user->ads()->with(['images','category','city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
-        }else {
+        $user = Auth::user();
+        if ($request->has('status') && $request->status != '') {
+            $ads = $user->ads()->with(['images', 'category', 'city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+        } else {
 
-
-            $ads = $user->ads()->with(['images','category','city'])->orderBy('created_at', 'desc')->paginate(10);
+            $ads = $user->ads()->with(['images', 'category', 'city'])->orderBy('created_at', 'desc')->paginate(10);
         }
         return $this->showResponse($ads, 'done');
     }
@@ -51,12 +50,12 @@ class AdvertisementController extends Controller
      */
     public function store(AdvertisementCreateRequest $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         try {
             $ads = $this->service->create($request, $user);
             return $this->showResponse($ads, 'create ads successfully ...!');
-        }catch(Exception $e){
-            return $this->showError($e,' SomeThing goes wrong....! ');
+        } catch (Exception $e) {
+            return $this->showError($e, ' SomeThing goes wrong....! ');
 
         }
 
@@ -67,6 +66,7 @@ class AdvertisementController extends Controller
      */
     public function show(string $id)
     {
+
         $user=Auth::user();
         DB::beginTransaction();
     try{
@@ -81,6 +81,7 @@ class AdvertisementController extends Controller
             return $this->showError($e,'something goes wrong....!');
 
         }
+
 
     }
 
@@ -109,5 +110,18 @@ class AdvertisementController extends Controller
             return $this->showError($e,'something goes wrong....!');
 
         }
+    }
+
+
+    public function indexWithFilter(Request $request)
+    {
+        try {
+            $data = $this->service->indexWithFilter();
+            return $this->showResponse($data, 'filtered Ads retrieved successfully !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while filtering the advertisements', 500);
+        }
+
     }
 }

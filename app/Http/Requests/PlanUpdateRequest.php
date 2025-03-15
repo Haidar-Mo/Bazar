@@ -22,9 +22,10 @@ class PlanUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'nullable',
-            'price'=>'nullable',
-            'duration'=>'nullable'
+            'name' => 'sometimes|string',
+            'price' => 'sometimes|string',
+            'size' => 'required|string',
+            'duration' => 'sometimes|decimal:0,99999.99'
         ];
     }
 }
