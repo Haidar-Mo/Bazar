@@ -53,7 +53,8 @@ class Advertisement extends Model
     {
 
         Carbon::setLocale('ar');
-        return $this->created_at->locale('ar')->diffForHumans();
+        $diff = $this->created_at->locale('ar')->diffForHumans();
+        return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
 
 

@@ -34,6 +34,7 @@ class AdvertisementService
                 'is_special' => $data['is_special'],
                 'price' => $data['price'],
                 'expiry_date' => now()->addDays(30),
+                'currency_type'=>$request->currency_type,
             ]);
             if (isset($data['images'])) {
                 $images = $request->file('images');
