@@ -17,9 +17,12 @@ class Image extends Model
         'imageable_type',
         'path'
     ];
+    protected $appends = ['full_path'];
 
-
-
+    public function getFullPathAttribute()
+    {
+        return asset('storage/' . $this->path);
+    }
     public function imageable(): MorphTo
     {
         return $this->morphTo();

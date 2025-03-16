@@ -29,3 +29,10 @@ Route::get('migrate-refresh', function () {
     $title = 'Migration-Refresh Done !!';
     return view('artisan-response', compact('title'));
 });
+
+Route::get('storage-link', function () {
+    Artisan::call('storage:link');
+    $title = 'Storage linked successfully !!';
+    return view('artisan-response', compact('title'));
+
+});

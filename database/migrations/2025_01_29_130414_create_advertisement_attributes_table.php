@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('advertisement_attributes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('advertisement_id')->constrained('advertisements')->cascadeOnDelete();
+            $table->string('title');
             $table->string('name');
             $table->string('value');
             $table->timestamps();

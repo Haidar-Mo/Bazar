@@ -31,9 +31,9 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(PermissionSeeder::class);
 
-        !User::factory(10)->create();  // do not use it because the CV factory will create user
+        User::factory(10)->create();  // do not use it because the CV factory will create user
 
-        !Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
+        Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
         CvFile::factory(10);
         CvDocument::factory(20)->create();
         CvLink::factory(20)->create();
@@ -54,6 +54,8 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'birth_date' => '1990-01-01',
             'gender' => 'male',
+            'job' => 'IT job',
+            'company' => 'Androws Company',
             'description' => 'a junior Laravel developer',
             'address' => 'yabroud',
             'provider' => null,
