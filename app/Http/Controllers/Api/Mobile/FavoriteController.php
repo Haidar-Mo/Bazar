@@ -108,13 +108,26 @@ class FavoriteController extends Controller
 
 protected function formatAdvertisement($ad)
 {
-    $priceAttribute = collect($ad->attributes)->firstWhere('price');
+   // $priceAttribute = collect($ad->attributes)->firstWhere('price');
     return [
         'id' => $ad->id,
-        'images' => $ad->images,
-        'price' => $priceAttribute ? $priceAttribute['price'] : 0,
+        'user_id'=>$ad->user_id,
+        'city_id'=>$ad->city_id,
+        'category_id'=>$ad->category_id,
+        'type'=>$ad->type,
+        'currency_type'=>$ad->currency_type,
+        'negotiable'=>$ad->negotiable,
+        'status'=>$ad->status,
+        'expiry_date'=>$ad->expiry_date,
+        'price' => $ad->price?:0,
         'is_special'=>$ad->is_special,
-        'created_at'=>$ad->created_from,
+        'images' => $ad->images,
+        'views'=>$ad->views,
+        'created_from'=>$ad->created_from,
+        'is_favorite'=>$ad->is_favorite,
+        'parent_category'=>$ad->parent_category,
+        'city_name'=>$ad->city_name,
+        'category_name'=>$ad->category_name,
         'category' => $ad->category,
 
     ];
