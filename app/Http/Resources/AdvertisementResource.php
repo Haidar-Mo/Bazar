@@ -25,7 +25,7 @@ class AdvertisementResource extends JsonResource
             'expiry_date' => $this->expiry_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'attributes' => $this->attributes,
+           // 'attributes' => $this->attributes,
             'views' => $this->views,
             'created_from' => $this->created_from,
             'is_favorite' => $this->is_favorite,

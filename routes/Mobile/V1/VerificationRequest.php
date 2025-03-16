@@ -14,4 +14,5 @@ Route::prefix('verification-requests')
     ->group(function () { 
 
         Route::post('create',[VerificationRequestController::class,'store']);
+        
     });

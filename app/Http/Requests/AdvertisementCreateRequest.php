@@ -34,7 +34,6 @@ class AdvertisementCreateRequest extends FormRequest
             'expiry_date' => ['nullable', 'date'],
             'is_special' => ['nullable'],
             'images' => 'nullable|array|min:1',
-
             'images.*' => 'required|image',
             'attributes' => 'required|array',
 
@@ -164,7 +163,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'Tool-Accessories',
                 'Tool-Kit',//طقم ادوات
                 'Tools',
-                'Accessories-and-spare-parts',//اكسسوالرات و قطع غيار
+                'Accessories-and-spare-parts',//اكسسوارات و قطع غيار
                 'Electronic-Spare-Parts',
                 'Engine-Spare-Parts',
                 'Swimming-and-Diving-Equipment',

@@ -19,6 +19,7 @@ class AdvertisementAttributeFactory extends Factory
     {
         return [
             'advertisement_id' => Advertisement::inRandomOrder()->first()->id,
+            'title' => $this->faker->title(),
             'name' => $this->faker->name,
             'value' => $this->faker->sentence()
         ];

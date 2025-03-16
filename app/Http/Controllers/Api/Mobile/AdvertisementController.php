@@ -17,7 +17,8 @@ use App\Traits\{
 use App\Services\Mobile\AdvertisementService;
 use Exception;
 use Illuminate\Support\Facades\{
-    Auth,DB
+    Auth,
+    DB
 };
 
 class AdvertisementController extends Controller
@@ -37,10 +38,15 @@ class AdvertisementController extends Controller
 
         $user = Auth::user();
         if ($request->has('status') && $request->status != '') {
-            $ads = $user->ads()->with(['images', 'category', 'city'])->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+            $ads = $user->ads()->with(['images', 'category', 'city'])
+                ->where('status', $request->status)
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
         } else {
 
-            $ads = $user->ads()->with(['images', 'category', 'city'])->orderBy('created_at', 'desc')->paginate(10);
+            $ads = $user->ads()->with(['images', 'category', 'city'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
         }
         return $this->showResponse($ads, 'done');
     }
@@ -67,18 +73,22 @@ class AdvertisementController extends Controller
     public function show(string $id)
     {
 
-        $user=Auth::user();
+        $user = Auth::user();
         DB::beginTransaction();
-    try{
+        try {
 
-        $ad = Advertisement::with(['images', 'category', 'city', 'user'])->where('id', $id)->first();
-         $user->views()->firstOrCreate(['advertisement_id' => $id]);
-        DB::commit();
-            return $this->showResponse($ad->append('attributes'),'done successfully....!');
-        }
-    catch(Exception $e){
-        DB::rollBack();
-            return $this->showError($e,'something goes wrong....!');
+            $ad = Advertisement::with(['images', 'category', 'city', 'user'])
+                ->where('id', $id)
+                ->firstOrFail();
+            $user->views()->firstOrCreate(
+                ['advertisement_id' => $id],
+                ['advertisement_id' => $id, 'user_id' => $user->id]
+            );
+            DB::commit();
+            return $this->showResponse($ad->append('attributes'), 'done successfully....!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->showError($e, 'something goes wrong....!');
 
         }
 
@@ -99,15 +109,14 @@ class AdvertisementController extends Controller
     public function destroy(string $id)
     {
         DB::beginTransaction();
-        try{
-        $ad = Advertisement::find($id);
-        $ad->delete();
-        DB::commit();
-        return $this->showMessage('ad deleted successfully...!');
-        }
-        catch(Exception $e){
-        DB::rollBack();
-            return $this->showError($e,'something goes wrong....!');
+        try {
+            $ad = Advertisement::find($id);
+            $ad->delete();
+            DB::commit();
+            return $this->showMessage('ad deleted successfully...!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->showError($e, 'something goes wrong....!');
 
         }
     }

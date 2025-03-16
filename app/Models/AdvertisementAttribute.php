@@ -15,6 +15,7 @@ class AdvertisementAttribute extends Model
 
     protected $fillable = [
         'advertisement_id',
+        'title',
         'name',
         'value'
     ];
@@ -25,5 +26,5 @@ class AdvertisementAttribute extends Model
         return $this->belongsTo(Advertisement::class);
     }
 
-    
+
 }
