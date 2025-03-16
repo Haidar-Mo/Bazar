@@ -33,10 +33,7 @@ class Advertisement extends Model
      * @var array
      */
     protected $appends = [
-        'city_name',
-        'category_name',
         'images',
-        'attributes',
         'views',
         'created_from',
         'is_favorite',

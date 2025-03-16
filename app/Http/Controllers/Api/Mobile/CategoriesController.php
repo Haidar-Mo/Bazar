@@ -46,6 +46,18 @@ class CategoriesController extends Controller
     {
         try {
             $category = Category::with(['children'])->findOrFail($id);
+            return $this->showResponse($category, 'done successfully....!');
+        } catch(Exception $e) {
+            return $this->showError($e, 'something goes wrong....!');
+        }
+    }
+
+
+/*
+    public function show(string $id)
+    {
+        try {
+            $category = Category::with(['children'])->findOrFail($id);
             $ads = $category->ads()
                 ->with(['images','category', 'city'])
                 ->where('status','active')
@@ -55,7 +67,7 @@ class CategoriesController extends Controller
         } catch(Exception $e) {
             return $this->showError($e, 'something goes wrong....!');
         }
-    }
+    }*/
 
 
     /**
