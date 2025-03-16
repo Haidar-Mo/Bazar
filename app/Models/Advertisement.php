@@ -33,8 +33,6 @@ class Advertisement extends Model
      * @var array
      */
     protected $appends = [
-        'city_name',
-        'category_name',
         'images',
         //'attributes',
         'views',
@@ -53,7 +51,8 @@ class Advertisement extends Model
     {
 
         Carbon::setLocale('ar');
-        return $this->created_at->locale('ar')->diffForHumans();
+        $diff = $this->created_at->locale('ar')->diffForHumans();
+        return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
 
 

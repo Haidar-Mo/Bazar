@@ -21,6 +21,7 @@ class HomePageController extends Controller
     public function index(Request $request)
     {
         DB::beginTransaction();
+
         try {
             $categoryId = $request->query('categoryId');
 
@@ -39,11 +40,10 @@ class HomePageController extends Controller
                     ->paginate(10);
             }
             DB::commit();
-            return $this->showResponse(AdvertisementResource::collection($ads), 'done successfully...!');
+            return $this->showResponse($ads,'done successfully...!') ;
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e, 'something goes wrong...!');
-
         }
     }
 

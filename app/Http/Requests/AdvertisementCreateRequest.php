@@ -34,6 +34,7 @@ class AdvertisementCreateRequest extends FormRequest
             'expiry_date' => ['nullable', 'date'],
             'is_special' => ['nullable'],
             'images' => 'nullable|array|min:1',
+            'currency_type'=>['required'],
             'images.*' => 'required|image',
             'attributes' => 'required|array',
 

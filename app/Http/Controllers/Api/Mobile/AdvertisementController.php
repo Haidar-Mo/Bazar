@@ -14,6 +14,7 @@ use App\Traits\{
     HasFiles,
     ResponseTrait
 };
+use App\Http\Resources\AdvertisementResource;
 use App\Services\Mobile\AdvertisementService;
 use Exception;
 use Illuminate\Support\Facades\{
@@ -38,13 +39,14 @@ class AdvertisementController extends Controller
 
         $user = Auth::user();
         if ($request->has('status') && $request->status != '') {
-            $ads = $user->ads()->with(['images', 'category', 'city'])
+
+            $ads = $user->ads()
                 ->where('status', $request->status)
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
         } else {
 
-            $ads = $user->ads()->with(['images', 'category', 'city'])
+            $ads = $user->ads()
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
         }
@@ -57,13 +59,12 @@ class AdvertisementController extends Controller
     public function store(AdvertisementCreateRequest $request)
     {
         $user = $request->user();
-        try {
-            $ads = $this->service->create($request, $user);
-            return $this->showResponse($ads, 'create ads successfully ...!');
-        } catch (Exception $e) {
-            return $this->showError($e, ' SomeThing goes wrong....! ');
+       // DB::beginTransaction();
 
-        }
+            $ads = $this->service->create($request, $user);
+           // DB::commit();
+            return $this->showResponse($ads, 'create ads successfully ...!');
+
 
     }
 
@@ -77,7 +78,7 @@ class AdvertisementController extends Controller
         DB::beginTransaction();
         try {
 
-            $ad = Advertisement::with(['images', 'category', 'city', 'user'])
+            $ad = Advertisement::with('user')
                 ->where('id', $id)
                 ->firstOrFail();
             $user->views()->firstOrCreate(
