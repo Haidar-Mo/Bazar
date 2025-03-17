@@ -16,7 +16,9 @@ class Plan extends Model
         'name',
         'duration',
         'size',
-        'price'
+        'price',
+        'discount_price',
+        'details'
     ];
 
 

@@ -48,7 +48,8 @@ class PlanController extends Controller
      */
     public function show(string $id)
     {
-        return $this->showResponse(Plan::FindOrFail($id)->first(), 'plan retrieved successfully !!');
+        
+        return $this->showResponse(Plan::where('id',$id)->get(), 'plan retrieved successfully !!');
     }
 
 

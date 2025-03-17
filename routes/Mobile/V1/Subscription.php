@@ -8,7 +8,7 @@ Route::prefix('Subscriptions')
     ->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
-        'role:client'
+      //  'role:client'
     ])
     ->group(function () {
 

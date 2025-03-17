@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->string('duration');
             $table->string('size');
             $table->decimal('price');
+            $table->decimal('discount_price');
+            $table->string('details');
             $table->timestamps();
         });
     }
