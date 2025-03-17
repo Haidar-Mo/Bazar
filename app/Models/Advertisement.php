@@ -45,6 +45,7 @@ class Advertisement extends Model
 
     protected $hidden = [
         'deleted_at',
+        'category'
     ];
     public function getCreatedFromAttribute()
     {

@@ -43,7 +43,7 @@ class AdvertisementController extends Controller
 
             $ads = $user->ads()->orderBy('created_at', 'desc')->paginate(10);
         }
-        return $this->showResponse($ads->makeHidden('category'), 'done');
+        return $this->showResponse($ads, 'done');
     }
 
     /**
