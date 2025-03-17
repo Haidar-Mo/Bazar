@@ -62,6 +62,14 @@ class AdvertisementFilter extends BaseFilter
             $query->where('type', $this->request->type);
         }
 
+        if ($this->request->filled('currency_type')) {
+            $query->where('currency_type', $this->request->currency_type);
+        }
+
+        if ($this->request->filled('negotiable')) {
+            $query->where('negotiable', $this->request->negotiable);
+        }
+
         if ($this->request->filled('min_area') && $this->request->filled('max_area')) {
             $attributes = $this->request->get('attributes');
 

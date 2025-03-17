@@ -13,5 +13,7 @@ Route::prefix('homePage')
         'role:client'
     ])
     ->group(function () {
-    Route::apiResource('home',HomePageController::class);
+        Route::apiResource('home', HomePageController::class);
+
+        Route::get('index/filter', [HomePageController::class, 'indexWithFilter']);
     });
