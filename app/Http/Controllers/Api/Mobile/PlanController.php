@@ -44,8 +44,9 @@ class PlanController extends Controller
       $plan=Plan::create([
         'price'=>$request->price,
         'duration'=>$request->duration,
-        'name'=>$request->name
-
+        'name'=>$request->name,
+        'discount_price'=>$request->discount_price,
+        'details'=>$request->details
       ]);
          DB::commit();
          return $this->showResponse($plan,'done successfully.....!');

@@ -8,7 +8,7 @@ Route::prefix('chats')
     ->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
-        'role:client'
+       // 'role:client'
     ])
     ->group(function () {
             Route::apiResource('chats',ChatController::class);
