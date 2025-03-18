@@ -18,6 +18,7 @@ class Advertisement extends Model
         'user_id',
         'city_id',
         'category_id',
+        'title',
         'type',
         'price',
         'currency_type',
@@ -34,11 +35,11 @@ class Advertisement extends Model
      */
     protected $appends = [
         'images',
-        //'attributes',
         'views',
         'created_from',
         'is_favorite',
         'parent_category',
+        'user_name',
         'city_name',
         'category_name',
 
@@ -48,14 +49,6 @@ class Advertisement extends Model
         'deleted_at',
         'category'
     ];
-    public function getCreatedFromAttribute()
-    {
-
-        Carbon::setLocale('ar');
-        $diff = $this->created_at->locale('ar')->diffForHumans();
-        return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
-    }
-
 
     public function user(): BelongsTo
     {
@@ -89,6 +82,11 @@ class Advertisement extends Model
 
     //! Accessories
 
+    public function getUserNameAttribute()
+    {
+        return $this->user()->first()->first_name . $this->user()->first()->last_name;
+    }
+
     public function getCityNameAttribute()
     {
         return $this->city()->first()->name;
@@ -109,11 +107,19 @@ class Advertisement extends Model
         return $this->images()->get();
     }
     public function getAttributesAttribute()
-{
-    return $this->attributes()->get()->groupBy('title')->map(function ($attributes) {
-        return $attributes->pluck('value', 'name'); 
-    });
-}
+    {
+        return $this->attributes()->get()->groupBy('title')->map(function ($attributes) {
+            return $attributes->pluck('value', 'name');
+        });
+    }
+
+    public function getCreatedFromAttribute()
+    {
+
+        Carbon::setLocale('ar');
+        $diff = $this->created_at->locale('ar')->diffForHumans();
+        return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
+    }
 
     public function getIsFavoriteAttribute()
     {
@@ -132,10 +138,7 @@ class Advertisement extends Model
 
     public function getParentCategoryAttribute()
     {
-        return $this->category->parent->name;
+        return $this->category->parent->name ?? null;
     }
-
-
-
 
 }

@@ -3,48 +3,13 @@
 namespace App\Filters\Mobile;
 
 use App\Filters\BaseFilter;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 
 class AdvertisementFilter extends BaseFilter
 {
-    //return $query->where();
 
-    /*
-        //! Category Filter
-        public function category_id(Builder $query)
-        {
-            return $query->where('category_id', $this->request->category_id);
-        }
-
-
-        //! Price Filter
-        public function price(Builder $query)
-        {
-            return $query->whereBetween('price', [$this->request->min_price, $this->request->max_price]);
-        }
-
-
-        //! Name Filter
-        public function name(Builder $query)
-        {
-            return $query->where('name', 'like', '%' . $this->request->name . '%');
-        }
-
-        public function attributes(Builder $query)
-        {
-            $attributes = $this->request->attributes;
-            return $query->whereHas('attributes', function ($query) use ($attributes) {
-                foreach ($attributes as $name => $value) {
-                    $query->where('name', $name)->where('value', $value);
-                }
-            });
-        }
-    */
     public function apply(Builder $query)
     {
-
 
         if ($this->request->filled('city_id')) {
             $query->where('city_id', $this->request->city_id);
@@ -62,11 +27,54 @@ class AdvertisementFilter extends BaseFilter
             $query->where('type', $this->request->type);
         }
 
+        if ($this->request->filled('currency_type')) {
+            $query->where('currency_type', $this->request->currency_type);
+        }
+
+        if ($this->request->filled('negotiable')) {
+            $query->where('negotiable', $this->request->negotiable);
+        }
+
         if ($this->request->filled('min_area') && $this->request->filled('max_area')) {
             $attributes = $this->request->get('attributes');
 
             $query->whereHas('attributes', function ($query) use ($attributes) {
                 $query->where('name', 'area')->whereBetween('value', [$this->request->get('min_area'), $this->request->get('max_area')]);
+            });
+        }
+
+        if ($this->request->filled('bedrooms')) {
+            $attributes = $this->request->get('attributes');
+
+            if ($this->request->bedrooms === '+') {
+                $query->whereHas('attributes', function ($query) use ($attributes) {
+                    $query->where('name', 'bedrooms')->where('value', '>', (int) 5);
+                });
+            } else {
+                $query->whereHas('attributes', function ($query) use ($attributes) {
+                    $query->where('name', 'bedrooms')->where('value', (int) $this->request->bedrooms);
+                });
+            }
+        }
+
+        if ($this->request->filled('bathrooms')) {
+            $attributes = $this->request->get('attributes');
+
+            if ($this->request->bathrooms === '+') {
+                $query->whereHas('attributes', function ($query) use ($attributes) {
+                    $query->where('name', 'bathrooms')->where('value', '>', (int) 5);
+                });
+            } else {
+                $query->whereHas('attributes', function ($query) use ($attributes) {
+                    $query->where('name', 'bathrooms')->where('value', (int) $this->request->bathrooms);
+                });
+            }
+        }
+
+        if ($this->request->filled('furnishing')) {
+            $attributes = $this->request->get('attributes');
+            $query->whereHas('attributes', function ($query) use ($attributes) {
+                $query->where('name', 'furnishing')->where('value', $this->request->furnishing);
             });
         }
 

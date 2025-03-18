@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
+            $table->string('title');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->enum('type', ['offer', 'order'])->default('offer');
             $table->string('currency_type');

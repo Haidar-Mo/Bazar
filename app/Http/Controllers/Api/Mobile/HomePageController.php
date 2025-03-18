@@ -3,27 +3,30 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Services\Mobile\AdvertisementService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\{
     Advertisement,
-    User,
     Category
 };
 use App\Traits\ResponseTrait;
 use Exception;
-use Illuminate\Support\Facades\{Auth, DB};
-use App\Http\Resources\AdvertisementResource;
 
 class HomePageController extends Controller
 {
     use ResponseTrait;
 
+
+    public function __construct(protected AdvertisementService $service)
+    {
+    }
+
     public function index(Request $request)
     {
         DB::beginTransaction();
-
         try {
-            $categoryId = $request->query('categoryId');
+            $categoryId = $request->query('category_id');
 
             if ($categoryId) {
                 $category = Category::with('children')->findOrFail($categoryId);
@@ -40,46 +43,17 @@ class HomePageController extends Controller
                     ->paginate(10);
             }
             DB::commit();
-            return $this->showResponse($ads,'done successfully...!') ;
+            return $this->showResponse($ads, 'done successfully...!');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e, 'something goes wrong...!');
+
         }
     }
 
-
-    public function create()
+    public function indexWithFilter(Request $request)
     {
-        //
-    }
-
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-
-    public function show(string $id)
-    {
-        //
-    }
-
-
-    public function edit(string $id)
-    {
-        //
-    }
-
-
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-
-    public function destroy(string $id)
-    {
-        //
+        $ads = $this->service->indexWithFilter();
+        return $this->showResponse($ads);
     }
 }

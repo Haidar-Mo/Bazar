@@ -24,6 +24,7 @@ class AdvertisementFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id,
             'city_id' => City::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,
+            'title' => $this->faker->title(),
             'price' => $this->faker->randomNumber(4),
             'type' => $this->faker->randomElement(['offer', 'order']),
             'currency_type' => $this->faker->randomElement(['syrian_pound', 'turkish_pound', 'dollar']),
