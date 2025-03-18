@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1/')->group(function () {
 
-    include __DIR__ . "/Dashboard/v1/User.php";
-    include __DIR__ . "/Dashboard/v1/Notification.php";
+    include __DIR__ . "/Dashboard/V1/User.php";
+    include __DIR__ . "/Dashboard/V1/Notification.php";
     include __DIR__ . "/Dashboard/V1/Plan.php";
 
     include __DIR__ . "/Mobile/V1/Auth.php";

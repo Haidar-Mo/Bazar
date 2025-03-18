@@ -164,7 +164,7 @@ class AdvertisementCreateRequest extends FormRequest
                 'Tool-Accessories',
                 'Tool-Kit',//طقم ادوات
                 'Tools',
-                'Accessories-and-spare-parts',//اكسسوالرات و قطع غيار
+                'Accessories-and-spare-parts',//اكسسوارات و قطع غيار
                 'Electronic-Spare-Parts',
                 'Engine-Spare-Parts',
                 'Swimming-and-Diving-Equipment',

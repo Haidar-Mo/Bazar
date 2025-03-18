@@ -34,6 +34,7 @@ class Advertisement extends Model
      */
     protected $appends = [
         'images',
+        //'attributes',
         'views',
         'created_from',
         'is_favorite',
@@ -108,11 +109,11 @@ class Advertisement extends Model
         return $this->images()->get();
     }
     public function getAttributesAttribute()
-    {
-        return $this->attributes()->get()->map(function ($attribute) {
-            return [$attribute->name => $attribute->value];
-        });
-    }
+{
+    return $this->attributes()->get()->groupBy('title')->map(function ($attributes) {
+        return $attributes->pluck('value', 'name'); 
+    });
+}
 
     public function getIsFavoriteAttribute()
     {

@@ -20,7 +20,7 @@ class ImageFactory extends Factory
         return [
             'imageable_id' => Advertisement::inRandomOrder()->first()->id,
             'imageable_type' => Advertisement::class,
-            'path' => 'images/adImage.jpg',
+            'path' => 'ads/adImage.jpg',
             'created_at' => now(),
             'updated_at' => now(),
         ];
