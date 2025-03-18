@@ -31,10 +31,13 @@ class AdvertisementService
             $ad = $user->ads()->create([
                 'city_id' => $data['city_id'],
                 'category_id' => $data['category_id'],
-                'is_special' => $data['is_special'],
+                'title' => $data['title'],
+                'type' => $data['type'],
+                'currency_type' => $data['currency_type'],
+                'negotiable' => $data['negotiable'],
+                //'is_special' => $data['is_special'],
                 'price' => $data['price'],
                 'expiry_date' => now()->addDays(30),
-                'currency_type'=>$request->currency_type,
             ]);
             if (isset($data['images'])) {
                 $images = $request->file('images');
@@ -44,12 +47,15 @@ class AdvertisementService
                 }
             }
             if (isset($data['attributes']) && is_array($data['attributes'])) {
-                foreach ($data['attributes'] as $key => $value) {
-                    AdvertisementAttribute::create([
-                        'advertisement_id' => $ad->id,
-                        'name' => $key,
-                        'value' => $value,
-                    ]);
+                foreach ($data['attributes'] as $attributeKey => $attribute) {
+                    foreach ($attribute as $key => $value) {
+                        AdvertisementAttribute::create([
+                            'advertisement_id' => $ad->id,
+                            'title' => $attributeKey,
+                            'name' => $key,
+                            'value' => $value,
+                        ]);
+                    }
                 }
             }
             return $ad;
