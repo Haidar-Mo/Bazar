@@ -31,12 +31,16 @@ class AdvertisementService
                 );
             }
         }
+       
         return $ad;
     }
 
 
     public function delete(Advertisement $advertisement)
     {
-        
+
+            $advertisement->delete();
+            return true;
     }
+
 }

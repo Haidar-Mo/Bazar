@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Filters\Dashboard\AdvertisementFilter;
 use App\Http\Controllers\Controller;
@@ -21,9 +21,10 @@ class AdvertisementController extends Controller
 
     public function index(Request $request)
     {
+
         try {
             $data = Advertisement::query();
-            return $this->advertisementFilter->apply($data);
+            return $this->advertisementFilter->apply($data)->get();
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while displaying advertisement !!');
@@ -34,8 +35,8 @@ class AdvertisementController extends Controller
     public function show(string $id)
     {
         try {
-            $data = Advertisement::findOrFail($id);
-            $data->with(['user', 'attributes']);
+            $data = Advertisement::with(['user', 'attributes'])->findOrFail($id)->first();
+          return  $data->append('attributes');
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while show the advertisement !!');
@@ -54,10 +55,10 @@ class AdvertisementController extends Controller
         }
     }
 
-    public function delete(string $id)
+    public function destroy(string $id)
     {
         try {
-            $ad = Advertisement::findOrFail($id);
+            $ad = Advertisement::findOrFail($id)->first();
             $this->service->delete($ad);
             return $this->showMessage('Advertisement deleted successfully !!', 200);
         } catch (Exception $e) {
