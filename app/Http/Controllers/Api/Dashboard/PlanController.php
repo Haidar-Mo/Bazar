@@ -62,7 +62,7 @@ class PlanController extends Controller
     {
         DB::beginTransaction();
         try {
-            $plan = Plan::find($id)->first();
+            $plan = Plan::where('id',$id)->first();
             $plan->update($request->all());
             DB::commit();
             return $this->showResponse($plan, 'plan updated successfully !!');
