@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Mobile\Auth\AuthenticationController;
 use App\Http\Controllers\Api\Mobile\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\SocialiteController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 
 Route::prefix('auth/')->group(function () {
@@ -34,6 +35,18 @@ Route::prefix('auth/')->group(function () {
         'auth:sanctum',
         'ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value
     ]);
+
+    Route::middleware([
+        'auth:sanctum',
+        'ability:' . TokenAbility::ACCESS_API->value,
+    ])->
+        get('/check-token', function (Request $request) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Token is valid',
+                'user' => $request->user(),
+            ]);
+        });
     Route::post('logout', [AuthenticationController::class, 'delete'])->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value

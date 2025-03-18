@@ -5,16 +5,11 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\{
-    UpdateAdvertmentRequest,
+    UpdateAdvertisementRequest,
     AdvertisementCreateRequest
-
 };
 use App\Models\Advertisement;
-use App\Traits\{
-    HasFiles,
-    ResponseTrait
-};
-use App\Http\Resources\AdvertisementResource;
+use App\Traits\ResponseTrait;
 use App\Services\Mobile\AdvertisementService;
 use Exception;
 use Illuminate\Support\Facades\{
@@ -59,11 +54,12 @@ class AdvertisementController extends Controller
     public function store(AdvertisementCreateRequest $request)
     {
         $user = $request->user();
-       // DB::beginTransaction();
+        // DB::beginTransaction();
 
-            $ads = $this->service->create($request, $user);
-           // DB::commit();
-            return $this->showResponse($ads, 'create ads successfully ...!');
+        $ads = $this->service->create($request, $user);
+        $ads->append(['images', 'attributes']);
+        // DB::commit();
+        return $this->showResponse($ads, 'create ads successfully ...!');
 
 
     }
@@ -99,7 +95,7 @@ class AdvertisementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAdvertmentRequest $request, string $id)
+    public function update(UpdateAdvertisementRequest $request, string $id)
     {
 
     }

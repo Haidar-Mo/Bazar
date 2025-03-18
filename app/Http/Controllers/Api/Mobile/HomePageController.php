@@ -5,15 +5,13 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use App\Services\Mobile\AdvertisementService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\{
     Advertisement,
-    User,
     Category
 };
 use App\Traits\ResponseTrait;
 use Exception;
-use Illuminate\Support\Facades\{Auth, DB};
-use App\Http\Resources\AdvertisementResource;
 
 class HomePageController extends Controller
 {
@@ -45,7 +43,7 @@ class HomePageController extends Controller
                     ->paginate(10);
             }
             DB::commit();
-            return $this->showResponse(AdvertisementResource::collection($ads), 'done successfully...!');
+            return $this->showResponse($ads, 'done successfully...!');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e, 'something goes wrong...!');
