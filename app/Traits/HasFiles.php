@@ -22,10 +22,16 @@ trait HasFiles
         $file->storePubliclyAs($folder_name, $file_name, 'public');
         return "$folder_name/$file_name";
     }
-    public static function deleteFile(string $name)
+
+    /**
+     * Delete file from the public storage
+     * @param string $path the path after app/public
+     * @return bool
+     */
+    public static function deleteFile(string $path)
     {
-        $filePath = storage_path('app/public/' . $name);
-        if (file_exists($filePath) && $name) {
+        $filePath = storage_path('app/public/' . $path);
+        if (file_exists($filePath) && $path) {
             unlink($filePath);
             return true;
         }

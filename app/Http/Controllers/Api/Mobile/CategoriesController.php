@@ -15,7 +15,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $Categories = Category::query()->parent()->get();
+        $Categories = Category::query()->parent()->with(['children'])->get();
         return $this->showResponse($Categories,'done successfully.....!');
 
 

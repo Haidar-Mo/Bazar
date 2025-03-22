@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->boolean('negotiable')->default(0);
             $table->decimal('price', 16, 2);
             $table->boolean('is_special')->default(false);
-            $table->enum('status', ['active', 'inactive', 'pending'])->default('pending');
+            $table->enum('status', ['active', 'inactive', 'rejected', 'pending'])->default('pending');
             $table->date('expiry_date');
             $table->softDeletes();
             $table->timestamps();

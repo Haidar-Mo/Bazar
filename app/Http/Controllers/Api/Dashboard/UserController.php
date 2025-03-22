@@ -26,7 +26,8 @@ class UserController extends Controller
     public function show(string $id)
     {
         try {
-            return User::with(['ads','verificationRequest'])->findOrFail($id)->append('hasVerificationRequest');
+            return User::with(['ads', 'verificationRequest'])->findOrFail($id)
+            ->append(['hasVerificationRequest', 'is_reported']);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while show user details');

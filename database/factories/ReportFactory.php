@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Advertisement;
+use App\Models\Rate;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +19,17 @@ class ReportFactory extends Factory
      */
     public function definition(): array
     {
+        $randomElement = $this->faker->randomElement([
+            User::inRandomOrder()->first(),
+            Advertisement::inRandomOrder()->first(),
+            Rate::where('comment', '!=', null)->inRandomOrder()->first()
+        ]);
         return [
-            //
+            'user_id' => User::inRandomOrder()->first()->id,
+            'reportable_type' => get_class($randomElement),
+            'reportable_id' => $randomElement->id,
+            'status'=>'pending',
+            'paragraph'=>$this->faker->sentence()
         ];
     }
 }

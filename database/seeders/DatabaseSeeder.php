@@ -11,6 +11,7 @@ use App\Models\CvQualification;
 use App\Models\CvSkill;
 use App\Models\Image;
 use App\Models\Rate;
+use App\Models\Report;
 use App\Models\User;
 use App\Models\City;
 use App\Models\Category;
@@ -27,13 +28,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Report::factory(20)->create();
 
+/*
         $this->call(RoleSeeder::class);
         $this->call(PermissionSeeder::class);
-
-        User::factory(10)->create();  // do not use it because the CV factory will create user
-
-        Cv::factory(10)->create(); // do not use it , because the Cv-file factory will create one
+        $this->call(CategorySeeder::class);
+        User::factory(10)->create();
+        Cv::factory(10)->create();
         CvFile::factory(10);
         CvDocument::factory(20)->create();
         CvLink::factory(20)->create();
@@ -41,12 +43,12 @@ class DatabaseSeeder extends Seeder
         CvQualification::factory(20)->create();
         CvSkill::factory(20)->create();
         City::factory(7)->create();
-        Category::factory(7)->create();
+        //Category::factory(7)->create(); //! don't use it , seeder exists
         Advertisement::factory(20)->create();
         AdvertisementAttribute::factory(150)->create();
         Image::factory(80)->create();
         View::factory(100)->create();
-        //Rate::factory(100)->create();
+        Rate::factory(100)->create();
         User::create([
             'first_name' => 'mario',
             'last_name' => 'andrawos',
@@ -62,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'provider_id' => null,
             'device_token' => 'k',
             'email_verified_at' => now(),
-        ]);
+        ]);*/
 
     }
 }

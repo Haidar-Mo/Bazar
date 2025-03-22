@@ -14,33 +14,31 @@ class AdvertisementService
 {
     use HasFiles;
 
-    public function update(FormRequest $request, Advertisement $ad)
+    public function update($request, Advertisement $ad)
     {
         $ad->update($request->except('attributes'));
 
-        if ($request->has('attributes') && is_array($request->attributes)) {
-            foreach ($request->attributes as $attribute) {
-                AdvertisementAttribute::updateOrCreate(
-                    [
-                        'advertisement_id' => $ad->id,
-                        'name' => $attribute['name'],
-                    ],
-                    [
-                        'value' => $attribute['value'],
-                    ]
-                );
+        if ($request->has('attributes')) {
+            foreach ($request->only('attributes') as $attributes) {
+                foreach ($attributes as $key => $value) {
+                    $attr = AdvertisementAttribute::find($key);
+                    $attr->update(['value' => $value]);
+                }
             }
         }
-       
+        $ad->load('attributes');
         return $ad;
     }
 
 
-    public function delete(Advertisement $advertisement)
+    public function destroy(Advertisement $advertisement)
     {
-
-            $advertisement->delete();
-            return true;
+        $images = $advertisement->images;
+        foreach ($images as $image) {
+            $this->deleteFile($image->path);
+        }
+        $advertisement->delete();
+        return true;
     }
 
 }

@@ -48,7 +48,7 @@ class PlanController extends Controller
      */
     public function show(string $id)
     {
-        return $this->showResponse(Plan::where('id',$id)->get(), 'plan retrieved successfully !!');
+        return $this->showResponse(Plan::findOrFail($id), 'plan retrieved successfully !!');
     }
 
 
@@ -62,7 +62,7 @@ class PlanController extends Controller
     {
         DB::beginTransaction();
         try {
-            $plan = Plan::where('id',$id)->first();
+            $plan = Plan::findOrFail($id);
             $plan->update($request->all());
             DB::commit();
             return $this->showResponse($plan, 'plan updated successfully !!');
@@ -85,7 +85,7 @@ class PlanController extends Controller
             $plan = Plan::find($id)->first();
             $plan->delete();
             DB::commit();
-            return $this->showMessage('plan deleted successfully !!',204);
+            return $this->showMessage('plan deleted successfully !!', 204);
         } catch (Exception $e) {
             DB::rollback();
             return $this->showError($e, 'An error occur while deleting new subscription plan !!');

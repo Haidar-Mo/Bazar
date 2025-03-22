@@ -17,10 +17,9 @@ class Report extends Model
         'user_id',
         'reportable_id',
         'reportable_type',
+        'status',
         'paragraph'
     ];
-
-
 
     public function user(): BelongsTo
     {
@@ -30,4 +29,8 @@ class Report extends Model
     {
         return $this->morphTo();
     }
+
+    //! Accessories
+
+
 }
