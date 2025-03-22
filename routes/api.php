@@ -6,13 +6,15 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1/')->group(function () {
-//! Dashboard section
-    include __DIR__ . "/Dashboard/V1/User.php";
+    //! Dashboard section
+    include __DIR__ . "/Dashboard/V1/Ads.php";
+    include __DIR__ . "/Dashboard/V1/Category.php";
     include __DIR__ . "/Dashboard/V1/Notification.php";
     include __DIR__ . "/Dashboard/V1/Plan.php";
-    include __DIR__ . "/Dashboard/V1/Ads.php";
+    include __DIR__ . "/Dashboard/V1/Report.php";
+    include __DIR__ . "/Dashboard/V1/User.php";
 
-//! Mobile section
+    //! Mobile section
     include __DIR__ . "/Mobile/V1/Auth.php";
     include __DIR__ . "/Mobile/V1/Profile.php";
     include __DIR__ . "/Mobile/V1/Ads.php";

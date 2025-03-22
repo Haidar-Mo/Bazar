@@ -18,6 +18,7 @@ Route::prefix('Advertisements')
         });
 
         Route::get('filter', [AdvertisementController::class, 'indexWithFilter']);
+        Route::get('similar/{id}',[AdvertisementController::class, 'getSimilarAds']);
 
 
     });

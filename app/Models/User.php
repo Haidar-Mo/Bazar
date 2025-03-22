@@ -115,7 +115,7 @@ class User extends Authenticatable
 
     public function messages(): HasMany
     {
-        return $this->hasMany(Message::class,'sender_id');
+        return $this->hasMany(Message::class, 'sender_id');
     }
 
     public function verificationRequest(): HasMany
@@ -203,5 +203,10 @@ class User extends Authenticatable
     public function getRateAttribute()
     {
         return $this->rated()->count() > 0 ? $this->rated()->sum('rate') / $this->rated()->count() : 0;
+    }
+
+    public function getIsReportedAttribute()
+    {
+        return $this->report()->where('status', 'pending')->first() ? true : false;
     }
 }
