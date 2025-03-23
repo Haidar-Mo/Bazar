@@ -31,7 +31,7 @@ class AdvertisementService
                 );
             }
         }
-       
+
         return $ad;
     }
 
@@ -44,3 +44,20 @@ class AdvertisementService
     }
 
 }
+
+/*public function update($request, Advertisement $ad)
+{
+    $ad->update($request->except('attributes'));
+
+    if ($request->has('attributes')) {
+        foreach ($request->only('attributes') as $attributes) {
+            foreach ($attributes as $key => $value) {
+                $attr = AdvertisementAttribute::find($key);
+                if($attr){
+                $attr->update(['value' => $value]);}
+            }
+        }
+    }
+    $ad->load('attributes');
+    return $ad;
+}*/

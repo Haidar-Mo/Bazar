@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Filters\Dashboard\AdvertisementFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateAdvertisementRequest;
+use App\Http\Requests\AdvertisementUpdateRequest;
 use App\Models\Advertisement;
 use App\Services\Dashboard\AdvertisementService;
 use App\Traits\ResponseTrait;
@@ -42,11 +42,10 @@ class AdvertisementController extends Controller
             return $this->showError($e, 'An error occur while show the advertisement !!');
         }
     }
-
-    public function update(UpdateAdvertisementRequest $request, string $id)
+    public function update(AdvertisementUpdateRequest $request, string $id)
     {
         try {
-            $ad = Advertisement::findOrFail($id);
+            $ad = Advertisement::with(['attributes'])->findOrFail($id);
             $data = $this->service->update($request, $ad);
             return $this->showResponse($data, 'Advertisement Updated successfully !!', 200);
         } catch (Exception $e) {
