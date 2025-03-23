@@ -43,6 +43,7 @@ class AdvertisementController extends Controller
         }
     }
 
+
     public function update(AdvertisementUpdateRequest $request, string $id)
     {
         try {
