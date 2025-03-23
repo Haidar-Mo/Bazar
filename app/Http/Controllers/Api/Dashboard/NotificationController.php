@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\CustomNotification;
 use App\Traits\FirebaseNotificationTrait;
 use App\Traits\ResponseTrait;
 use Exception;
@@ -75,13 +76,31 @@ class NotificationController extends Controller
      */
     public function unicastNotification(Request $request, string $id)
     {
-        $token = User::findOrFail($id)->device_token ?? null;
+        $request->validate([
+            'title' => 'required|string',
+            'body' => 'required|string',
+        ]);
+        $user = User::findOrFail($id);
         try {
-            $message = $this->unicast($request, $token);
-            return $this->showResponse($message, 'Notification sent successfully !!', 200);
+            $notification = $user->notify(new CustomNotification($request->input('title'), $request->input('body')));
+            $message = $this->unicast($request, $user->device_token);
+            return $this->showResponse($notification, 'Notification sent successfully !!', 200);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while sending notification');
+        }
+    }
+
+
+    public function countNotifications(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $count = $user->unReadNotifications()->count();
+            return $this->showResponse($count, 'Number of Unread notification');
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'failed to show notification');
         }
     }
 }

@@ -14,10 +14,6 @@ Route::prefix('reports')
     ])
     ->group(function () {
 
-
             Route::apiResource('reports',ReportController::class);
-
-
-
 
     });

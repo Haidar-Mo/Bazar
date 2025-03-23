@@ -28,8 +28,8 @@ class ReportFactory extends Factory
             'user_id' => User::inRandomOrder()->first()->id,
             'reportable_type' => get_class($randomElement),
             'reportable_id' => $randomElement->id,
-            'status'=>'pending',
-            'paragraph'=>$this->faker->sentence()
+            'paragraph' => $this->faker->sentence(),
+            'is_read' => $this->faker->boolean(),
         ];
     }
 }
