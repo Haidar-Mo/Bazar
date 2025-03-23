@@ -16,10 +16,9 @@ class RuleController extends Controller
 {
     use ResponseTrait;
 
-    public function show(string $id)
+    public function index()
     {
-        $rule=Rule::findOrFail($id);
-        return $this->showResponse($rule,'done');
+        return $this->showResponse(Rule::get(),'done');
     }
 
 }
