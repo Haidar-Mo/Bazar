@@ -53,7 +53,12 @@ class HomePageController extends Controller
 
     public function indexWithFilter(Request $request)
     {
-        $ads = $this->service->indexWithFilter();
-        return $this->showResponse($ads);
+        try {
+            $data = $this->service->indexWithFilter();
+            return $this->showResponse($data, 'filtered Ads retrieved successfully !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while filtering the advertisements', 500);
+        }
     }
 }

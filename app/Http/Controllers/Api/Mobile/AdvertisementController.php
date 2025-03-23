@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\{
-    UpdateAdvertmentRequest,
+    AdvertisementUpdateRequest,
     AdvertisementCreateRequest
 
 };
@@ -18,7 +18,8 @@ use App\Http\Resources\AdvertisementResource;
 use App\Services\Mobile\AdvertisementService;
 use Exception;
 use Illuminate\Support\Facades\{
-    Auth,DB
+    Auth,
+    DB
 };
 
 class AdvertisementController extends Controller
@@ -51,14 +52,14 @@ class AdvertisementController extends Controller
      */
     public function store(AdvertisementCreateRequest $request)
     {
-        $user = $request->user();
-       // DB::beginTransaction();
-
+        try {
+            $user = $request->user();
             $ads = $this->service->create($request, $user);
-           // DB::commit();
             return $this->showResponse($ads, 'create ads successfully ...!');
-
-
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while creating your advertisement !!');
+        }
     }
 
     /**
@@ -67,18 +68,16 @@ class AdvertisementController extends Controller
     public function show(string $id)
     {
 
-        $user=Auth::user();
+        $user = Auth::user();
         DB::beginTransaction();
-    try{
-
-        $ad = Advertisement::with(['user'])->where('id', $id)->first();
-         $user->views()->firstOrCreate(['advertisement_id' => $id]);
-        DB::commit();
-            return $this->showResponse($ad->append('attributes'),'done successfully....!');
-        }
-    catch(Exception $e){
-        DB::rollBack();
-            return $this->showError($e,'something goes wrong....!');
+        try {
+            $ad = Advertisement::with(['user'])->where('id', $id)->first();
+            $user->views()->firstOrCreate(['advertisement_id' => $id]);
+            DB::commit();
+            return $this->showResponse($ad->append('attributes'), 'done successfully....!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->showError($e, 'something goes wrong....!');
 
         }
 
@@ -88,7 +87,7 @@ class AdvertisementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAdvertmentRequest $request, string $id)
+    public function update(AdvertisementUpdateRequest $request, string $id)
     {
 
     }
@@ -99,15 +98,14 @@ class AdvertisementController extends Controller
     public function destroy(string $id)
     {
         DB::beginTransaction();
-        try{
-        $ad = Advertisement::find($id);
-        $ad->delete();
-        DB::commit();
-        return $this->showMessage('ad deleted successfully...!');
-        }
-        catch(Exception $e){
-        DB::rollBack();
-            return $this->showError($e,'something goes wrong....!');
+        try {
+            $ad = Advertisement::find($id);
+            $ad->delete();
+            DB::commit();
+            return $this->showMessage('ad deleted successfully...!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->showError($e, 'something goes wrong....!');
 
         }
     }
@@ -124,4 +122,22 @@ class AdvertisementController extends Controller
         }
 
     }
+
+    public function getSimilarAds(string $id)
+    {
+        $ad = Advertisement::find($id);
+
+        if (!$ad) {
+            return response()->json(['message' => 'Ad not found'], 404);
+        }
+
+        $similarAds = Advertisement::where('category_id', $ad->category_id)
+            ->where('id', '!=', $ad->id)
+            ->inRandomOrder()
+            ->limit(10)
+            ->get();
+
+        return $this->showResponse($similarAds, 'Similar advertisements retrieved successfully !!');
+    }
+
 }

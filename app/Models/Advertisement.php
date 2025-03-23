@@ -24,7 +24,7 @@ class Advertisement extends Model
         'currency_type',
         'negotiable',
         'is_special',
-        'status',
+        'status',    //: 'active', 'inactive', 'rejected', 'pending' 
         'expiry_date'
     ];
 
@@ -78,6 +78,11 @@ class Advertisement extends Model
     public function attributes(): HasMany
     {
         return $this->hasMany(AdvertisementAttribute::class);
+    }
+
+    public function report(): MorphMany
+    {
+        return $this->morphMany(Report::class, 'reportable');
     }
 
     //! Accessories
@@ -138,7 +143,12 @@ class Advertisement extends Model
 
     public function getParentCategoryAttribute()
     {
-        return $this->category->parent->name ?? null;
+        return $this->category->parent->name ?? $this->category->name;
+    }
+
+    public function getIsReportedAttribute()
+    {
+        return $this->report()->where('status', 'pending')->first() ? true : false;
     }
 
 }

@@ -35,13 +35,15 @@ class AdvertisementController extends Controller
     public function show(string $id)
     {
         try {
-            $data = Advertisement::with(['user', 'attributes'])->findOrFail($id)->first();
-          return  $data->append('attributes');
+            $data = Advertisement::with(['user', 'attributes'])->findOrFail($id)->append('is_reported');
+            return $this->showResponse($data, 'Advertisement retrieved successfully !!');
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while show the advertisement !!');
         }
     }
+
+
     public function update(AdvertisementUpdateRequest $request, string $id)
     {
         try {
@@ -57,12 +59,41 @@ class AdvertisementController extends Controller
     public function destroy(string $id)
     {
         try {
-            $ad = Advertisement::findOrFail($id)->first();
-            $this->service->delete($ad);
+            $ad = Advertisement::findOrFail($id);
+            $this->service->destroy($ad);
             return $this->showMessage('Advertisement deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while deleting the advertisement !!');
+        }
+    }
+
+    public function approve(string $id)
+    {
+        $ad = Advertisement::findOrFail($id);
+        if ($ad->status != 'pending')
+            return $this->showMessage('this advertisement is already processed !!', 422, false);
+        try {
+            $ad->update(['status' => 'active']);
+            return $this->showResponse($ad, 'Advertisement approved !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while approving the advertisement');
+        }
+    }
+
+
+    public function reject(string $id)
+    {
+        $ad = Advertisement::findOrFail($id);
+        if ($ad->status != 'pending')
+            return $this->showMessage('this advertisement is already processed !!', 422, false);
+        try {
+            $ad->update(['status' => 'rejected']);
+            return $this->showResponse($ad, 'Advertisement rejected !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while rejecting the advertisement');
         }
     }
 }
