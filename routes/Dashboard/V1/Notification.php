@@ -9,5 +9,9 @@ Route::prefix('notifications')
     ->middleware([])
     ->group(function () {
 
+        Route::get('index',[NotificationController::class,'index']);
+        Route::post('read/{id}',[NotificationController::class,'markAsRead']);
+        Route::post('read-all',[NotificationController::class,'markAllAsRead']);
         Route::post('unicast/{id}', [NotificationController::class, 'unicastNotification']);
+
     });

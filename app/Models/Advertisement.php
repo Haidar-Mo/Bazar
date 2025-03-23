@@ -38,7 +38,8 @@ class Advertisement extends Model
         'views',
         'created_from',
         'is_favorite',
-        'parent_category',
+        'main_category_id',
+        'main_category_name',
         'user_name',
         'city_name',
         'category_name',
@@ -141,9 +142,14 @@ class Advertisement extends Model
         return false;
     }
 
-    public function getParentCategoryAttribute()
+    public function getMainCategoryIdAttribute()
+    {
+        return $this->category->parent->id ?? $this->category->id;
+    }
+    public function getMainCategoryNameAttribute()
     {
         return $this->category->parent->name ?? $this->category->name;
+
     }
 
     public function getIsReportedAttribute()

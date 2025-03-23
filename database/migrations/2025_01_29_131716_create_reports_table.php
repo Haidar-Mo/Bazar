@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->morphs('reportable');
             $table->text('paragraph');
-            $table->enum('status', ['pending', 'reviewed', 'resolved'])->default('pending');
+            $table->boolean('is_read');
             $table->timestamps();
         });
     }

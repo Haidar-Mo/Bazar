@@ -21,7 +21,8 @@ class Rate extends Model
 
 
     protected $appends = [
-        'user'
+        'user_name',
+        'rated_user_name'
     ];
 
 
@@ -39,8 +40,15 @@ class Rate extends Model
 
     //! Accessories
 
-    public function getUserAttribute()
+    public function getUserNameAttribute()
     {
-        return $this->user()->get(['first_name', 'last_name'])->makeHidden(['is_full_registered','rate','role']);
+        $data = $this->user()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role','image','age','plan_name','notifications_count']);
+        return $data->first_name .' '. $data->last_name;
     }
+
+    public function getRatedUserNameAttribute()
+    {
+
+        $data = $this->ratedUser()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role','image','age','plan_name','notifications_count']);
+        return $data->first_name .' '. $data->last_name;    }
 }

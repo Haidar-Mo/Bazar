@@ -11,4 +11,5 @@ Route::prefix('reports/')
         Route::get('index', [ReportController::class, 'index']);
         Route::get('show/{id}', [ReportController::class, 'show']);
         Route::delete('delete/{id}', [ReportController::class, 'destroy']);
+        Route::post('mark-as-read/{id}', [ReportController::class, 'markAsRead']);
     });

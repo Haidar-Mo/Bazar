@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
+use Ramsey\Uuid\Type\Decimal;
 use Spatie\Permission\Traits\HasRoles;
 
 
@@ -61,7 +62,8 @@ class User extends Authenticatable
         'age',
         'plan_name',
         'is_full_registered',
-        'rate'
+        'rate',
+        'notifications_count'
     ];
 
 
@@ -202,11 +204,16 @@ class User extends Authenticatable
     }
     public function getRateAttribute()
     {
-        return $this->rated()->count() > 0 ? $this->rated()->sum('rate') / $this->rated()->count() : 0;
+        return $this->rated()->count() > 0 ? number_format($this->rated()->sum('rate') / $this->rated()->count(), 1) : 0;
     }
 
     public function getIsReportedAttribute()
     {
         return $this->report()->where('status', 'pending')->first() ? true : false;
+    }
+
+    public function getNotificationsCountAttribute()
+    {
+        return $this->unreadNotifications()->count() ?? 0;
     }
 }

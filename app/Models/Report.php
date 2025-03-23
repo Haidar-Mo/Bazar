@@ -17,8 +17,8 @@ class Report extends Model
         'user_id',
         'reportable_id',
         'reportable_type',
-        'status',
-        'paragraph'
+        'paragraph',
+        'is_read',
     ];
 
     public function user(): BelongsTo
