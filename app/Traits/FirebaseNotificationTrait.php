@@ -48,7 +48,7 @@ trait FirebaseNotificationTrait
             $this->messaging->subscribeToTopic($topic, $deviceToken);
             Log::info('Subscribed to topic: ' . $topic . ' with device token: ' . $deviceToken);
             return ['success' => true, 'message' => 'Subscribed to topic successfully!'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Firebase Topic Subscription Error: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Failed to subscribe to topic'];
         }
@@ -67,7 +67,7 @@ trait FirebaseNotificationTrait
             $this->messaging->send($message);
             Log::info('Notification sent successfully to topic: ' . $topic);
             return ['success' => true, 'message' => 'Notification sent successfully!'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Firebase Topic Notification Error: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Failed to send notification'];
         }

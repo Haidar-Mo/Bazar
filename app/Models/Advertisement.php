@@ -51,6 +51,14 @@ class Advertisement extends Model
         'category'
     ];
 
+    public function casts()
+    {
+        return [
+            'is_special' => 'boolean',
+            'negotiable'=>'boolean',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
