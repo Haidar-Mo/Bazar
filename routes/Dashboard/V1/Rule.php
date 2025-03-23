@@ -9,4 +9,5 @@ Route::middleware([
     //  'ability:' . TokenAbility::ACCESS_API->value,
     //  'role:admin'
 ])->apiResource('rules', RuleController::class);
+Route::post('update/rule', [RuleController::class, 'update']);
 

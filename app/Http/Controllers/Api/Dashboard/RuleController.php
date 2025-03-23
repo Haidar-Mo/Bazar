@@ -20,7 +20,8 @@ class RuleController extends Controller
      */
     public function index()
     {
-        //
+
+        return $this->showResponse(Rule::get(),'done');
     }
 
     /**
@@ -60,9 +61,10 @@ class RuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(RuleUpdateRequest $request, string $id)
+    public function update(RuleUpdateRequest $request)
     {
-        $rule=Rule::findOrFail($id);
+        $rule_id=Rule::get()->first();
+        $rule=Rule::find($rule_id->id);
         $rule->update($request->all());
         return $this->showResponse($rule,'update done successfully....!');
     }
