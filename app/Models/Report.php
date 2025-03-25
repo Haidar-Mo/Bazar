@@ -12,7 +12,6 @@ class Report extends Model
     /** @use HasFactory<\Database\Factories\ReportFactory> */
     use HasFactory;
 
-
     protected $fillable = [
         'user_id',
         'reportable_id',
@@ -25,6 +24,7 @@ class Report extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function reportable(): MorphTo
     {
         return $this->morphTo();
