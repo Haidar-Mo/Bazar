@@ -219,7 +219,8 @@ class User extends Authenticatable
 
     public function getIsReportedAttribute()
     {
-        return $this->reportable()->where('is_read', false)->first() ? true : false;
+        return $this->report()->where('is_read', false)->first() ? true : false;
+
     }
 
     public function getNotificationsCountAttribute()

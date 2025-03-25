@@ -22,6 +22,7 @@ class Advertisement extends Model
         'type',
         'price',
         'currency_type',
+        'location',
         'negotiable',
         'is_special',
         'status',    //: 'active', 'inactive', 'rejected', 'pending'
@@ -34,22 +35,31 @@ class Advertisement extends Model
      * @var array
      */
     protected $appends = [
-        'images',
-        'views',
-        'created_from',
-        'is_favorite',
+        'user_name',
+        'user_number',
+        'city_name',
         'main_category_id',
         'main_category_name',
-        'user_name',
-        'city_name',
         'category_name',
-
+        'created_from',
+        'updated_from',
+        'views',
+        'is_favorite',
+        'images',
     ];
 
     protected $hidden = [
         'deleted_at',
         'category'
     ];
+
+    public function casts()
+    {
+        return [
+            'is_special' => 'boolean',
+            'negotiable' => 'boolean'
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -90,7 +100,12 @@ class Advertisement extends Model
 
     public function getUserNameAttribute()
     {
-        return $this->user()->first()->first_name . $this->user()->first()->last_name;
+        return $this->user()->first()->first_name . ' ' . $this->user()->first()->last_name;
+    }
+
+    public function getUserNumberAttribute()
+    {
+        return $this->user()->first()->phone_number ?? null;
     }
 
     public function getCityNameAttribute()
@@ -126,6 +141,12 @@ class Advertisement extends Model
         $diff = $this->created_at->locale('ar')->diffForHumans();
         return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
+    public function getUpdatedFromAttribute()
+    {
+        Carbon::setLocale('ar');
+        $diff = $this->updated_at->locale('ar')->diffForHumans();
+        return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
+    }
 
     public function getIsFavoriteAttribute()
     {
@@ -154,7 +175,8 @@ class Advertisement extends Model
 
     public function getIsReportedAttribute()
     {
-        return $this->reported()->where('is_read', false)->first() ? true : false;
+        return $this->report()->where('is_read', false)->first() ? true : false;
+
     }
 
 }

@@ -27,4 +27,12 @@ Route::prefix('users')->
             Route::post('approve/{id}', [UserVerificationRequestController::class, 'approve']);
             Route::post('reject/{id}', [UserVerificationRequestController::class, 'reject']);
         });
+
+
+        Route::prefix('rates')->group(function () {
+
+            Route::get('index/{id}', [UserController::class, 'indexRates']);
+            Route::get('show/{id}',[UserController::class , 'showRate']);
+            Route::delete('delete/{id}', [UserController::class, 'destroyRate']);
+        });
     });

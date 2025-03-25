@@ -67,7 +67,7 @@ class AdvertisementService
 
     public function indexWithFilter()
     {
-        $query = Advertisement::query();
+        $query = Advertisement::query()->with('attributes');
         return $this->advertisementFilter->apply($query)->get();
     }
 }

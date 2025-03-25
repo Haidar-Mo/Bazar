@@ -19,7 +19,8 @@ trait HasFiles
             0,
             50
         ) . '.' . $file->getClientOriginalExtension();
-        $file->storePubliclyAs($folder_name, $file_name, 'public');
+        $folderPath = public_path($folder_name);
+        $file->move($folderPath, $file_name);
         return "$folder_name/$file_name";
     }
 
@@ -30,8 +31,8 @@ trait HasFiles
      */
     public static function deleteFile(string $path)
     {
-        $filePath = storage_path('app/public/' . $path);
-        if (file_exists($filePath) && $path) {
+        $filePath = public_path( $path);
+        if (file_exists($filePath) && is_file($filePath)) {
             unlink($filePath);
             return true;
         }

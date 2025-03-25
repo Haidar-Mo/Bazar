@@ -22,6 +22,7 @@ class Rate extends Model
 
     protected $appends = [
         'user_name',
+        'image',
         'rated_user_name'
     ];
 
@@ -42,13 +43,20 @@ class Rate extends Model
 
     public function getUserNameAttribute()
     {
-        $data = $this->user()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role','image','age','plan_name','notifications_count']);
-        return $data->first_name .' '. $data->last_name;
+        $data = $this->user()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role', 'image', 'age', 'plan_name', 'notifications_count']);
+        return $data->first_name . ' ' . $data->last_name;
     }
 
     public function getRatedUserNameAttribute()
     {
 
-        $data = $this->ratedUser()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role','image','age','plan_name','notifications_count']);
-        return $data->first_name .' '. $data->last_name;    }
+        $data = $this->ratedUser()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role', 'image', 'age', 'plan_name', 'notifications_count']);
+        return $data->first_name . ' ' . $data->last_name;
+    }
+
+    public function getImageAttribute()
+    {
+        return $this->user()->first()->makeHidden(['is_full_registered', 'rate', 'role', 'age', 'plan_name', 'notifications_count'])->image ?? null;
+
+    }
 }
