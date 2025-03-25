@@ -18,6 +18,7 @@ Route::prefix('advertisements')
                 Route::delete('delete/{id}', [AdvertisementController::class, 'destroy']);
                 Route::post('approve/{id}', [AdvertisementController::class, 'approve']);
                 Route::post('reject/{id}', [AdvertisementController::class, 'reject']);
+
         });
 
 

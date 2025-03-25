@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Mobile;
 
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
@@ -23,33 +23,35 @@ class AdvertisementCreateRequest extends FormRequest
     public function rules(): array
     {
         $category_id = $this->input('category_id');
-        $category = Category::where('id', $category_id)->first();
+        $category = Category::findOrFail($category_id);
 
 
         $commonRules = [
             'category_id' => ['required'],
             'city_id' => ['required'],
             'title' => ['required', 'string'],
+            'type' => ['required', 'in:طلب,عرض'],
+            'location' => ['required', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'type' => ['required', 'in:offer,order'],
             'currency_type' => ['required'],
-            'negotiable'=>['required','boolean'],
-            //'expiry_date' => ['nullable', 'date'],
-            //'is_special' => ['nullable'],
+            'negotiable' => ['required', 'boolean'],
             'images' => 'nullable|array|min:1',
-            'images.*' => 'required|image',
+            'images.*' => 'nullable|image',
             'attributes' => 'required|array',
 
         ];
 
         $categoryRules = match ($category->name) {
-            'real_estate' => [
+            'properties' => [
                 'attributes.details' => ['required'],
-                // 'location' => ['required', 'string', 'max:255'],
+                'attributes.specifications' => ['required'],
+                'attributes.transportation_availability' => ['sometimes','array'],
+                'attributes.amenities' => ['required'],
+                'attributes.amenities.*' => ['boolean'],
             ],
 
 
-             'Vehicle' => [
+         /*   'vehicle' => [
                 'attributes.type_model' => ['required'],
                 'attributes.category' => ['required'],
                 'attributes.regional_specs' => ['required'],
@@ -116,85 +118,85 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.brake' => ['nullable', 'boolean'],
                 'attributes.climate-monitoring' => ['nullable', 'boolean'],
 
-            ],
-
-          /*  in_array($category->name, [
-                'Hyper',
-                'Super_motorcycle',
-                'super_sports',
-                'Adventure_Touring',
-                'Chopper_Motorcycle',
-                'Off-road Capability',
-                'Scooter',
-                'Vintage',
-                'Cafe_Racer',
-                'Dual-sport_Bike',
-                'Trailer',
-                'Karting',
-                'Moped',
-                'Hoverboard'
-            ]) => [
-                'attributes.address' => ['required'],
-                'attributes.phone' => ['required'],
-                'attributes.description' => ['required'],
-                'attributes.usage' => ['required'],
-                'attributes.mileage' => ['required'],
-                'attributes.seller_type' => ['required'],
-                'attributes.range_of_price' => ['required'],
-                'attributes.warranty' => ['required', 'boolean'],
-                'attributes.transmission' => ['required'],
-                'attributes.tires' => ['required'],
-                'attributes.manufacturer' => ['required'],
-                'attributes.engine_size' => ['required'],
-                'attributes.location' => ['nullable'],
-                'attributes.street_name' => ['nullable'],
-
-            ],
-
-            in_array($category->name, [
-                'Air-Conditioning-Heating-Parts',
-                'Batteries',
-                'Brakes',
-                'Engine-Computer-Parts',
-                'Exhaust-Pipe/Air-Conditioning',
-                'Exterior-Parts',
-                'Interior-Parts',
-                'Lighting',
-                'Suspension-System',
-                'Wheels/Tires',
-                'Decorations',
-                'Boat-Accessories',
-                'Car-4x4-Accessories',
-                'Goods',//سلع
-                'Motorcycle-Accessories',
-                'supplies',
-                'Body-Frame',
-                'Brakes-Suspension',
-                'Engines-Components',
-                'Tool-Accessories',
-                'Tool-Kit',//طقم ادوات
-                'Tools',
-                'Accessories-and-spare-parts',//اكسسوارات و قطع غيار
-                'Electronic-Spare-Parts',
-                'Engine-Spare-Parts',
-                'Swimming-and-Diving-Equipment',
-                'Sailing-Equipment',
-
-            ]) => [
-                'attributes.description' => ['required'],
-                'attributes.phone' => ['required'],
-                'attributes.usage' => ['required'],
-                'attributes.condition' => ['required'],
-                'attributes.seller_type' => ['required'],
-                'attributes.location' => ['nullable'],
-                'attributes.sail_boats' => ['nullable', 'boolean'],
-                'attributes.motor_internal_boats' => ['nullable', 'boolean'],
-                'attributes.all_boat_types' => ['nullable', 'boolean'],
-                'attributes.motor_external_boats' => ['nullable', 'boolean'],
-                'attributes.other_boat_types' => ['nullable', 'boolean'],
-                'attributes.oar_boats' => ['nullable', 'boolean'],
-
             ],*/
+
+            /*  in_array($category->name, [
+                  'Hyper',
+                  'Super_motorcycle',
+                  'super_sports',
+                  'Adventure_Touring',
+                  'Chopper_Motorcycle',
+                  'Off-road Capability',
+                  'Scooter',
+                  'Vintage',
+                  'Cafe_Racer',
+                  'Dual-sport_Bike',
+                  'Trailer',
+                  'Karting',
+                  'Moped',
+                  'Hoverboard'
+              ]) => [
+                  'attributes.address' => ['required'],
+                  'attributes.phone' => ['required'],
+                  'attributes.description' => ['required'],
+                  'attributes.usage' => ['required'],
+                  'attributes.mileage' => ['required'],
+                  'attributes.seller_type' => ['required'],
+                  'attributes.range_of_price' => ['required'],
+                  'attributes.warranty' => ['required', 'boolean'],
+                  'attributes.transmission' => ['required'],
+                  'attributes.tires' => ['required'],
+                  'attributes.manufacturer' => ['required'],
+                  'attributes.engine_size' => ['required'],
+                  'attributes.location' => ['nullable'],
+                  'attributes.street_name' => ['nullable'],
+
+              ],
+
+              in_array($category->name, [
+                  'Air-Conditioning-Heating-Parts',
+                  'Batteries',
+                  'Brakes',
+                  'Engine-Computer-Parts',
+                  'Exhaust-Pipe/Air-Conditioning',
+                  'Exterior-Parts',
+                  'Interior-Parts',
+                  'Lighting',
+                  'Suspension-System',
+                  'Wheels/Tires',
+                  'Decorations',
+                  'Boat-Accessories',
+                  'Car-4x4-Accessories',
+                  'Goods',//سلع
+                  'Motorcycle-Accessories',
+                  'supplies',
+                  'Body-Frame',
+                  'Brakes-Suspension',
+                  'Engines-Components',
+                  'Tool-Accessories',
+                  'Tool-Kit',//طقم ادوات
+                  'Tools',
+                  'Accessories-and-spare-parts',//اكسسوارات و قطع غيار
+                  'Electronic-Spare-Parts',
+                  'Engine-Spare-Parts',
+                  'Swimming-and-Diving-Equipment',
+                  'Sailing-Equipment',
+
+              ]) => [
+                  'attributes.description' => ['required'],
+                  'attributes.phone' => ['required'],
+                  'attributes.usage' => ['required'],
+                  'attributes.condition' => ['required'],
+                  'attributes.seller_type' => ['required'],
+                  'attributes.location' => ['nullable'],
+                  'attributes.sail_boats' => ['nullable', 'boolean'],
+                  'attributes.motor_internal_boats' => ['nullable', 'boolean'],
+                  'attributes.all_boat_types' => ['nullable', 'boolean'],
+                  'attributes.motor_external_boats' => ['nullable', 'boolean'],
+                  'attributes.other_boat_types' => ['nullable', 'boolean'],
+                  'attributes.oar_boats' => ['nullable', 'boolean'],
+
+              ],*/
 
             default => [],
         };

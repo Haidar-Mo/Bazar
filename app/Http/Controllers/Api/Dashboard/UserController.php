@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Rate;
 use App\Models\User;
 use App\Services\Dashboard\UserService;
 use App\Traits\ResponseTrait;
@@ -27,7 +28,7 @@ class UserController extends Controller
     {
         try {
             return User::with(['ads', 'verificationRequest'])->findOrFail($id)
-            ->append(['hasVerificationRequest', 'is_reported']);
+                ->append(['hasVerificationRequest', 'is_reported']);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while show user details');
@@ -87,6 +88,38 @@ class UserController extends Controller
     }
 
 
+    public function indexRates(string $id)
+    {
+        try {
+            $user = User::with('rated')->findOrFail($id);
+            return $this->showResponse($user, 'User rates retrieved successfully !!');
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while viewing user rates !!');
+        }
+    }
 
+    public function showRate(string $id)
+    {
+        try {
+            $rate = Rate::findOrFail($id);
+            return $this->showResponse($rate, 'Rate retrieved successfully !!');
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while viewing Rate !!');
+        }
+    }
+
+    public function destroyRate(string $id)
+    {
+        try {
+            $rate = Rate::findOrFail($id);
+            $rate->delete();
+            return $this->showMessage('Rate deleted successfully !!');
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while deleting rate !!');
+        }
+    }
 }
 

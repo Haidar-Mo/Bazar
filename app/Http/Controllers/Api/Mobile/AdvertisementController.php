@@ -4,17 +4,10 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\{
-    AdvertisementUpdateRequest,
-    AdvertisementCreateRequest
-
-};
+use App\Http\Requests\Mobile\AdvertisementCreateRequest;
+use App\Http\Requests\AdvertisementUpdateRequest;
 use App\Models\Advertisement;
-use App\Traits\{
-    HasFiles,
-    ResponseTrait
-};
-use App\Http\Resources\AdvertisementResource;
+use App\Traits\ResponseTrait;
 use App\Services\Mobile\AdvertisementService;
 use Exception;
 use Illuminate\Support\Facades\{
@@ -55,11 +48,12 @@ class AdvertisementController extends Controller
         try {
             $user = $request->user();
             $ads = $this->service->create($request, $user);
-            return $this->showResponse($ads, 'create ads successfully ...!');
+            return $this->showResponse($ads->append('attributes'), 'create ads successfully ...!');
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while creating your advertisement !!');
         }
+        
     }
 
     /**

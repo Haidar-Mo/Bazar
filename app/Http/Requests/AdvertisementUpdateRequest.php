@@ -26,7 +26,7 @@ class AdvertisementUpdateRequest extends FormRequest
             'city_id' => ['sometimes'],
             'title' => ['sometimes', 'string'],
             'price' => ['sometimes', 'numeric', 'min:0'],
-            'type' => ['sometimes', 'in:offer,order'],
+            'type' => ['sometimes', 'in:عرض,طلب'],
             'currency_type' => ['sometimes'],
             'negotiable'=>['sometimes','boolean'],
             //'expiry_date' => ['nullable', 'date'],

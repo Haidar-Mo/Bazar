@@ -21,7 +21,7 @@ class Image extends Model
 
     public function getFullPathAttribute()
     {
-        return asset('storage/' . $this->path);
+        return asset( $this->path);
     }
     public function imageable(): MorphTo
     {
