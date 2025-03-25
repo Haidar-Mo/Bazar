@@ -14,8 +14,10 @@ use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Type\Decimal;
-use Spatie\Permission\Traits\HasRoles;
-
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Traits\{
+    HasPermissions,HasRoles
+};
 
 class User extends Authenticatable
 {
@@ -50,6 +52,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'roles',
+        'permissions'
     ];
 
     /**
@@ -63,7 +67,7 @@ class User extends Authenticatable
         'plan_name',
         'is_full_registered',
         'rate',
-        'notifications_count'
+        'notifications_count',
     ];
 
 
@@ -125,7 +129,7 @@ class User extends Authenticatable
         return $this->hasMany(VerificationRequest::class);
     }
 
-    public function report(): HasMany
+    public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
     }
@@ -175,6 +179,12 @@ class User extends Authenticatable
         return $this->roles()->first() ? $this->roles()->first()->name : 'guest';
     }
 
+    public function getAllPermissionsAttribute()
+    {
+        $permissions = $this->getAllPermissions()->pluck('name');
+        return $permissions->isEmpty() ? [] : $permissions;
+    }
+
 
     public function getHasVerificationRequestAttribute()
     {
@@ -210,6 +220,7 @@ class User extends Authenticatable
     public function getIsReportedAttribute()
     {
         return $this->report()->where('is_read', false)->first() ? true : false;
+
     }
 
     public function getNotificationsCountAttribute()

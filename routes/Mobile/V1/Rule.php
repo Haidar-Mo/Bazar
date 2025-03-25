@@ -11,6 +11,6 @@ Route::prefix('rules')
        // 'role:client'
     ])
     ->group(function () {
-            Route::apiResource('rules',RuleController::class)->only('show');
+            Route::apiResource('rules',RuleController::class)->only('index');
     });
 
