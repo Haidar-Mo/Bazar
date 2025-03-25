@@ -24,7 +24,7 @@ class Advertisement extends Model
         'currency_type',
         'negotiable',
         'is_special',
-        'status',    //: 'active', 'inactive', 'rejected', 'pending' 
+        'status',    //: 'active', 'inactive', 'rejected', 'pending'
         'expiry_date'
     ];
 
@@ -81,7 +81,7 @@ class Advertisement extends Model
         return $this->hasMany(AdvertisementAttribute::class);
     }
 
-    public function report(): MorphMany
+    public function reported(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
     }
@@ -154,7 +154,7 @@ class Advertisement extends Model
 
     public function getIsReportedAttribute()
     {
-        return $this->report()->where('status', 'pending')->first() ? true : false;
+        return $this->reported()->where('is_read', false)->first() ? true : false;
     }
 
 }
