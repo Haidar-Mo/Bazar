@@ -9,6 +9,7 @@ use App\Models\{
     AdvertisementAttribute
 };
 use App\Traits\HasFiles;
+use Illuminate\Support\Arr;
 
 /**
  * Class AdvertisementService.
@@ -25,29 +26,24 @@ class AdvertisementService
 
     public function create($request, User $user)
     {
-        $data = $request->validated();
-        return DB::transaction(function () use ($user, $request, $data) {
 
-            $ad = $user->ads()->create([
-                'city_id' => $data['city_id'],
-                'category_id' => $data['category_id'],
-                'title' => $data['title'],
-                'type' => $data['type'],
-                'currency_type' => $data['currency_type'],
-                'negotiable' => $data['negotiable'],
-                //'is_special' => $data['is_special'],
-                'price' => $data['price'],
-                'expiry_date' => now()->addDays(30),
-            ]);
-            if (isset($data['images'])) {
+        while ($request['attributes'] && is_string($request['attributes'])) {
+            $request['attributes'] = json_decode($request['attributes'], true);
+        }
+        $filteredData = Arr::except($request, ['images', 'attributes']);
+        return DB::transaction(function () use ($user, $filteredData, $request) {
+
+            $ad = $user->ads()->create($filteredData);
+
+            if (isset($request['images'])) {
                 $images = $request->file('images');
                 foreach ($images as $image) {
                     $url = $this->saveFile($image, 'ads');
                     $ad->images()->create(['path' => $url]);
                 }
             }
-            if (isset($data['attributes']) && is_array($data['attributes'])) {
-                foreach ($data['attributes'] as $attributeKey => $attribute) {
+            if (isset($request['attributes']) && is_array($request['attributes'])) {
+                foreach ($request['attributes'] as $attributeKey => $attribute) {
                     foreach ($attribute as $key => $value) {
                         AdvertisementAttribute::create([
                             'advertisement_id' => $ad->id,

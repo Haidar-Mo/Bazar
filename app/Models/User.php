@@ -29,6 +29,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'phone_number',
         'birth_date',
         'address',
         'gender',
@@ -219,8 +220,11 @@ class User extends Authenticatable
 
     public function getIsReportedAttribute()
     {
-        return $this->report()->where('is_read', false)->first() ? true : false;
-
+        return $this->reported()->where('is_read', false)->first()
+            ?
+            $this->reported()->where('is_read', false)->first()->user()->first()
+            :
+            false;
     }
 
     public function getNotificationsCountAttribute()
