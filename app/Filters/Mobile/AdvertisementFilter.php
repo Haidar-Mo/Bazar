@@ -40,10 +40,9 @@ class AdvertisementFilter extends BaseFilter
         //- PROPRIETIES
 
         if ($this->request->filled('min_area') && $this->request->filled('max_area')) {
-            $attributes = $this->request->get('attributes');
 
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'size')->whereBetween('value', [$this->request->get('min_area'), $this->request->get('max_area')]);
+            $query->whereHas('attributes', function ($query) {
+                $query->where('name', 'size')->whereBetween('value', [(int) $this->request->get('min_area'), (int) $this->request->get('max_area')]);
             });
         }
 
@@ -103,6 +102,19 @@ class AdvertisementFilter extends BaseFilter
             $attributes = $this->request->get('attributes');
             $query->whereHas('attributes', function ($query) use ($attributes) {
                 $query->where('name', 'furnishing')->where('value', $this->request->furnishing);
+            });
+        }
+
+        if ($this->request->filled('land_use')) {
+            $attributes = $this->request->get('attributes');
+            $query->whereHas('attributes', function ($query) use ($attributes) {
+                $query->where('name', 'land_use')->where('value', $this->request->land_use);
+            });
+        }
+        if ($this->request->filled('soil_type')) {
+            $attributes = $this->request->get('attributes');
+            $query->whereHas('attributes', function ($query) use ($attributes) {
+                $query->where('name', 'soil_type')->where('value', $this->request->soil_type);
             });
         }
 

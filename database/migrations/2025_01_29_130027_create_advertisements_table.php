@@ -16,13 +16,14 @@ return new class extends Migration {
             $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
             $table->string('title');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->enum('type', ['هرض', 'طلي'])->default('عرض');
+            $table->enum('type', ['عرض', 'طلب'])->default('عرض');
             $table->decimal('price', 16, 2);
             $table->string('currency_type');
             $table->string('location')->default(' ');
             $table->boolean('negotiable')->default(0);
             $table->boolean('is_special')->default(false);
             $table->enum('status', ['active', 'inactive', 'rejected', 'pending'])->default('pending');
+            $$table->text('rejecting_reason')->nullable();
             $table->date('expiry_date');
             $table->softDeletes();
             $table->timestamps();

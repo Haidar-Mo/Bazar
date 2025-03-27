@@ -175,8 +175,11 @@ class Advertisement extends Model
 
     public function getIsReportedAttribute()
     {
-        return $this->report()->where('is_read', false)->first() ? true : false;
-
+        return $this->reported()->where('is_read', false)->first()
+            ?
+            $this->reported()->where('is_read', false)->first()->user()->first()
+            :
+            false;
     }
 
 }

@@ -47,7 +47,12 @@ class AdvertisementController extends Controller
     {
         try {
             $user = $request->user();
-            $ads = $this->service->create($request, $user);
+            //- CHECK THE PLAN AND ADD "EXPIRY-DATE , IS-SPECIAL" TO THE REQUEST DEPEND ON IT
+            $mergedData = array_merge($request->all(), [
+                'expiry_date' => now()->addDays(30),
+                'is_special' => 0
+            ]);
+            $ads = $this->service->create($mergedData, $user);
             return $this->showResponse($ads->append('attributes'), 'create ads successfully ...!');
         } catch (Exception $e) {
             report($e);
