@@ -13,6 +13,7 @@ use App\Traits\{
 use Illuminate\Support\Facades\{Auth, DB};
 use Exception;
 use App\Http\Requests\CreatePermissionsReuest;
+
 class PermissionController extends Controller
 {
     use ResponseTrait;
@@ -23,6 +24,15 @@ class PermissionController extends Controller
     {
         return $this->showResponse(Permission::all()->pluck('name'), 'done successfully....!');
     }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -32,8 +42,10 @@ class PermissionController extends Controller
         try {
             foreach ($request->permissions as $permission) {
                 Permission::create([
+
                     'name' => $permission,
                     'guard_name' => 'api'
+
                 ]);
             }
             DB::commit();
@@ -43,6 +55,27 @@ class PermissionController extends Controller
             return $this->showError($e, 'something goes wrong....!');
         }
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id) {}
 
     /**
      * Remove the specified resource from storage.
@@ -58,7 +91,6 @@ class PermissionController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e, 'Something goes wrong....!');
-
         }
     }
 }

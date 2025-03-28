@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->boolean('negotiable')->default(0);
             $table->boolean('is_special')->default(false);
             $table->enum('status', ['active', 'inactive', 'rejected', 'pending'])->default('pending');
-            $$table->text('rejecting_reason')->nullable();
+            $table->text('rejecting_reason')->nullable();
             $table->date('expiry_date');
             $table->softDeletes();
             $table->timestamps();
