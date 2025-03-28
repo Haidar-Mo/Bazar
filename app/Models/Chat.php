@@ -51,6 +51,7 @@ class Chat extends Model
     {
 
         return [
+            'id' => $this->id,
             'sender_name' => $this->client->first_name,
             'sender_id' => $this->client->id,
             'receiver_name' => $this->seller->first_name,
