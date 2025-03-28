@@ -12,11 +12,11 @@ class MessageResource extends JsonResource
             'id' => $this->id,
             'content' => $this->content,
             'sender_id' => $this->sender_id,
-            'chat_id'=>$this->chat_id,
-            'is_read'=>$this->is_read,
-            'created_from'=>$this->created_from
+            'chat_id' => $this->chat_id,
+            'is_read' => $this->is_read,
+            'created_from' => $this->created_from
 
 
         ];
     }
-} 
+}

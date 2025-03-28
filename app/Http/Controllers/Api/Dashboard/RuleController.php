@@ -21,7 +21,7 @@ class RuleController extends Controller
     public function index()
     {
 
-        return $this->showResponse(Rule::get(),'done');
+        return $this->showResponse(Rule::get(), 'done');
     }
 
     /**
@@ -37,8 +37,8 @@ class RuleController extends Controller
      */
     public function store(RuleRequest $request)
     {
-        $rule=Rule::create($request->all());
-        return $this->showResponse($rule,'create Done successfully....!');
+        $rule = Rule::create($request->all());
+        return $this->showResponse($rule, 'create Done successfully....!');
     }
 
     /**
@@ -46,8 +46,8 @@ class RuleController extends Controller
      */
     public function show(string $id)
     {
-        $rule=Rule::findOrFail($id);
-        return $this->showResponse($rule,'done');
+        $rule = Rule::findOrFail($id);
+        return $this->showResponse($rule, 'done');
     }
 
     /**
@@ -63,10 +63,10 @@ class RuleController extends Controller
      */
     public function update(RuleUpdateRequest $request)
     {
-        $rule_id=Rule::get()->first();
-        $rule=Rule::find($rule_id->id);
+        $rule_id = Rule::get()->first();
+        $rule = Rule::find($rule_id->id);
         $rule->update($request->all());
-        return $this->showResponse($rule,'update done successfully....!');
+        return $this->showResponse($rule, 'update done successfully....!');
     }
 
     /**
@@ -74,7 +74,7 @@ class RuleController extends Controller
      */
     public function destroy(string $id)
     {
-        $rule=Rule::findOrFail($id);
+        $rule = Rule::findOrFail($id);
         $rule->delete();
         return $this->showMessage('delete done successfully....!');
     }

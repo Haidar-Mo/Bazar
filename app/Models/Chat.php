@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
+
 class Chat extends Model
 {
     /** @use HasFactory<\Database\Factories\ChatFactory> */
@@ -36,7 +37,7 @@ class Chat extends Model
 
     public function ads(): BelongsTo
     {
-        return $this->belongsTo(Advertisement::class,'advertisement_id');
+        return $this->belongsTo(Advertisement::class, 'advertisement_id');
     }
 
 
@@ -46,43 +47,40 @@ class Chat extends Model
     }
 
 
-    public function getChatDetailsAttribute(){
+    public function getChatDetailsAttribute()
+    {
 
-    return [
-        'sender_name' => $this->client->first_name,
-        'sender_id'=>$this->client->id,
-        'receiver_name' => $this->seller->first_name,
-        'receiver_id'=>$this->seller->id,
-        'advertisement_title' => $this->ads->title,
-        'advertisement_image' => $this->ads->images,
-        'created_from'=>$this->created_from
-    ];
-}
-
-
-public function getAdvertisementDetailsAttribute()
-{
-    return [
-        'id'=>$this->ads->id,
-        'title' => $this->ads->title,
-        'price' => $this->ads->price,
-        'currency_type' => $this->ads->currency_type,
-        'city' => $this->ads->city_name,
-        'advertisement_image' => $this->ads->images,
-        'created_from'=>$this->created_from
-    ];
-}
+        return [
+            'sender_name' => $this->client->first_name,
+            'sender_id' => $this->client->id,
+            'receiver_name' => $this->seller->first_name,
+            'receiver_id' => $this->seller->id,
+            'advertisement_title' => $this->ads->title,
+            'advertisement_image' => $this->ads->images,
+            'created_from' => $this->created_from
+        ];
+    }
 
 
-public function getCreatedFromAttribute()
+    public function getAdvertisementDetailsAttribute()
+    {
+        return [
+            'id' => $this->ads->id,
+            'title' => $this->ads->title,
+            'price' => $this->ads->price,
+            'currency_type' => $this->ads->currency_type,
+            'city' => $this->ads->city_name,
+            'advertisement_image' => $this->ads->images,
+            'created_from' => $this->created_from
+        ];
+    }
+
+
+    public function getCreatedFromAttribute()
     {
 
         Carbon::setLocale('ar');
         $diff = $this->created_at->locale('ar')->diffForHumans();
         return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
-
-
-
-
 }

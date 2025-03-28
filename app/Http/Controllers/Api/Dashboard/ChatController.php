@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Chat;
 use App\Traits\ResponseTrait;
 use App\Http\Resources\ChatResource;
+
 class ChatController extends Controller
 {
     use ResponseTrait;
@@ -46,8 +47,8 @@ class ChatController extends Controller
     public function show(string $id)
     {
         $chat = Chat::with(['messages'])
-                  ->findOrFail($id);
-        return new ChatResource($chat);
+            ->findOrFail($id);
+        return $this->showResponse(new ChatResource($chat), 'done successfully...!');
     }
 
 
