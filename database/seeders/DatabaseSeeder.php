@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Report::factory(20)->create();
+        //Report::factory(20)->create();
 
 /*
         $this->call(RoleSeeder::class);
@@ -48,12 +48,13 @@ class DatabaseSeeder extends Seeder
         AdvertisementAttribute::factory(150)->create();
         Image::factory(80)->create();
         View::factory(100)->create();
-        Rate::factory(100)->create();
+        Rate::factory(100)->create();*/
         User::create([
             'first_name' => 'mario',
             'last_name' => 'andrawos',
             'email' => 'example@gmail.com',
             'password' => bcrypt('password'),
+            'phone_number'=>'0937723418',
             'birth_date' => '1990-01-01',
             'gender' => 'male',
             'job' => 'IT job',
@@ -64,7 +65,28 @@ class DatabaseSeeder extends Seeder
             'provider_id' => null,
             'device_token' => 'k',
             'email_verified_at' => now(),
-        ]);*/
+        ]);
+        User::create([
+            'first_name' => 'haider',
+            'last_name' => 'haider',
+            'email' => 'haider@gmail.com',
+            'password' => bcrypt('password'),
+            'phone_number'=>'0937723418',
+            'birth_date' => '1990-01-01',
+            'gender' => 'male',
+            'job' => 'IT job',
+            'company' => 'Androws Company',
+            'description' => 'a junior Laravel developer',
+            'address' => 'yabroud',
+            'provider' => null,
+            'provider_id' => null,
+            'device_token' => 'k',
+            'email_verified_at' => now(),
+        ]);
+
+
+
+
 
     }
 }
