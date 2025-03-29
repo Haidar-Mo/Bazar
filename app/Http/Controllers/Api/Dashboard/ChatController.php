@@ -17,7 +17,7 @@ class ChatController extends Controller
     public function index()
     {
 
-        $chats = Chat::with(['client', 'seller', 'ads'])->paginate(10);
+        $chats = Chat::with(['client', 'seller', 'ads'])->get();
         $chatDetails = $chats->map(function ($chat) {
             return $chat->chat_details;
         });
