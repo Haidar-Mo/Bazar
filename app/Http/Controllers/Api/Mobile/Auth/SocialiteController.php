@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Mobile\Auth;
 use App\Enums\TokenAbility;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Facades\Socialite;
@@ -15,59 +16,59 @@ use Spatie\Permission\Models\Role;
 class SocialiteController extends Controller
 {
     /*
-    public function redirect($provider)
-    {
-        return response()->json([
-            'redirect_url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl(),
-        ]);
-    }
-
-    public function callback($provider)
-    {
-        try {
-            $socialUser = Socialite::driver($provider)->stateless()->user();
-
-            $fullName = $socialUser->getName();
-            $firstName = Str::beforeLast($fullName, ' ') ?: $fullName;
-            $lastName = Str::afterLast($fullName, ' ') ?: '';
-
-            $user = User::where('email', $socialUser->getEmail())->first();
-
-            if (!$user) {
-                $user = User::create([
-                    'first_name' => $firstName,
-                    'last_name' => $lastName,
-                    'email' => $socialUser->getEmail(),
-                    'password' => bcrypt(Str::random(16)), // Random password
-                    'provider' => $provider,
-                    'provider_id' => $socialUser->getId(),
-                ]);
-            }
-
-            $accessToken = $user->createToken(
-                'access_token',
-                [TokenAbility::ACCESS_API->value],
-                Carbon::now()->addMinutes(config('sanctum.expiration'))
-            );
-
-            $refreshToken = $user->createToken(
-                'refresh_token',
-                [TokenAbility::ISSUE_ACCESS_TOKEN->value],
-                Carbon::now()->addDays(7)
-            );
-
-            $user->load('roles');
+        public function redirect($provider)
+        {
             return response()->json([
-                'access_token' => $accessToken->plainTextToken,
-                'refresh_token' => $refreshToken->plainTextToken,
-                'user' => $user,
+                'redirect_url' => Socialite::driver($provider)->stateless()->redirect()->getTargetUrl(),
             ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to authenticate with ' . ucfirst($provider),
-            ], 401);
         }
-    }*/
+
+        public function callback($provider)
+        {
+            try {
+                $socialUser = Socialite::driver($provider)->stateless()->user();
+
+                $fullName = $socialUser->getName();
+                $firstName = Str::beforeLast($fullName, ' ') ?: $fullName;
+                $lastName = Str::afterLast($fullName, ' ') ?: '';
+
+                $user = User::where('email', $socialUser->getEmail())->first();
+
+                if (!$user) {
+                    $user = User::create([
+                        'first_name' => $firstName,
+                        'last_name' => $lastName,
+                        'email' => $socialUser->getEmail(),
+                        'password' => bcrypt(Str::random(16)),
+                        'provider' => $provider,
+                        'provider_id' => $socialUser->getId(),
+                    ]);
+                }
+
+                $accessToken = $user->createToken(
+                    'access_token',
+                    [TokenAbility::ACCESS_API->value],
+                    Carbon::now()->addMinutes(config('sanctum.expiration'))
+                );
+
+                $refreshToken = $user->createToken(
+                    'refresh_token',
+                    [TokenAbility::ISSUE_ACCESS_TOKEN->value],
+                    Carbon::now()->addDays(7)
+                );
+
+                $user->load('roles');
+                return response()->json([
+                    'access_token' => $accessToken->plainTextToken,
+                    'refresh_token' => $refreshToken->plainTextToken,
+                    'user' => $user,
+                ]);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => 'Failed to authenticate with ' . ucfirst($provider),
+                ], 401);
+            }
+        }*/
 
     public function loginWithSocial(Request $request, $provider)
     {
@@ -110,7 +111,7 @@ class SocialiteController extends Controller
                 'refresh_token' => $refreshToken->plainTextToken,
                 'user' => $user,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'error' => 'Failed to authenticate',
                 'message' => $e->getMessage(),

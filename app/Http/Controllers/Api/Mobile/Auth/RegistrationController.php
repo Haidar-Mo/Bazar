@@ -13,7 +13,6 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class RegistrationController extends Controller
@@ -74,7 +73,7 @@ class RegistrationController extends Controller
             $user = PendingUser::where('email', $request->email)->firstOrFail();
             if ($user->verified_at != null)
                 return response()->json(['message' => 'Email is already verified'], 405);
-            $verificationCode = str::random(6);
+            $verificationCode = mt_rand(100000, 999999);
             $expirationTime = Carbon::now()->addMinutes(10);
             $user->update([
                 'verification_code' => $verificationCode,

@@ -30,9 +30,17 @@ Route::get('migrate-refresh', function () {
     return view('artisan-response', compact('title'));
 });
 
+Route::get('migrate-rollback/{path}', function ($path) {
+    Artisan::call("migrate:rollback --path={$path}");
+    $title = 'Migration Rollback Done !!';
+    return view('artisan-response', compact('title'));
+});
+
 Route::get('storage-link', function () {
     Artisan::call('storage:link');
     $title = 'Storage linked successfully !!';
     return view('artisan-response', compact('title'));
 
 });
+
+//database\migrations\2025_03_28_192313_create_password_resets_table.php
