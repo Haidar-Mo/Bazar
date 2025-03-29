@@ -10,7 +10,9 @@ class ChatResource extends JsonResource
     {
         return [
             'sender_name' => $this->client->first_name,
+            'sender_image' => $this->client->image,
             'receiver_name' => $this->seller->first_name,
+            'receiver_image' => $this->seller->image,
             'advertisement_details' => $this->advertisement_details,
             'messages' => MessageResource::collection($this->messages),
         ];
