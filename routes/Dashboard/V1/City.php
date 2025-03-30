@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\Dashboard\CategoriesController;
+use App\Http\Controllers\Api\Dashboard\CitesCotroller;
 use Illuminate\Support\Facades\Route;
 
 
@@ -8,6 +8,6 @@ use Illuminate\Support\Facades\Route;
         //  'auth:sanctum',
         //  'ability:' . TokenAbility::ACCESS_API->value,
         //  'role:admin'
-    ])->apiResource('categories', CategoriesController::class);
+    ])->apiResource('cities', CitesCotroller::class);
 
 
