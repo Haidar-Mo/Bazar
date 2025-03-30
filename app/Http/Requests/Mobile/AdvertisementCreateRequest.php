@@ -48,6 +48,10 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.amenities' => ['required'],
                 'attributes.amenities.*' => ['boolean'],
             ],
+            'الكترونيات' => [
+                'attributes.details' => ['required'],
+                    
+            ],
             'ازياء و موضة' => [
                 'attributes.details' => ['required'],
             ],
