@@ -16,6 +16,8 @@ Route::prefix('v1/')->group(function () {
     include __DIR__ . "/Dashboard/V1/Rule.php";
     include __DIR__ . "/Dashboard/V1/Official.php";
     include __DIR__ . "/Dashboard/V1/Permission.php";
+    include __DIR__ . "/Dashboard/V1/Chat.php";
+    include __DIR__ . "/Dashboard/V1/City.php";
 
 
     //! Mobile section

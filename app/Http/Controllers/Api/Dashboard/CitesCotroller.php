@@ -4,15 +4,13 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Rule;
+use App\Models\City;
 use App\Traits\ResponseTrait;
 use App\Http\Requests\{
-    RuleRequest,
-    RuleUpdateRequest
+    CreateCityRequest,
+    UpdateCityRequest
 };
-use Whoops\Run;
-
-class RuleController extends Controller
+class CitesCotroller extends Controller
 {
     use ResponseTrait;
     /**
@@ -20,8 +18,7 @@ class RuleController extends Controller
      */
     public function index()
     {
-
-        return $this->showResponse(Rule::get(), 'done');
+        return $this->showResponse(City::get()->select('id','name'),'done successfully..!');
     }
 
     /**
@@ -35,10 +32,10 @@ class RuleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RuleRequest $request)
+    public function store(CreateCityRequest $request)
     {
-        $rule = Rule::create($request->all());
-        return $this->showResponse($rule, 'create Done successfully....!');
+        $city=City::create($request->all());
+        return $this->showResponse($city,'city created successfully..!');
     }
 
     /**
@@ -46,8 +43,7 @@ class RuleController extends Controller
      */
     public function show(string $id)
     {
-        $rule = Rule::findOrFail($id);
-        return $this->showResponse($rule, 'done');
+
     }
 
     /**
@@ -61,12 +57,11 @@ class RuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(RuleUpdateRequest $request)
+    public function update(UpdateCityRequest $request, string $id)
     {
-        $rule_id = Rule::get()->first();
-        $rule = Rule::find($rule_id->id);
-        $rule->update($request->all());
-        return $this->showResponse($rule, 'update done successfully....!');
+        $city=City::findOrFail($id);
+        $city->update($request->all());
+        return $this->showResponse($city,'city updated successfully...!');
     }
 
     /**
@@ -74,8 +69,8 @@ class RuleController extends Controller
      */
     public function destroy(string $id)
     {
-        $rule = Rule::findOrFail($id);
-        $rule->delete();
-        return $this->showMessage('delete done successfully....!');
+        $city=City::findOrFail($id);
+        $city->delete();
+        return $this->showMessage('city deleted successfully...!');
     }
 }

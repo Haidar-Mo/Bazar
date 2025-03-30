@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Rule;
+use App\Models\Category;
 use App\Traits\ResponseTrait;
 use App\Http\Requests\{
-    RuleRequest,
-    RuleUpdateRequest
+    UpdateCategories,
+    CreateCategoryRequest
 };
-use Whoops\Run;
+use PhpParser\Node\Stmt\Catch_;
 
-class RuleController extends Controller
+class CategoriesController extends Controller
 {
     use ResponseTrait;
     /**
@@ -20,8 +20,7 @@ class RuleController extends Controller
      */
     public function index()
     {
-
-        return $this->showResponse(Rule::get(), 'done');
+        return $this->showResponse(Category::all(), 'All categories retrieved !!');
     }
 
     /**
@@ -35,10 +34,10 @@ class RuleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RuleRequest $request)
+    public function store(CreateCategoryRequest $request)
     {
-        $rule = Rule::create($request->all());
-        return $this->showResponse($rule, 'create Done successfully....!');
+        $category=Category::create($request->all());
+        return $this->showResponse($category,'category created successfully...!');
     }
 
     /**
@@ -46,8 +45,8 @@ class RuleController extends Controller
      */
     public function show(string $id)
     {
-        $rule = Rule::findOrFail($id);
-        return $this->showResponse($rule, 'done');
+        return $this->showResponse($category=Category::with(['children'])->findOrFail($id),'done successfully') ;
+
     }
 
     /**
@@ -61,12 +60,11 @@ class RuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(RuleUpdateRequest $request)
+    public function update(UpdateCategories $request, string $id)
     {
-        $rule_id = Rule::get()->first();
-        $rule = Rule::find($rule_id->id);
-        $rule->update($request->all());
-        return $this->showResponse($rule, 'update done successfully....!');
+        $category=Category::findOrFail($id);
+        $category->update($request->all());
+        return $this->showResponse($category,'category updated successfully...!');
     }
 
     /**
@@ -74,8 +72,8 @@ class RuleController extends Controller
      */
     public function destroy(string $id)
     {
-        $rule = Rule::findOrFail($id);
-        $rule->delete();
-        return $this->showMessage('delete done successfully....!');
+        $category=Category::findOrFail($id);
+        $category->delete();
+        return $this->showMessage('Category deleted successfully...!');
     }
 }

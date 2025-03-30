@@ -4,15 +4,11 @@ namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Rule;
+use App\Models\Chat;
 use App\Traits\ResponseTrait;
-use App\Http\Requests\{
-    RuleRequest,
-    RuleUpdateRequest
-};
-use Whoops\Run;
+use App\Http\Resources\ChatResource;
 
-class RuleController extends Controller
+class ChatController extends Controller
 {
     use ResponseTrait;
     /**
@@ -21,7 +17,12 @@ class RuleController extends Controller
     public function index()
     {
 
-        return $this->showResponse(Rule::get(), 'done');
+        $chats = Chat::with(['client', 'seller', 'ads'])->get();
+        $chatDetails = $chats->map(function ($chat) {
+            return $chat->chat_details;
+        });
+
+        return $this->showResponse($chatDetails, 'done successfully..!');
     }
 
     /**
@@ -35,10 +36,9 @@ class RuleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RuleRequest $request)
+    public function store(Request $request)
     {
-        $rule = Rule::create($request->all());
-        return $this->showResponse($rule, 'create Done successfully....!');
+        //
     }
 
     /**
@@ -46,9 +46,11 @@ class RuleController extends Controller
      */
     public function show(string $id)
     {
-        $rule = Rule::findOrFail($id);
-        return $this->showResponse($rule, 'done');
+        $chat = Chat::with(['messages'])
+            ->findOrFail($id);
+        return $this->showResponse(new ChatResource($chat), 'done successfully...!');
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -61,12 +63,9 @@ class RuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(RuleUpdateRequest $request)
+    public function update(Request $request, string $id)
     {
-        $rule_id = Rule::get()->first();
-        $rule = Rule::find($rule_id->id);
-        $rule->update($request->all());
-        return $this->showResponse($rule, 'update done successfully....!');
+        //
     }
 
     /**
@@ -74,8 +73,6 @@ class RuleController extends Controller
      */
     public function destroy(string $id)
     {
-        $rule = Rule::findOrFail($id);
-        $rule->delete();
-        return $this->showMessage('delete done successfully....!');
+        //
     }
 }

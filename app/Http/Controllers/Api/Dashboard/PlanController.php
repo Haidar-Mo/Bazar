@@ -39,7 +39,6 @@ class PlanController extends Controller
             DB::rollback();
             return $this->showError($e, 'An error occur while creating new subscription plan !!');
         }
-
     }
     /**
      * Show specific subscription plan
@@ -70,7 +69,6 @@ class PlanController extends Controller
             DB::rollback();
             return $this->showError($e, 'An error occur while updating new subscription plan !!');
         }
-
     }
 
     /**
@@ -89,7 +87,6 @@ class PlanController extends Controller
         } catch (Exception $e) {
             DB::rollback();
             return $this->showError($e, 'An error occur while deleting new subscription plan !!');
-
         }
     }
 }
