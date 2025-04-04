@@ -88,17 +88,6 @@ class User extends Authenticatable
     }
 
 
-    /**
-     * Send the password reset notification.
-     *
-     * @param  string  $token
-     * @return void
-     */
-    public function sendPasswordResetNotification($token)
-    {
-        $this->notify(new ResetPassword($token));
-    }
-
     public function ads(): HasMany
     {
         return $this->hasMany(Advertisement::class);
@@ -135,7 +124,7 @@ class User extends Authenticatable
         return $this->hasMany(Report::class);
     }
 
-    public function reportable(): MorphMany
+    public function reported(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
     }

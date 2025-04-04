@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mobile\ProfileUpdateRequest;
+use App\Models\User;
 use App\Services\Mobile\ProfileService;
 use App\Traits\ResponseTrait;
 use Exception;
@@ -19,13 +20,27 @@ class ProfileController extends Controller
     {
     }
 
-
     /**
-     * Display the authenticated user profile.
+     * Display the user profile
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show()
+    public function show(string $id)
     {
-        $user = Auth::user();
+        $user = User::findOrFail($id)->only([
+            'first_name',
+            'last_name',
+            'email',
+            'birth_date',
+            'address',
+            'gender',
+            'job',
+            'company',
+            'description',
+            'is_verified',
+            'image',
+            'age',
+        ]);
         return $this->showResponse($user, 'profile retrieved successfully !!', 200);
     }
 
@@ -46,14 +61,27 @@ class ProfileController extends Controller
         }
     }
 
-    public function showAds()
+    /**
+     * Display list of specific user advertisements
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function showAds(string $id)
     {
-        return $this->showResponse(Auth::user()->ads()->get(), 'User advertisement retrieved successfully !!', 200);
+        $user = User::findOrFail($id);
+        return $this->showResponse($user->ads()->get(), 'User advertisement retrieved successfully !!', 200);
     }
 
-    public function showRates()
+
+    /**
+     * Display list of specific user rates
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function showRates(string $id)
     {
-        return $this->showResponse(Auth::user()->rated()->get(), 'User rates retrieved successfully !!', 200);
+        $user = User::findOrFail($id);
+        return $this->showResponse($user->rated()->get()->makeHidden(['rated_user_name','rated_user_id']), 'User rates retrieved successfully !!', 200);
 
     }
 
