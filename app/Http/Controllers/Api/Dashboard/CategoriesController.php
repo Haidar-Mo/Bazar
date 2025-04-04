@@ -20,7 +20,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        return $this->showResponse(Category::all(), 'All categories retrieved !!');
+        return $this->showResponse(Category::query()->parent()->get(), 'All categories retrieved !!');
     }
 
     /**

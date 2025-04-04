@@ -21,6 +21,7 @@ Route::prefix('v1/')->group(function () {
 
 
     //! Mobile section
+
     Route::prefix('mobile')->group(function () {
         include __DIR__ . "/Mobile/V1/Auth.php";
         include __DIR__ . "/Mobile/V1/Profile.php";
@@ -37,6 +38,7 @@ Route::prefix('v1/')->group(function () {
         include __DIR__ . "/Mobile/V1/Meesage.php";
         include __DIR__ . "/Mobile/V1/City.php";
         include __DIR__ . "/Mobile/V1/Rule.php";
+
 
     });
 });
