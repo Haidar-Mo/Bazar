@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->morphs('reportable');
-            $table->text('paragraph');
-            $table->boolean('is_read');
+            $table->text('paragraph')->nullable();
+            $table->boolean('is_read')->default(0);
             $table->timestamps();
         });
     }

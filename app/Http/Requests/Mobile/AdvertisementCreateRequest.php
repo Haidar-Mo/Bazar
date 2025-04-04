@@ -41,12 +41,22 @@ class AdvertisementCreateRequest extends FormRequest
         ];
 
         $categoryRules = match ($category->name) {
-            'properties' => [
+            'عقارات' => [
                 'attributes.details' => ['required'],
                 'attributes.specifications' => ['required'],
-                'attributes.transportation_availability' => ['sometimes','array'],
+                'attributes.transportation_availability' => ['sometimes', 'array'],
                 'attributes.amenities' => ['required'],
                 'attributes.amenities.*' => ['boolean'],
+            ],
+            'الكترونيات' => [
+                'attributes.details' => ['required'],
+                    
+            ],
+            'ازياء و موضة' => [
+                'attributes.details' => ['required'],
+            ],
+            'اثاث و ديكور' => [
+                'attributes.details' => ['required'],
             ],
 
             default => [],

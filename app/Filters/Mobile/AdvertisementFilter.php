@@ -123,98 +123,69 @@ class AdvertisementFilter extends BaseFilter
         //- Jobs
 
         //- electronics
-/*
-        if ($this->request->filled('category')) {
-            $query->where('category_id', $this->request->category);
-        }
-        
-        if ($this->request->filled('condition')) {
-            $query->where('condition', $this->request->condition);
-        }
-        
-        if ($this->request->filled('storage_capacity')) {
-            $attributes = $this->request->get('attributes');
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'storage_capacity')->where('value', $this->request->storage_capacity);
+
+        if ($this->request->filled('duration_of_use')) {
+            $duration_of_use = $this->request->duration_of_use;
+            $query->whereHas('attributes', function ($query) use ($duration_of_use) {
+                $query->where('name', 'duration_of_use')->where('value', $duration_of_use);
             });
         }
-        
+
+        if ($this->request->filled('version')) {
+            $version = $this->request->version;
+            $query->whereHas('attributes', function ($query) use ($version) {
+                $query->where('name', 'version')->where('value', $this->request->version);
+            });
+        }
+
+        if ($this->request->filled('storage')) {
+            $storage = $this->request->storage;
+            $query->whereHas('attributes', function ($query) use ($storage) {
+                $query->where('name', 'storage')->where('value', $this->request->storage);
+            });
+        }
+
+
+
+        //-CLOTHES AND FASHION
+
         if ($this->request->filled('color')) {
-            $attributes = $this->request->get('attributes');
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'color')->where('value', $this->request->color);
+            $color = $this->request->color;
+            $query->whereHas('attributes', function ($query) use ($color) {
+                $query->where('name', 'color')->where('value', $color);
             });
         }
-        
-        if ($this->request->filled('price_min') && $this->request->filled('price_max')) {
-            $query->whereBetween('price', [$this->request->price_min, $this->request->price_max]);
-        } elseif ($this->request->filled('price_min')) {
-            $query->where('price', '>=', $this->request->price_min);
-        } elseif ($this->request->filled('price_max')) {
-            $query->where('price', '<=', $this->request->price_max);
-        }
-        
-        if ($this->request->filled('warranty')) {
-            $attributes = $this->request->get('attributes');
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'warranty')->where('value', $this->request->warranty);
+
+        if ($this->request->filled('fabric')) {
+            $fabric = $this->request->fabric;
+            $query->whereHas('attributes', function ($query) use ($fabric) {
+                $query->where('name', 'fabric')->where('value', $fabric);
             });
         }
-        
-        if ($this->request->filled('phone_age')) {
-            $attributes = $this->request->get('attributes');
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'phone_age')->where('value', $this->request->phone_age);
+
+
+
+        //-FURNITURE
+
+        if ($this->request->filled('light_color')) {
+            $light_color = $this->request->light_color;
+            $query->whereHas('attributes', function ($query) use ($light_color) {
+                $query->where('name', 'light_color')->where('value', $light_color);
             });
         }
-        
-        if ($this->request->filled('screen_size')) {
-            $attributes = $this->request->get('attributes');
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'screen_size')->where('value', $this->request->screen_size);
-            });
-        }
-        
-        if ($this->request->filled('ram')) {
-            $attributes = $this->request->get('attributes');
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                $query->where('name', 'ram')->where('value', $this->request->ram);
-            });
-        }
-        
-        if ($this->request->filled('features')) {
-            $features = $this->request->features;
-            $query->whereHas('attributes', function ($query) use ($features) {
-                $query->where('name', 'features')->whereIn('value', $features);
-            });
-        }
-*/
 
 
 
 
+        // if ($this->request->filled('attributes') && is_array($this->request->get('attributes'))) {
+        //     $attributes = $this->request->get('attributes');
 
-
-
-
-
-
-
-
-
-
-
-
-
-        if ($this->request->filled('attributes') && is_array($this->request->get('attributes'))) {
-            $attributes = $this->request->get('attributes');
-
-            $query->whereHas('attributes', function ($query) use ($attributes) {
-                foreach ($attributes as $key => $value) {
-                    $query->where('name', $key)->where('value', $value);
-                }
-            });
-        }
+        //     $query->whereHas('attributes', function ($query) use ($attributes) {
+        //         foreach ($attributes as $key => $value) {
+        //             $query->where('name', $key)->where('value', $value);
+        //         }
+        //     });
+        // }
 
 
 

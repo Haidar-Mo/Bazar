@@ -35,11 +35,12 @@ class AdvertisementService
 
             $ad = $user->ads()->create($filteredData);
 
-            if (isset($request['images'])) {
-                $images = $request->file('images');
-                foreach ($images as $image) {
-                    $url = $this->saveFile($image, 'ads');
-                    $ad->images()->create(['path' => $url]);
+            if (isset($request['images']) && is_array($request['images'])) {
+                foreach ($request['images'] as $image) {
+                    if ($image instanceof \Illuminate\Http\UploadedFile) { 
+                        $url = $this->saveFile($image, 'ads');
+                        $ad->images()->create(['path' => $url]);
+                    }
                 }
             }
             if (isset($request['attributes']) && is_array($request['attributes'])) {

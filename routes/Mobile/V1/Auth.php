@@ -25,8 +25,12 @@ Route::prefix('auth/')->group(function () {
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value
     ]);
-    Route::post('forget-password', [ResetPasswordController::class, 'sendResetLink'])->name('password.request');
-    Route::post('reset-password', [ResetPasswordController::class, 'resetPassword'])->name('password.reset');
+    // Route::post('forget-password', [ResetPasswordController::class, 'sendResetLink'])->name('password.request');
+    // Route::post('reset-password', [ResetPasswordController::class, 'resetPassword'])->name('password.reset');
+    Route::post('send-reset-code', [ResetPasswordController::class, 'sendResetCode']);
+    Route::post('verify-reset-code', [ResetPasswordController::class, 'verifyResetCode']);
+    Route::post('reset-password', [ResetPasswordController::class, 'resetPassword']);
+
     Route::post('login', [AuthenticationController::class, 'create']);
 
 
@@ -40,7 +44,7 @@ Route::prefix('auth/')->group(function () {
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
     ])->
-        get('/check-token', function (Request $request) {
+        get('check-token', function (Request $request) {
             return response()->json([
                 'success' => true,
                 'message' => 'Token is valid',

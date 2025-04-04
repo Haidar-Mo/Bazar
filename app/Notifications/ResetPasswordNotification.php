@@ -6,15 +6,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Lang;
 
-class VerificationCodeNotification extends Notification
+class ResetPasswordNotification extends Notification
 {
     use Queueable;
+
     /**
-     * Create a new notification instance
-     * @param mixed $verificationCode
+     * Create a new notification instance.
      */
-    public function __construct(public string $verificationCode)
+    public function __construct(public string $token)
     {
         //
     }
@@ -35,12 +36,14 @@ class VerificationCodeNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Account Verification Code')
-            ->greeting('Hello!')
-            ->line('Your account verification code is:')
-            ->line("**{$this->verificationCode}**")
-            ->line('This code will expire in 10 minutes.')
-            ->line('Thank you for using our services!');
+        ->subject(Lang::get('RESET PASSWORD CODE'))
+        ->greeting(Lang::get('Hello!'))
+        ->line(Lang::get('Your reset password code is:'))
+        ->line(Lang::get("**{$this->token}**"))
+        ->line(Lang::get('This code will expire in 10 minutes.'))
+        ->line(Lang::get('You are receiving this email because we received a password reset request for your account.'))
+        ->line(Lang::get('If you did not request a password reset, no further action is required.'))
+        ->line(Lang::get('Thank you for using our services!'));
     }
 
     /**

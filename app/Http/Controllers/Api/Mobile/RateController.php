@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{
     DB,
@@ -19,76 +20,60 @@ use Exception;
 class RateController extends Controller
 {
     use ResponseTrait;
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+
+
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Give a rate for a user
+     * @param \App\Http\Requests\RateRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(RateRequest $request)
     {
-        $user=Auth::user();
+        $user = Auth::user();
         DB::beginTransaction();
-        try{
-         Rate::create([
-            'user_id' => $user->id,
-            'rated_user_id' => $request->rated_user_id,
-            'rate' => $request->rate,
-            'comment' => $request->comment,
-        ]);
-        DB::commit();
-        return $this->showMessage('rate sent successfully....!');
+        try {
+            Rate::create([
+                'user_id' => $user->id,
+                'rated_user_id' => $request->rated_user_id,
+                'rate' => $request->rate,
+                'comment' => $request->comment,
+            ]);
+            DB::commit();
+            return $this->showMessage('rate sent successfully....!');
 
-    }
-    catch(Exception $e){
-        DB::rollBack();
-        return $this->showError($e,'something goes wrong.....!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->showError($e, 'something goes wrong.....!');
 
-    }
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
-     * Show the form for editing the specified resource.
+     * Send report for a specific rate
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function edit(string $id)
+    public function report(Request $request, string $id)
     {
-        //
+        try {
+            $request->validate([
+                'paragraph' => ['nullable', 'string']
+            ]);
+            $rate = Rate::findOrFail($id);
+            $report = Report::create([
+                'user_id' => $request->user()->id,
+                'reportable_type' => get_class($rate),
+                'reportable_id' => $rate->id,
+                'paragraph' => $request->paragraph
+            ]);
+            return $this->showResponse($report, 'Report sent successfully !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while reporting the comment !!');
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

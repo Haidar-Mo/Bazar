@@ -13,11 +13,11 @@ Route::prefix('profiles')
     ])
     ->group(function () {
 
-        Route::get('show', [ProfileController::class, 'show']);
+        Route::get('show/{id}', [ProfileController::class, 'show']);
         Route::post('update', [ProfileController::class, 'update']);
 
-        Route::get('ads', [ProfileController::class, 'showAds']);
-        Route::get('rates', [ProfileController::class, 'showRates']);
+        Route::get('ads/{id}', [ProfileController::class, 'showAds']);
+        Route::get('rates/{id}', [ProfileController::class, 'showRates']);
 
         Route::prefix('cv')->group(function () {
             Route::get('show', [CVController::class, 'show']);
