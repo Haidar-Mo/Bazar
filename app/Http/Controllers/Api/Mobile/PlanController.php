@@ -37,7 +37,7 @@ class PlanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PlanRequest $request)
+    /*public function store(PlanRequest $request)
     {
         DB::beginTransaction();
     try{
@@ -57,28 +57,24 @@ class PlanController extends Controller
 
     }
 
-    }
+    }*/
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+   /* public function show(string $id)
     {
         return $this->showResponse(Plan::FindOrFail($id)->first(),'done successfully...!');
-    }
+    }*/
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(PlanUpdateRequest $request, string $id)
+    /*public function update(PlanUpdateRequest $request, string $id)
     {
         DB::beginTransaction();
         try{
@@ -92,12 +88,12 @@ class PlanController extends Controller
             return $this->showError($e,'something goes wrong....!');
         }
 
-    }
+    }*/
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    /*public function destroy(string $id)
     {
         DB::beginTransaction();
         try{
@@ -110,5 +106,5 @@ class PlanController extends Controller
             return $this->showError($e,'something goes wrong....!');
 
         }
-    }
+    }*/
 }

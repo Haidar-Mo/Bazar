@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\TokenAbility;
-use App\Http\Controllers\Api\Mobile\SubscriptionController;
+use App\Http\Controllers\Api\Mobile\PlanController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -12,6 +12,6 @@ use Illuminate\Support\Facades\Route;
     ])
     ->group(function () {
 
-           Route::apiResource('Subscriptions',SubscriptionController::class);
+           Route::apiResource('plans',PlanController::class);
 
     });
