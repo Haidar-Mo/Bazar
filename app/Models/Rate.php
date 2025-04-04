@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Rate extends Model
 {
@@ -37,13 +38,19 @@ class Rate extends Model
         return $this->belongsTo(User::class, 'rated_user_id');
     }
 
+    public function reported(): MorphMany
+    {
+        return $this->morphMany(Report::class, 'reportable');
+    }
+
 
 
     //! Accessories
 
     public function getUserNameAttribute()
     {
-        $data = $this->user()->first(['first_name', 'last_name'])->makeHidden(['is_full_registered', 'rate', 'role', 'image', 'age', 'plan_name', 'notifications_count']);
+        $data = $this->user()->first(['first_name', 'last_name'])
+        ->makeHidden(['is_full_registered', 'rate', 'role', 'image', 'age', 'plan_name', 'notifications_count']);
         return $data->first_name . ' ' . $data->last_name;
     }
 
@@ -58,5 +65,14 @@ class Rate extends Model
     {
         return $this->user()->first()->makeHidden(['is_full_registered', 'rate', 'role', 'age', 'plan_name', 'notifications_count'])->image ?? null;
 
+    }
+
+    public function getIsReportedAttribute()
+    {
+        return $this->reported()->where('is_read', false)->first()
+            ?
+            $this->reported()->where('is_read', false)->first()->user()->first()
+            :
+            false;
     }
 }

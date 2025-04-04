@@ -13,8 +13,6 @@ Route::prefix('rates')
        // 'role:client'
     ])
     ->group(function () {
-
-
             Route::apiResource('rates',RateController::class);
-
+            Route::post('report/{id}',action: [RateController::class ,'report']);
     });
