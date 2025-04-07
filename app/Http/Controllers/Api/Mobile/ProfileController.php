@@ -30,6 +30,7 @@ class ProfileController extends Controller
         $user = User::findOrFail($id)->only([
             'first_name',
             'last_name',
+            'phone_number',
             'email',
             'birth_date',
             'address',
