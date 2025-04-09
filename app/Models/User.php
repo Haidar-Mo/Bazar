@@ -16,7 +16,8 @@ use Laravel\Sanctum\HasApiTokens;
 use Ramsey\Uuid\Type\Decimal;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\{
-    HasPermissions,HasRoles
+    HasPermissions,
+    HasRoles
 };
 
 class User extends Authenticatable
@@ -200,7 +201,7 @@ class User extends Authenticatable
 
     public function getIsFullRegisteredAttribute()
     {
-        return $this->first_name && $this->last_name && $this->gender && $this->birth_date ? 1 : 0;
+        return $this->first_name && $this->last_name && $this->gender && $this->birth_date ? true : false;
     }
     public function getRateAttribute()
     {

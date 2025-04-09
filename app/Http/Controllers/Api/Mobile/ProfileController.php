@@ -62,6 +62,28 @@ class ProfileController extends Controller
         }
     }
 
+    public function updateImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image'
+        ]);
+        $user = $request->user();
+        try {
+            $this->service->updateImage($request, $user);
+            return $this->showResponse($user, 'Profile image changes successfully !!');
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while updating profile image', 422);
+        }
+    }
+
+    public function deleteImage(Request $request)
+    {
+        $user = $request->user();
+        $user->images()->delete();
+        return $this->showResponse($user, "Image has been deleted !!");
+    }
+
     /**
      * Display list of specific user advertisements
      * @param string $id
@@ -82,7 +104,7 @@ class ProfileController extends Controller
     public function showRates(string $id)
     {
         $user = User::findOrFail($id);
-        return $this->showResponse($user->rated()->get()->makeHidden(['rated_user_name','rated_user_id']), 'User rates retrieved successfully !!', 200);
+        return $this->showResponse($user->rated()->get()->makeHidden(['rated_user_name', 'rated_user_id']), 'User rates retrieved successfully !!', 200);
 
     }
 

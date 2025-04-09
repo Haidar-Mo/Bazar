@@ -90,12 +90,17 @@ class SocialiteController extends Controller
             // Extract user details
             $email = $socialUser['email'];
             $googleId = $socialUser['sub'];
+            $nameParts = explode(' ', trim($socialUser['name']), 2);
+            $first_name = $nameParts[0] ?? '';
+            $last_name = $nameParts[1] ?? '';
 
             // Find or create user
             $user = User::where('email', $email)->first();
             if (!$user) {
                 $user = User::create([
                     'email' => $email,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
                     'password' => bcrypt(Str::random(16)),
                     'provider' => $provider,
                     'provider_id' => $googleId,
