@@ -39,7 +39,7 @@ class MessageController extends Controller
      */
 
      //! عم اتسلى كنت مالل لانو
-     
+
     public function store(MessageRequest $request)
     {
         DB::beginTransaction();

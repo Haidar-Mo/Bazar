@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\{
 use App\Http\Requests\ChatRequest;
 use App\Traits\ResponseTrait;
 use Exception;
+use App\Http\Resources\ChatResource;
 
 class ChatController extends Controller
 {
@@ -20,7 +21,12 @@ class ChatController extends Controller
      */
     public function index()
     {
-        //
+        $user=Auth::user();
+        $chat=  $user->chat()->with(['client', 'seller', 'ads'])->get();
+        $chatDetails = $chat->map(function ($chat) {
+            return $chat->chat_details;
+        });
+        return $this->showResponse($chatDetails, 'done successfully..!');
     }
 
     /**
@@ -58,7 +64,9 @@ class ChatController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $chat = Chat::with(['messages'])
+            ->findOrFail($id);
+        return $this->showResponse(new ChatResource($chat), 'done successfully...!');
     }
 
     /**

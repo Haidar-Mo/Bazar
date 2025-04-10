@@ -26,23 +26,27 @@ class AdvertisementService
 
     public function create($request, User $user)
     {
-
         while ($request['attributes'] && is_string($request['attributes'])) {
             $request['attributes'] = json_decode($request['attributes'], true);
         }
-        $filteredData = Arr::except($request, ['images', 'attributes']);
-        return DB::transaction(function () use ($user, $filteredData, $request) {
 
+        $filteredData = Arr::except($request, ['images', 'attributes']);
+
+        return DB::transaction(function () use ($user, $filteredData, $request) {
+           
             $ad = $user->ads()->create($filteredData);
+
 
             if (isset($request['images']) && is_array($request['images'])) {
                 foreach ($request['images'] as $image) {
-                    if ($image instanceof \Illuminate\Http\UploadedFile) { 
+                    if ($image instanceof IlluminateHttpUploadedFile) {
                         $url = $this->saveFile($image, 'ads');
                         $ad->images()->create(['path' => $url]);
                     }
                 }
             }
+
+
             if (isset($request['attributes']) && is_array($request['attributes'])) {
                 foreach ($request['attributes'] as $attributeKey => $attribute) {
                     foreach ($attribute as $key => $value) {
@@ -55,10 +59,20 @@ class AdvertisementService
                     }
                 }
             }
+
+
+            $subscription = $user->subscriptions()->where('status','=','running')->first();
+            if ($subscription) {
+                $subscription->decrement('number_of_ads');
+                if ($subscription->number_of_ads <= 0) {
+                    $subscription->update(['status' => 'ended']);
+                }
+            }
+
             return $ad;
         });
-
     }
+
 
 
 
