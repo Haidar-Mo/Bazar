@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('plan_id')->constrained('plans')->cascadeOnDelete();
             $table->enum('status', ['pending', 'running', 'ended']);
+            $table->integer('number_of_ads')->default(0);
             $table->date('starts_at')->nullable();
             $table->date('ends_at')->nullable();
             $table->timestamps();

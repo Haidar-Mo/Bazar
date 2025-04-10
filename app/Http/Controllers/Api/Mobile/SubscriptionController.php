@@ -9,7 +9,8 @@ use App\Http\Requests\{
     SubscriptionRequest
 };
 use Illuminate\Support\Facades\{
-    Auth,DB
+    Auth,
+    DB
 };
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
@@ -23,8 +24,8 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $user=Auth::user();
-        return $this->showResponse($user->subscriptions()->with(['plan'])->get(),'done successfully...!');
+        $user = Auth::user();
+        return $this->showResponse($user->subscriptions()->where('status','running')->with(['plan'])->get(), 'done successfully...!');
     }
 
     /**
@@ -41,16 +42,17 @@ class SubscriptionController extends Controller
     public function store(SubscriptionRequest $request)
     {
         DB::beginTransaction();
-        try{
-        $user=Auth::user();
-        $user->subscriptions()->create(['plan_id'=>$request->plan_id]);
-        DB::commit();
-        return $this->showMessage('subscription done successfully.....!');
-        }
-        catch(Exception $e){
+        try {
+            $user = Auth::user();
+            if ($user->subscriptions()->where('status', '=', 'running')->exists()) {
+                return $this->showMessage('لا يمكنك الاشتراك لوجود باقة مفعلة مسبقا', 422);
+            }
+            $user->subscriptions()->create(['plan_id' => $request->plan_id]);
+            DB::commit();
+            return $this->showMessage('تم ارسال طلب الاشتراك بالباقة...يرجى انتظار موافقة الادمن');
+        } catch (Exception $e) {
             DB::rollBack();
-            return $this->showError($e,'something goes wrong....!');
-
+            return $this->showError($e, 'something goes wrong....!');
         }
     }
 
@@ -76,23 +78,33 @@ class SubscriptionController extends Controller
     public function update(SubscriptionUpdateRequest $request, string $id)
     {
         DB::beginTransaction();
-        try{
-        $subscription=Subscription::find($id)->first();
-         $plan = $subscription->plan;
-        $subscription->update([
-            'status'=>$request->status,
-            'starts_at'=>Carbon::now(),
-            'ends_at'=>Carbon::now()->addDays(intval($plan->duration))
-        ]);
-        DB::commit();
-        return $this->showResponse($subscription,'subscription updated successfully...!');
-    }
-    catch(Exception $e){
-        DB::rollBack();
-        return $this->showError($e,'something goes wrong.....!');
+        try {
+            $subscription = Subscription::find($id);
+            $user = Auth::user();
+            $activeSubscription = $user->subscriptions()
+                ->where('status', 'running')
+                ->where('id', '!=', $id)
+                ->first();
+            if ($activeSubscription) {
+                $activeSubscription->update(['status' => 'ended']);
+            }
 
+            $plan = $subscription->plan;
+            $subscription->update([
+                'status' => $request->status,
+                'number_of_ads'=>$subscription->plan->size,
+                'starts_at' => Carbon::now(),
+                'ends_at' => Carbon::now()->addDays(intval($plan->duration))
+            ]);
+
+            DB::commit();
+            return $this->showResponse($subscription, 'subscription updated successfully...!');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $this->showError($e, 'something goes wrong.....!');
+        }
     }
-    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -100,18 +112,15 @@ class SubscriptionController extends Controller
     public function destroy(string $id)
     {
         DB::beginTransaction();
-        try{
-        $user=Auth::user();
-        $subscription= $user->subscriptions()->find($id)->first();
-        $subscription->delete();
-        DB::commit();
-        return $this->showResponse($subscription,'subscription delete successfully....!');
-        }catch(Exception $e){
+        try {
+            $user = Auth::user();
+            $subscription = $user->subscriptions()->find($id)->first();
+            $subscription->delete();
+            DB::commit();
+            return $this->showResponse($subscription, 'subscription delete successfully....!');
+        } catch (Exception $e) {
             DB::rollBack();
-            return $this->showError($e,'something goes wrong....!');
-
+            return $this->showError($e, 'something goes wrong....!');
         }
-
-
     }
 }

@@ -17,7 +17,8 @@ class Subscription extends Model
         'plan_id',
         'status',
         'starts_at',
-        'ends_at'
+        'ends_at',
+        'number_of_ads'
     ];
 
 
