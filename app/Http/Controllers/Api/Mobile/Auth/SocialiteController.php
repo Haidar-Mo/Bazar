@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -106,7 +105,10 @@ class SocialiteController extends Controller
                     'provider_id' => $googleId,
                 ]);
             }
+            $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
 
+            $user->tokens()->delete();
+            
             // Generate access and refresh tokens
             $accessToken = $user->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinutes(config('sanctum.expiration')));
             $refreshToken = $user->createToken('refresh_token', [TokenAbility::ISSUE_ACCESS_TOKEN->value], Carbon::now()->addDays(7));
