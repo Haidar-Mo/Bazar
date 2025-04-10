@@ -134,6 +134,7 @@ class RegistrationController extends Controller
 
                 return $newUser;
             });
+            $new_user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
 
             $accessToken = $new_user->createToken(
                 'access_token',
@@ -183,8 +184,6 @@ class RegistrationController extends Controller
                 if ($user->is_full_registered)
                     throw new Exception("your account is already full registered ", 422);
                 $user->update($request->all());
-
-                $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
 
                 return $user;
             });

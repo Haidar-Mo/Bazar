@@ -14,19 +14,18 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Proprieties',
-            'Vehicles',
-            'Job_Opportunities',
-            'Fashion_and_Clothing',
-            'Furniture_and_Decor',
-            'Electronics',
-            'Entertainment',
-            'Commercial_Ads',
-            'Animals_and_Agriculture',
-            'Miscellaneous',
-            'Services',
-            'Construction_and_Industry',
-            'Germany',
+            'عقارات',
+            'مركبات',
+            'فرص عمل',
+            'ازياء و موضة',
+            'اثاث و ديكور',
+            'الكترونيات',
+            'التسلية',
+            'اعلانات تجارية و متفرقات',
+            'الحيوانات و الزراعة',
+            'خدمات',
+            'الصناعة و البناء',
+            'المانيا',
         ];
 
         foreach ($categories as $category) {

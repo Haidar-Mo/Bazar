@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Traits\HasFiles;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -25,20 +26,25 @@ class ProfileService
      */
     public function update(FormRequest $request, User $user)
     {
-        $image = null;
-        if ($request->hasFile('image')) {
-            if ($user->image)
-                $this->deleteFile($user->image);
-            $image = $this->saveFile($request->file('image'), 'Profile/Images');
 
-        }
-           return DB::transaction(function () use ($request, $user, $image) {
-                $user->update($request->all());
-                if ($image)
-                    $user->images()->updateOrCreate([
-                        'imageable_id' => $user->id
-                    ], ['path' => $image]);
-                return $user;
-            });
+        return DB::transaction(function () use ($request, $user) {
+            $user->update($request->all());
+            return $user;
+        });
+    }
+
+    public function updateImage(Request $request, User $user)
+    {
+        if ($user->image)
+            $this->deleteFile($user->image);
+        $image = $this->saveFile($request->file('image'), 'Profile/Images');
+
+        return DB::transaction(function () use ($image, $user) {
+            if ($image)
+                $user->images()->updateOrCreate([
+                    'imageable_id' => $user->id
+                ], ['path' => $image]);
+            return $user;
+        });
     }
 }

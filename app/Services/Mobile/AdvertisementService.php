@@ -2,6 +2,7 @@
 
 namespace App\Services\Mobile;
 use App\Filters\Mobile\AdvertisementFilter;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Models\{
     Advertisement,
@@ -39,7 +40,9 @@ class AdvertisementService
 
             if (isset($request['images']) && is_array($request['images'])) {
                 foreach ($request['images'] as $image) {
-                    if ($image instanceof IlluminateHttpUploadedFile) {
+
+                    if ($image instanceof \Illuminate\Http\UploadedFile) {
+
                         $url = $this->saveFile($image, 'ads');
                         $ad->images()->create(['path' => $url]);
                     }
@@ -49,14 +52,31 @@ class AdvertisementService
 
             if (isset($request['attributes']) && is_array($request['attributes'])) {
                 foreach ($request['attributes'] as $attributeKey => $attribute) {
-                    foreach ($attribute as $key => $value) {
-                        AdvertisementAttribute::create([
-                            'advertisement_id' => $ad->id,
-                            'title' => $attributeKey,
-                            'name' => $key,
-                            'value' => $value,
-                        ]);
+                    if (is_array($attribute)) {
+
+                        //throw new Exception("not array", 1);
+                        foreach ($attribute as $key => $value) {
+                            if (is_array($value)) {
+                                foreach ($value as $innerKey => $innerValue) {
+                                    AdvertisementAttribute::create([
+                                        'advertisement_id' => $ad->id,
+                                        'title' => $attributeKey,
+                                        'name' => $key,
+                                        'value' => $innerValue,
+                                    ]);
+                                }
+                            } else {
+                                AdvertisementAttribute::create([
+                                    'advertisement_id' => $ad->id,
+                                    'title' => $attributeKey,
+                                    'name' => $key,
+                                    'value' => $value,
+                                ]);
+                            }
+                        }
                     }
+
+
                 }
             }
 

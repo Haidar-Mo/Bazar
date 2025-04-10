@@ -129,9 +129,21 @@ class Advertisement extends Model
     }
     public function getAttributesAttribute()
     {
-        return $this->attributes()->get()->groupBy('title')->map(function ($attributes) {
-            return $attributes->pluck('value', 'name');
-        });
+        $attributes = $this->attributes()->get();
+        return $attributes->groupBy('title')
+            ->map(function ($group) {
+                // Group by name first to handle potential multiple values
+                $groupedByName = $group->groupBy('name');
+
+                return $groupedByName->map(function ($items) {
+                    // If multiple items share the same name (like multiple comfort features)
+                    if ($items->count() > 1) {
+                        return $items->pluck('value')->toArray();
+                    }
+                    // Single value items
+                    return $items->first()->value;
+                });
+            });
     }
 
     public function getCreatedFromAttribute()

@@ -48,14 +48,25 @@ class AdvertisementCreateRequest extends FormRequest
                 'attributes.amenities' => ['required'],
                 'attributes.amenities.*' => ['boolean'],
             ],
+            'مركبات' => [
+                'attributes.details' => ['required'],
+                'attributes.basic' => ['required'],
+                'attributes.features' => ['required'],
+                'attributes.specifications' => ['required'],
+            ],
             'الكترونيات' => [
                 'attributes.details' => ['required'],
-                    
             ],
             'ازياء و موضة' => [
                 'attributes.details' => ['required'],
             ],
             'اثاث و ديكور' => [
+                'attributes.details' => ['required'],
+            ],
+            'الصناعة و البناء' => [
+                'attributes.details' => ['required'],
+            ],
+            'اعلانات تجارية و متفرقات' => [
                 'attributes.details' => ['required'],
             ],
 
