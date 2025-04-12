@@ -58,7 +58,7 @@ class AdvertisementController extends Controller
             report($e);
             return $this->showError($e, 'An error occur while creating your advertisement !!');
         }
-        
+
     }
 
     /**
@@ -84,11 +84,15 @@ class AdvertisementController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Create a share link for a specific advertisement
+     * @param string $id
+     * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function update(AdvertisementUpdateRequest $request, string $id)
+    public function share(string $id)
     {
-
+        $ad = Advertisement::findOrFail($id);
+        $shareableUrl = url("/share/{$ad->id}");
+        return response()->json(['url' => $shareableUrl]);
     }
 
     /**

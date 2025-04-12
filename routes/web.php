@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Advertisement;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -43,4 +44,8 @@ Route::get('storage-link', function () {
 
 });
 
-//database\migrations\2025_03_28_192313_create_password_resets_table.php
+
+Route::get('/ads/share/{id}', function ($id) {
+    $ad = Advertisement::findOrFail($id);
+    return view('ads.shared', ['ad' => $ad]); // Render a page with meta tags for deep linking
+});

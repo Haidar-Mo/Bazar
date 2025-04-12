@@ -91,6 +91,11 @@ class Advertisement extends Model
         return $this->hasMany(AdvertisementAttribute::class);
     }
 
+    public function items()
+    {
+        return $this->hasMany(FavoriteListItem::class);
+    }
+
     public function reported(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');

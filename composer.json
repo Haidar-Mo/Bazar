@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.9",
+        "open-southeners/laravel-companion-apps": "^2.1",
         "socialiteproviders/apple": "^5.6",
         "spatie/laravel-permission": "^6.13"
     },

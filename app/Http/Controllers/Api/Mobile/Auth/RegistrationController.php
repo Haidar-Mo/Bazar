@@ -188,6 +188,7 @@ class RegistrationController extends Controller
                 return $user;
             });
 
+            $user->append('is_full_registered');
             return response()->json([
                 'message' => 'Registration is completely done',
                 'user' => $user,

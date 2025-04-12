@@ -3,63 +3,41 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Models\Advertisement;
 use Illuminate\Http\Request;
 use App\Http\Requests\Mobile\{
     FavoriteRequest,
     UpdateFavoriteRequest
 };
 use App\Models\{
-    FavoriteList,
-    FavoriteListItem
+    FavoriteList
 };
 use App\Traits\{
-    HasFiles,
     ResponseTrait
 };
-use Exception;
 use Illuminate\Support\Facades\{DB, Auth};
+use Exception;
+
 class FavoriteController extends Controller
 {
     use ResponseTrait;
-    /*$user=Auth::user();
-           $favoritelist=$user->favorite()->get();
-           return $this->showResponse($favoritelist,'done');*/
-    public function index()
+
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        $favoriteLists = $user->favorite()->get();
+        $user = $request->user();
+        $favoriteListId = $user->favorite()->where('name', 'All')->firstOrFail()->id;
 
-        $formattedFavoriteLists = $favoriteLists->map(function ($favoriteList) {
-            $itemsPaginator = $favoriteList->items()
-                ->with([
-                    'ads' => function ($query) {
-                        $query->with(['images', 'attributes', 'category']);
-                    }
-                ])
-                ->join('advertisements', 'favorite_list_items.advertisement_id', '=', 'advertisements.id')
-                ->select('favorite_list_items.*')
-                ->orderByRaw('advertisements.is_special DESC, favorite_list_items.created_at DESC') // ترتيب حسب is_special ثم created_at
-                ->paginate(10);
+        $ads = Advertisement::select('advertisements.*')
+        ->join('favorite_list_items', 'advertisements.id', '=', 'favorite_list_items.advertisement_id')
+        ->where('favorite_list_items.favorite_list_id', $favoriteListId)
+        ->orderByRaw('advertisements.is_special DESC, favorite_list_items.created_at DESC')
+        ->paginate(2);
 
-            $formattedItems = $itemsPaginator->getCollection()->map(function ($item) {
-                return $this->formatAdvertisement($item->ads);
-            });
-
-          //  $itemsPaginator->setCollection($formattedItems);
-
-           /* return [
-                'id' => $favoriteList->id,
-                'name' => $favoriteList->name,
-                'items' => $itemsPaginator,
-            ];*/
-            return [
-                'data' => $formattedItems,
-            ];
+        $ads->getCollection()->map(function ($item) {
+            return $this->formatAdvertisement($item);
         });
-        return $this->showResponse($formattedFavoriteLists->first()['data'], 'Favorite items retrieved successfully !!');
-        /*return response()->json([
-            'favorite_list' => $formattedFavoriteLists,
-        ]);*/
+
+        return $this->showResponse($ads, 'Favorite items retrieved successfully');
     }
 
 
@@ -118,7 +96,7 @@ class FavoriteController extends Controller
             'user_id' => $ad->user_id,
             'city_id' => $ad->city_id,
             'category_id' => $ad->category_id,
-            'title'=>$ad->title,
+            'title' => $ad->title,
             'type' => $ad->type,
             'currency_type' => $ad->currency_type,
             'negotiable' => $ad->negotiable,
@@ -134,7 +112,7 @@ class FavoriteController extends Controller
             'main_category_name' => $ad->main_category_name,
             'city_name' => $ad->city_name,
             'category_name' => $ad->category_name,
-            'user_name'=>$ad->user_name,
+            'user_name' => $ad->user_name,
 
         ];
     }
