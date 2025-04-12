@@ -49,6 +49,7 @@ class Chat extends Model
 
     public function getChatDetailsAttribute()
     {
+        $lastMessage = $this->messages()->latest()->first();
 
         return [
             'id' => $this->id,
@@ -56,9 +57,13 @@ class Chat extends Model
             'sender_id' => $this->client->id,
             'receiver_name' => $this->seller->first_name,
             'receiver_id' => $this->seller->id,
+            'price'=>$this->ads->price,
+            'city'=>$this->ads->city_name,
+            'location'=>$this->ads->location,
             'advertisement_title' => $this->ads->title,
             'advertisement_image' => $this->ads->images,
-            'created_from' => $this->created_from
+            'created_from' => $this->created_from,
+            'last_message' => $lastMessage ? $lastMessage->content : ' '
         ];
     }
 
@@ -75,6 +80,8 @@ class Chat extends Model
             'created_from' => $this->created_from
         ];
     }
+
+
 
 
     public function getCreatedFromAttribute()
