@@ -31,6 +31,7 @@ class NewMessageSent implements ShouldBroadcast,ShouldQueue
             'id' => $this->message->id,
             'content' => $this->message->content,
             'sender' => $this->message->sender->name,
+            'sender_id'=>$this->message->sender_id,
             'created_at' => $this->message->created_at->toDateTimeString()
         ];
     }
