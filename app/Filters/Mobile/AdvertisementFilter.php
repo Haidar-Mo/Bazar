@@ -3,6 +3,7 @@
 namespace App\Filters\Mobile;
 
 use App\Filters\BaseFilter;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 
 class AdvertisementFilter extends BaseFilter
@@ -18,7 +19,9 @@ class AdvertisementFilter extends BaseFilter
 
         }
         if ($this->request->filled('category_id')) {
-            $query->where('category_id', $this->request->category_id);
+            $category = Category::findOrFail($this->request->category_id);
+            $query->where('category_id', $this->request->category_id)
+            ->orWhereIn('category_id', $category->children()->get()->pluck('id'));
         }
 
         if ($this->request->filled('min_price') && $this->request->filled('max_price')) {

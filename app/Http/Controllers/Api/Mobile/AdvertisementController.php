@@ -114,7 +114,7 @@ class AdvertisementController extends Controller
     }
 
 
-    public function indexWithFilter(Request $request)
+    public function indexWithFilter()
     {
         try {
             $data = $this->service->indexWithFilter();
