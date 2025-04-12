@@ -6,9 +6,12 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use App\Models\Subscription;
 use GPBMetadata\Google\Rpc\Status;
+use Illuminate\Support\Facades\Log;
+use App\Traits\FirebaseNotificationTrait;
 
 class expiresSubscription extends Command
 {
+    use FirebaseNotificationTrait;
     /**
      * The name and signature of the console command.
      *
@@ -33,6 +36,25 @@ class expiresSubscription extends Command
             if($subscription->ends_at < Carbon::now()){
                 $subscription->status='ended';
                 $subscription->save();
+
+                 //! Notification
+
+                 $user=$subscription->user;
+                 $token=$user->device_token;
+
+                 if($token){
+                    try {
+                        $Request = (object) [
+                            'title' => 'انهاء الاشتراك',
+                            'body' => 'تم الغاء اشتراكك بالباقة',
+                        ];
+
+                        $subscription->unicast($Request, $token);
+                    } catch (\Exception $e) {
+                        Log::error('فشل إرسال الإشعار: ' . $e->getMessage());
+                    }
+                 }
+
             }
 
         }

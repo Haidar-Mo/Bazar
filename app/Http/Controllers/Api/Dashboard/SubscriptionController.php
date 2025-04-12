@@ -32,7 +32,7 @@ class SubscriptionController extends Controller
 
     public function show(string $id)
     {
-        $subscription=Subscription::with('plan')->findOrFail($id);
+        $subscription=Subscription::with(['plan','user'])->findOrFail($id);
         return $this->showResponse($subscription,'done successfully...!');
     }
 

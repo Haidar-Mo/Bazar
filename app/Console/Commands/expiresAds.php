@@ -4,25 +4,17 @@ namespace App\Console\Commands;
 use App\Models\Advertisement;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use App\Traits\FirebaseNotificationTrait;
+use Illuminate\Support\Facades\{
+    Log
+};
 class expiresAds extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'app:expires-ads';
+    use FirebaseNotificationTrait;
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
+    protected $signature = 'app:expires-ads';
     protected $description = 'Command description';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $expiredAds = Advertisement::where('expiry_date', '<', Carbon::now() )
@@ -31,7 +23,24 @@ class expiresAds extends Command
             if($ad->status!='inactive'){
             $ad->status = 'inactive';
             $ad->save();
-            $ad->delete();
+            //$ad->delete();
+
+            //! Notification
+
+            $user = $ad->user;
+            $token = $user->device_token;
+            if ($token) {
+                try {
+                    $Request = (object) [
+                        'title' => 'إعلان منتهي الصلاحية',
+                        'body' => 'تم تعطيل إعلانك "'.$ad->title.'" بسبب انتهاء فترة النشر.',
+                    ];
+
+                    $ad->unicast($Request, $token);
+                } catch (\Exception $e) {
+                    Log::error('فشل إرسال الإشعار: ' . $e->getMessage());
+                }
+            }
         }
     }
 
