@@ -10,8 +10,10 @@ use App\Models\{
     User
 };
 use Illuminate\Support\Facades\{
-    DB,Auth
+    DB,Auth,
+    Log
 };
+use App\Events\NewMessageSent;
 use App\Traits\ResponseTrait;
 use App\Http\Requests\MessageRequest;
 use Exception;
@@ -40,25 +42,25 @@ class MessageController extends Controller
 
      //! عم اتسلى كنت مالل لانو
 
-    public function store(MessageRequest $request)
-    {
-        DB::beginTransaction();
-        try{
-        $user=Auth::user();
-        $user->messages()->create([
-            'sender_id'=>$user->id,
-            'content'=>$request->content,
-            'chat_id'=>$request->chat_id
-        ]);
-        DB::commit();
-        return $this->showMessage('Message sent successfully....!');
-    }catch(Exception $e){
-        DB::rollBack();
-        return $this->showError($e,'something goes wrong...!');
-
-
-    }
-    }
+     public function store(MessageRequest $request)
+     {
+         DB::beginTransaction();
+         try {
+             $user = Auth::user();
+             $message = $user->messages()->create([
+                 'sender_id' => $user->id,
+                 'content' => $request->content,
+                 'chat_id' => $request->chat_id
+             ]);
+             broadcast(new NewMessageSent($message))->toOthers();
+             Log::info('Message sent and broadcasted: ', ['message' => $message]);
+             DB::commit();
+             return $this->showMessage('Message sent..!');
+         } catch(Exception $e) {
+             DB::rollBack();
+             return $this->showError($e,'something goes wrong...!');
+         }
+     }
 
     /**
      * Display the specified resource.
