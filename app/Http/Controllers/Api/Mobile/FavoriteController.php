@@ -45,18 +45,21 @@ class FavoriteController extends Controller
                 return $this->formatAdvertisement($item->ads);
             });
 
-            $itemsPaginator->setCollection($formattedItems);
+          //  $itemsPaginator->setCollection($formattedItems);
 
-            return [
+           /* return [
                 'id' => $favoriteList->id,
                 'name' => $favoriteList->name,
                 'items' => $itemsPaginator,
+            ];*/
+            return [
+                'data' => $formattedItems,
             ];
         });
-
-        return response()->json([
+        return $this->showResponse($formattedFavoriteLists->first()['data'], 'Favorite items retrieved successfully !!');
+        /*return response()->json([
             'favorite_list' => $formattedFavoriteLists,
-        ]);
+        ]);*/
     }
 
 
@@ -115,6 +118,7 @@ class FavoriteController extends Controller
             'user_id' => $ad->user_id,
             'city_id' => $ad->city_id,
             'category_id' => $ad->category_id,
+            'title'=>$ad->title,
             'type' => $ad->type,
             'currency_type' => $ad->currency_type,
             'negotiable' => $ad->negotiable,
@@ -126,10 +130,11 @@ class FavoriteController extends Controller
             'views' => $ad->views,
             'created_from' => $ad->created_from,
             'is_favorite' => $ad->is_favorite,
-            'parent_category' => $ad->parent_category,
+            'main_category_id' => $ad->main_category_id,
+            'main_category_name' => $ad->main_category_name,
             'city_name' => $ad->city_name,
             'category_name' => $ad->category_name,
-            'category' => $ad->category,
+            'user_name'=>$ad->user_name,
 
         ];
     }

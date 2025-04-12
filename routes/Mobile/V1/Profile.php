@@ -9,12 +9,14 @@ Route::prefix('profiles')
     ->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
-       // 'role:client'
+        // 'role:client'
     ])
     ->group(function () {
 
         Route::get('show/{id}', [ProfileController::class, 'show']);
         Route::post('update', [ProfileController::class, 'update']);
+        Route::post('update/image', [ProfileController::class, 'updateImage']);
+        Route::post('delete/image', [ProfileController::class, 'deleteImage']);
 
         Route::get('ads/{id}', [ProfileController::class, 'showAds']);
         Route::get('rates/{id}', [ProfileController::class, 'showRates']);

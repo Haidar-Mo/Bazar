@@ -5,7 +5,11 @@ use App\Models\City;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('city')
-    ->middleware([])
+    ->middleware([
+        'auth:sanctum',
+        'ability:' . TokenAbility::ACCESS_API->value,
+        //'role:client'
+    ])
     ->group(function () {
         Route::get('index', function () {
 

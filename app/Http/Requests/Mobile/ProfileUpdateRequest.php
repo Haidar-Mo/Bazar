@@ -29,10 +29,8 @@ class ProfileUpdateRequest extends FormRequest
             'address' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'birth_date' => 'required|date',
-           // 'phone_number' => 'string|unique:users,phone_number,' . $user->id.',id',
+            'phone_number' => 'string|unique:users,phone_number,' . $user->id.',id',
             'description' => 'sometimes|string',
-            'image' => 'sometimes|file',
-
         ];
     }
 }
