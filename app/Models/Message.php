@@ -16,10 +16,11 @@ class Message extends Model
     protected $fillable = [
         'chat_id',
         'sender_id',
-        'content'
+        'content',
+        'is_read'
     ];
 
-    protected $appends = ['created_from'];
+    protected $appends = ['created_from','time'];
 
 
     public function chat(): BelongsTo
@@ -31,6 +32,13 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'sender_id');
     }
+
+    //! Accessories
+
+    public function getTimeAttribute()
+{
+    return $this->created_at->format('H:i:s');
+}
 
 
     public function getCreatedFromAttribute()
