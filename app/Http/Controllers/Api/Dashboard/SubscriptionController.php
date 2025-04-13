@@ -27,8 +27,15 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        return $this->showResponse(Subscription::where('status',$request->status)->get(),'done successfully...!');
+
+        $subscriptions = Subscription::where('status', $request->status)->get();
+        $simpleSubscriptions = $subscriptions->map(function ($subscription) {
+            return $subscription->toSimpleArray();
+        });
+
+        return $this->showResponse($simpleSubscriptions, 'done successfully...!');
     }
+
 
     public function show(string $id)
     {

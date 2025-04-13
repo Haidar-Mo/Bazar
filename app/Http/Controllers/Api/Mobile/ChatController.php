@@ -21,13 +21,15 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $user=Auth::user();
-        $chat=  $user->chat()->with(['client', 'seller', 'ads'])->get();
-        $chatDetails = $chat->map(function ($chat) {
-            return $chat->chat_details;
-        });
-        return $this->showResponse($chatDetails, 'done successfully..!');
+        $user = Auth::user();
+
+        $chats = $user->chat()
+            ->with(['client', 'seller', 'ads', 'messages'])
+            ->get();
+
+        return $this->showResponse($chats->pluck('chat_details'), 'تم جلب المحادثات');
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -66,8 +68,13 @@ class ChatController extends Controller
     {
         $chat = Chat::with(['messages'])
             ->findOrFail($id);
+        $chat->messages()->where('sender_id', '!=', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
         return $this->showResponse(new ChatResource($chat), 'done successfully...!');
     }
+
 
     /**
      * Show the form for editing the specified resource.
