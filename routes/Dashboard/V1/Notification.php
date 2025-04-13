@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('notifications')
-    ->middleware([])
+    ->middleware(['auth:sanctum'])
     ->group(function () {
 
         Route::get('index',[NotificationController::class,'index']);
