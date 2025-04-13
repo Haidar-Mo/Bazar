@@ -48,15 +48,18 @@ class Chat extends Model
     }
 
 
+
     public function getChatDetailsAttribute()
     {
         $user = Auth::user();
         $lastMessage = $this->messages()->latest()->first();
 
         $hasUnread = false;
+        if($user){
         if ($lastMessage && $lastMessage->sender_id != $user->id) {
 
             $hasUnread = !$lastMessage->is_read;
+        }
         }
 
         return [
@@ -75,8 +78,6 @@ class Chat extends Model
             'has_unread' => $hasUnread //! if true thats meaning chat unreaded || false that chat readed
         ];
     }
-
-
     public function getAdvertisementDetailsAttribute()
     {
         return [
