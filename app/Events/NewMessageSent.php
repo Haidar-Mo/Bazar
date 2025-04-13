@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class NewMessageSent implements ShouldBroadcast,ShouldQueue
 {
-    use Dispatchable,InteractsWithSockets;
+    use Dispatchable,InteractsWithSockets,SerializesModels;
 
 
     public function __construct(public $message)
@@ -32,7 +32,9 @@ class NewMessageSent implements ShouldBroadcast,ShouldQueue
             'content' => $this->message->content,
             'sender' => $this->message->sender->name,
             'sender_id'=>$this->message->sender_id,
-            'created_at' => $this->message->created_at->toDateTimeString()
+            'is_read'=>$this->message->is_read,
+            'created_from' => $this->message->created_from,
+            'time'=>$this->message->time
         ];
     }
 }
