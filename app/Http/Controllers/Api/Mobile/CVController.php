@@ -29,7 +29,15 @@ class CVController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $cv = $user->cv()->first();
+        $cv = $user->cv()
+            ->with([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ])->first();
         return $this->showResponse($cv, 'CV retrieved successfully !');
     }
 
@@ -44,6 +52,14 @@ class CVController extends Controller
 
         try {
             $cv = $this->service->create($request, $user);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'CV created successfully !! ');
         } catch (Exception $e) {
             report($e);
@@ -60,6 +76,14 @@ class CVController extends Controller
         $user = $request->user();
         try {
             $cv = $this->service->update($request, $user);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'CV created successfully !! ');
         } catch (Exception $e) {
             report($e);
@@ -87,6 +111,14 @@ class CVController extends Controller
 
         try {
             $this->service->addFile($request, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'file uploaded successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -101,13 +133,22 @@ class CVController extends Controller
     public function deleteCvFile()
     {
         $user = Auth::user();
-        $file = $user->cv()->first()->file()->first();
+        $cv = $user->cv()->first();
+        $file = $cv->file()->first();
         if (!$file)
             return $this->showMessage('you did not upload any CV-File yet', 400, false);
         try {
             $this->deleteFile($file->url);
             $file->delete();
-            return $this->showMessage('File deleted !', 200);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
+            return $this->showResponse($cv, 'File deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error has been occur while deleting CV`s file');
@@ -126,6 +167,14 @@ class CVController extends Controller
         $cv = $user->cv()->first();
         try {
             $this->service->addExperience($request, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'An Experience add to CV successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -149,6 +198,14 @@ class CVController extends Controller
 
         try {
             $experience->delete();
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'experience deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -169,6 +226,14 @@ class CVController extends Controller
         $cv = $user->cv()->first();
         try {
             $this->service->addQualification($request, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'An Qualification add to CV successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -192,6 +257,14 @@ class CVController extends Controller
 
         try {
             $qualification->delete();
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'qualification deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -214,6 +287,14 @@ class CVController extends Controller
         $cv = $user->cv()->first();
         try {
             $this->service->addSkill($data, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'skill added successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -235,6 +316,14 @@ class CVController extends Controller
             return $this->showMessage('sorry, we could not find this skill \n Maybe it`s already deleted', 400, false);
         try {
             $skill->delete();
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'Skill deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -257,6 +346,14 @@ class CVController extends Controller
         $cv = $user->cv()->first();
         try {
             $this->service->addLink($data, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'Link added successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -278,6 +375,14 @@ class CVController extends Controller
             return $this->showMessage('sorry, we could not find this link \n Maybe it`s already deleted', 400, false);
         try {
             $link->delete();
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'Link deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -304,6 +409,14 @@ class CVController extends Controller
         $cv = $user->cv()->first();
         try {
             $this->service->addDocument($request, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'Document added successfully !!', 200);
         } catch (Exception $e) {
             report($e);
@@ -326,6 +439,14 @@ class CVController extends Controller
         try {
             $this->deleteFile($document->path);
             $document->delete();
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
             return $this->showResponse($cv, 'Document deleted successfully !!', 200);
         } catch (Exception $e) {
             report($e);

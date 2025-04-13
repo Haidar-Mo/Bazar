@@ -35,7 +35,6 @@ class Cv extends Model
     protected function casts()
     {
         return [
-            'language' => 'array',
             'birth_date' => 'date'
         ];
     }
@@ -45,12 +44,7 @@ class Cv extends Model
      * @var array
      */
     protected $appends = [
-        'file',
-        'documents',
-        'links',
-        'qualification',
-        'experience',
-        'skill',
+        
     ];
 
     public function user(): BelongsTo

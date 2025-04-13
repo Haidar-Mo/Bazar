@@ -25,10 +25,10 @@ class CvCreateRequest extends FormRequest
             'full_name' => 'required|string|max:255',
             'summary' => 'nullable|string',
             'image' => 'nullable|image',
-            'email' => 'required|string|email|max:255|unique:c_v_s,email',
-            'phone_number' => 'required|string|max:255|unique:c_v_s,phone_number',
+            'email' => 'required|string|email|max:255|unique:cvs,email',
+            'phone_number' => 'required|string|max:255|unique:cvs,phone_number',
             'gender' => 'required|in:male,female',
-            'language' => 'nullable|json',
+            'language' => 'string',
             'nationality' => 'required|string|max:255',
             'birth_date' => 'nullable|date',
         ];
