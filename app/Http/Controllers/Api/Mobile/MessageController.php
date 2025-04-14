@@ -52,7 +52,7 @@ class MessageController extends Controller
                  'content' => $request->content,
                  'chat_id' => $request->chat_id
              ]);
-             broadcast(new NewMessageSent($message))->toOthers();
+             event(new NewMessageSent($message));
              Log::info('Message sent and broadcasted: ', ['message' => $message]);
              DB::commit();
              return $this->showMessage('Message sent..!');
