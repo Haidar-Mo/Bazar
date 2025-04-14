@@ -15,7 +15,9 @@ class UserController extends Controller
     use ResponseTrait;
 
 
-    public function __construct(protected UserService $service) {}
+    public function __construct(protected UserService $service)
+    {
+    }
 
     /**
      * Display specific User
@@ -112,6 +114,8 @@ class UserController extends Controller
     {
         try {
             $rate = Rate::findOrFail($id);
+            $report = $rate->reported();
+            $report->delete();
             $rate->delete();
             return $this->showMessage('Rate deleted successfully !!');
         } catch (Exception $e) {
