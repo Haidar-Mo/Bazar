@@ -43,9 +43,3 @@ Route::get('storage-link', function () {
     return view('artisan-response', compact('title'));
 
 });
-
-
-Route::get('/ads/share/{id}', function ($id) {
-    $ad = Advertisement::findOrFail($id);
-    return view('ads.shared', ['ad' => $ad]); // Render a page with meta tags for deep linking
-});
