@@ -4,7 +4,7 @@ use App\Enums\TokenAbility;
 use App\Http\Controllers\Api\Mobile\AdvertisementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsEndedPlan;
-Route::prefix('Advertisements')
+Route::prefix('Advertisements/')
     ->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
@@ -22,5 +22,6 @@ Route::prefix('Advertisements')
         Route::get('filter', [AdvertisementController::class, 'indexWithFilter']);
         Route::get('similar/{id}',[AdvertisementController::class, 'getSimilarAds']);
 
+        Route::get('share/{id}', [AdvertisementController::class, 'share']);
 
     });
