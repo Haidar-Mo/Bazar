@@ -11,12 +11,14 @@ use App\Http\Requests\{
 use App\Models\User;
 use Illuminate\Support\Facades\{
     Auth,
-    DB
+    DB,
+    Log
 };
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Exception;
+use App\Notifications\SubscriptiondNotification;
 
 class SubscriptionController extends Controller
 {
@@ -65,6 +67,23 @@ class SubscriptionController extends Controller
                 'starts_at' => Carbon::now(),
                 'ends_at' => Carbon::now()->addDays(intval($plan->duration))
             ]);
+            $token = $user->device_token;
+            if ($token) {
+                try {
+                    $Request = (object) [
+                        'title' => 'تفعيل الباقة',
+                        'body' => 'تم تفعيل باقتك بنجاح!',
+                    ];
+
+
+                    $subscription->unicast($Request, $token);
+                } catch (Exception $e) {
+                    Log::error('Faild to send Notification Firebase: ' . $e->getMessage());
+                }
+            }
+
+
+            $user->notify(new SubscriptiondNotification($subscription->plan->name,'تجديد اشتراك','تم تفعيل اشتراكك بالباقة'));
 
             DB::commit();
             return $this->showResponse($subscription, 'subscription updated successfully...!');

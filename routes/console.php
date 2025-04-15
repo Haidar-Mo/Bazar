@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('app:expires-ads')->everyMinute();
 Schedule::command('app:expires-subscription')->everyMinute();
+Schedule::command('app:delete-old-notifications')->dailyAt('00:00');
