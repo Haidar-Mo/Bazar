@@ -21,9 +21,9 @@ class NotificationController extends Controller
      * Get all notifications
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         $notifications = $user->notifications;
         return $this->showResponse($notifications, 'Notification retrieved successfully !!', 200);
     }

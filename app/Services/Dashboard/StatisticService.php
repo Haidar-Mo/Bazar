@@ -39,7 +39,7 @@ class StatisticService
             ->get();
 
         $ads_count = $all_ads->map(fn($item) => [
-            'date' => $item->period,
+            'date' => strval($item->period),
             'total_ads' => $item->count,
         ]);
 
@@ -50,7 +50,7 @@ class StatisticService
             ->get();
 
         $subs_count = $all_subs->map(fn($item) => [
-            'date' => $item->period,
+            'date' => strval($item->period),
             'total_subs' => $item->count,
         ]);
 

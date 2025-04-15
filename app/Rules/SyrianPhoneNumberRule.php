@@ -16,7 +16,7 @@ class SyrianPhoneNumberRule implements ValidationRule
     {
         // Syrian phone numbers start with +963 or 09 followed by 8 digits
         if (!preg_match('/^(\+9639|09)\d{8}$/', $value)) {
-            $fail("The $attribute must be a valid Syrian phone number.");
+            $fail("The $attribute must be a valid Syrian phone number : start with +963 or 09 followed by 8 digits");
         }
     }
 }

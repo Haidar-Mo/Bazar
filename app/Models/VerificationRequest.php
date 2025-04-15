@@ -17,7 +17,8 @@ class VerificationRequest extends Model
         'phone_number',
         'identity_image',
         'work_register',
-        'other_document',
+        'profile_image',
+        'company_name',
         'status',
         'reject_reason'
     ];
@@ -25,24 +26,23 @@ class VerificationRequest extends Model
     protected $appends = [
         'identity_image_full_path',
         'work_register_full_path',
-        'other_document_full_path',
+        'profile_image_full_path',
     ];
 
     public function getIdentityImageFullPathAttribute()
     {
-        return $this->identity_image_path ? asset('storage/' . $this->identity_image_path) : null;
+        return $this->identity_image ? asset($this->identity_image) : null;
     }
 
     public function getWorkRegisterFullPathAttribute()
     {
-        return $this->work_register_path ? asset('storage/' . $this->work_register_path) : null;
+        return $this->work_register ? asset($this->work_register) : null;
     }
 
-    public function getOtherDocumentFullPathAttribute()
+    public function getProfileImageFullPathAttribute()
     {
-        return $this->other_document_path ? asset('storage/' . $this->other_document_path) : null;
+        return $this->profile_image ? asset($this->profile_image) : null;
     }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

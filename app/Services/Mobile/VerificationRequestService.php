@@ -32,7 +32,7 @@ class VerificationRequestService
         $files = [
             'identity_image' => 'identity_image',
             'work_register' => 'work_register',
-            'other_document' => 'other_document',
+            'profile_image' => 'profile_image',
         ];
         $filePaths = [];
 
@@ -46,7 +46,8 @@ class VerificationRequestService
                 'phone_number' => $request->phone_number,
                 'identity_image' => $filePaths['identity_image'],
                 'work_register' => $filePaths['work_register'],
-                'other_document' => $filePaths['other_document'],
+                'profile_image' => $filePaths['profile_image'],
+                'company_name'=> $request->company_name
             ]);
 
             return $verificationRequest;
