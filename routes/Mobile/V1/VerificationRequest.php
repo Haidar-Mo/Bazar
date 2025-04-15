@@ -9,10 +9,11 @@ Route::prefix('verification-requests')
     ->middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value,
-        'role:client'
+        //'role:client'
     ])
-    ->group(function () { 
+    ->group(function () {
 
-        Route::post('create',[VerificationRequestController::class,'store']);
-        
+        Route::get('show', [VerificationRequestController::class, 'show']);
+        Route::post('create', [VerificationRequestController::class, 'store']);
+
     });

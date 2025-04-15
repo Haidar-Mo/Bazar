@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mobile\CvExperienceCreateRequest;
+use App\Http\Requests\Mobile\CvLanguageCreateRequest;
 use App\Http\Requests\Mobile\CvQualificationCreateRequest;
 use App\Http\Requests\Mobile\CvUpdateRequest;
 use App\Http\Requests\Mobile\CvCreateRequest;
@@ -34,6 +35,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -56,6 +58,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -80,6 +83,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -115,6 +119,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -144,6 +149,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -171,6 +177,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -202,6 +209,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -213,6 +221,64 @@ class CVController extends Controller
         }
     }
 
+    /**
+     * Add new Language to the CV
+     * @param \App\Http\Requests\Mobile\CvLanguageCreateRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addLanguage(CvLanguageCreateRequest $request)
+    {
+        $user = $request->user();
+        $cv = $user->cv()->first();
+        try {
+            $this->service->addLanguage($request, $cv);
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'language',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
+            return $this->showResponse($cv, 'A Language add to CV successfully !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error has been occur while adding a Language to CV');
+
+        }
+    }
+
+    /**
+     * Delete an Language for the CV
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteLanguage(string $id)
+    {
+        $user = Auth::user();
+        $cv = $user->cv()->first();
+        $language = $cv->language()->findOrFail($id);
+        if (!$language)
+            return $this->showMessage('sorry, we could not find this Language \n Maybe it`s already deleted', 400);
+
+        try {
+            $language->delete();
+            $cv->load([
+                'file',
+                'document',
+                'link',
+                'language',
+                'qualification',
+                'experience',
+                'skill',
+            ]);
+            return $this->showResponse($cv, 'Language deleted successfully !!', 200);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while deleting an Language');
+        }
+    }
 
 
     /**
@@ -230,6 +296,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -261,6 +328,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -291,6 +359,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -320,6 +389,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -350,6 +420,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -379,6 +450,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -413,6 +485,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
@@ -443,6 +516,7 @@ class CVController extends Controller
                 'file',
                 'document',
                 'link',
+                'language',
                 'qualification',
                 'experience',
                 'skill',
