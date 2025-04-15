@@ -5,6 +5,7 @@ use App\Models\Advertisement;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use App\Traits\FirebaseNotificationTrait;
+use App\Notifications\AdExpiredNotification;
 use Illuminate\Support\Facades\{
     Log
 };
@@ -41,6 +42,7 @@ class expiresAds extends Command
                     Log::error('فشل إرسال الإشعار: ' . $e->getMessage());
                 }
             }
+            $user->notify(new AdExpiredNotification($ad->title));
         }
     }
 
