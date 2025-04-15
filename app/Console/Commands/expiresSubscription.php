@@ -8,7 +8,7 @@ use App\Models\Subscription;
 use GPBMetadata\Google\Rpc\Status;
 use Illuminate\Support\Facades\Log;
 use App\Traits\FirebaseNotificationTrait;
-
+use App\Notifications\SubscriptiondNotification;
 class expiresSubscription extends Command
 {
     use FirebaseNotificationTrait;
@@ -54,8 +54,11 @@ class expiresSubscription extends Command
                         Log::error('فشل إرسال الإشعار: ' . $e->getMessage());
                     }
                  }
+                 $user->notify(new SubscriptiondNotification($subscription->plan->name,'الغاء اشتراك','تم الغاء اشتراكك من الباقة '));
 
             }
+
+
 
         }
 
