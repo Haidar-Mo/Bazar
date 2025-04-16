@@ -34,7 +34,7 @@ class Cv extends Model
     protected function casts()
     {
         return [
-            'birth_date' => 'date'
+            'birth_date' => 'date:Y-m-d'
         ];
     }
 
@@ -84,7 +84,7 @@ class Cv extends Model
 
     public function getFileAttribute()
     {
-        return $this->file()->get();
+        return $this->file();
     }
 
     public function getDocumentsAttribute()

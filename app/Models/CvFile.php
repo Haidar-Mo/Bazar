@@ -17,9 +17,24 @@ class CvFile extends Model
         'url'
     ];
 
-
+    protected $appends = [
+        'full_path',
+        'file_name'
+    ];
     public function cv(): BelongsTo
     {
         return $this->belongsTo(Cv::class);
+    }
+
+    //! Accessories
+    public function getFullPathAttribute()
+    {
+        return asset($this->url);
+    }
+
+
+    public function getFileNameAttribute()
+    {
+        return basename($this->url);
     }
 }

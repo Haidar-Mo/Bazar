@@ -18,11 +18,25 @@ class CvDocument extends Model
         'path'
     ];
 
+    protected $appends = [
+        'full_path',
+        'file_name',
+    ];
 
     public function cv(): BelongsTo
     {
         return $this->belongsTo(Cv::class);
     }
 
-    
+    //! Accessories
+    public function getFullPathAttribute()
+    {
+        return asset($this->path);
+    }
+
+    public function getFileNameAttribute()
+    {
+        return basename($this->path);
+    }
+
 }

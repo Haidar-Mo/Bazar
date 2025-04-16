@@ -22,7 +22,18 @@ class CvQualification extends Model
         'still_studying'
     ];
 
-
+/**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts()
+    {
+        return [
+            'entering_date' => 'date:Y-m-d',
+            'graduation_date' => 'date:Y-m-d'
+        ];
+    }
 
     public function cv(): BelongsTo
     {

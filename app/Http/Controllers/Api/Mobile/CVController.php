@@ -8,6 +8,7 @@ use App\Http\Requests\Mobile\CvLanguageCreateRequest;
 use App\Http\Requests\Mobile\CvQualificationCreateRequest;
 use App\Http\Requests\Mobile\CvUpdateRequest;
 use App\Http\Requests\Mobile\CvCreateRequest;
+use App\Models\CvFile;
 use App\Services\Mobile\CVService;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
@@ -528,7 +529,35 @@ class CVController extends Controller
         }
     }
 
+    /**
+     * Download the CV file for gavin name
+     * @param string $name
+     * @return mixed|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadCvResume(string $name)
+    {
+        try {
+            $path = public_path('CV/Resumes/' . $name);
+            return response()->download($path);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while download the file');
+        }
+    }
 
-
-
+    /**
+     * Download the Document for gavin name
+     * @param string $name
+     * @return mixed|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function downloadCvDocument(string $name)
+    {
+        try {
+            $path = public_path('CV/Documents/' . $name);
+            return response()->download($path);
+        } catch (Exception $e) {
+            report($e);
+            return $this->showError($e, 'An error occur while download the file');
+        }
+    }
 }
