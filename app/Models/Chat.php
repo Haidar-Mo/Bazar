@@ -64,6 +64,8 @@ class Chat extends Model
 
         return [
             'id' => $this->id,
+            'ads_id'=>$this->ads->id,
+            'ads_type'=>$this->ads->type,
             'sender_name' => $this->client->first_name,
             'sender_id' => $this->client->id,
             'receiver_name' => $this->seller->first_name,
