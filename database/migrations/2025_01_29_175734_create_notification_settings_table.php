@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
             $table->boolean('is_active')->default(true);
-            $table->enum('type', ['database', 'firebase']);
             $table->timestamps();
         });
     }
