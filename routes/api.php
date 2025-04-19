@@ -46,6 +46,7 @@ Route::prefix('v1/')->group(function () {
         include __DIR__ . "/Mobile/V1/City.php";
         include __DIR__ . "/Mobile/V1/Rule.php";
         include __DIR__ . "/Mobile/V1/Notification.php";
+        include __DIR__ . "/Mobile/V1/NotificationSetting.php";
 
 
     });

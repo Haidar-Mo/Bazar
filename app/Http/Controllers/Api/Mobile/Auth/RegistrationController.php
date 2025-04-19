@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Mobile\Auth;
 
 use App\Enums\TokenAbility;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\PendingUser;
 use App\Models\User;
 use App\Models\FavoriteList;
@@ -14,9 +15,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
+use App\Traits\FirebaseNotificationTrait;
 
 class RegistrationController extends Controller
 {
+    use FirebaseNotificationTrait;
 
     /**
      * Register an email into the application
@@ -167,39 +170,51 @@ class RegistrationController extends Controller
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function informationRegistration(Request $request)
-    {
-        $request->validate([
-            "first_name" => ['required', 'string'],
-            "last_name" => ['required', 'string'],
-            'birth_date' => ['required', 'date'],
-            'description' => ['sometimes', 'string'],
-            "gender" => ['required', 'in:male,female'],
-            "address" => ['required'],
-            "device_token" => ['nullable'],
-        ]);
+{
+    $request->validate([
+        "first_name" => ['required', 'string'],
+        "last_name" => ['required', 'string'],
+        'birth_date' => ['required', 'date'],
+        'description' => ['sometimes', 'string'],
+        "gender" => ['required', 'in:male,female'],
+        "address" => ['required'],
+        "device_token" => ['nullable'],
+    ]);
 
-        try {
-            $user = DB::transaction(function () use ($request) {
-                $user = Auth::user();
-                if ($user->is_full_registered)
-                    throw new Exception("your account is already full registered ", 422);
-                $user->update($request->all());
+    try {
+        $user = DB::transaction(function () use ($request) {
+            $user = Auth::user();
+            if ($user->is_full_registered) {
+                throw new Exception("Your account is already fully registered", 422);
+            }
+            $user->update($request->all());
+            $categories = Category::whereNull('parent_id')->get();
+            foreach ($categories as $category) {
+                $user->notificationSettings()->create([
+                    'category_id' => $category->id,
+                    'is_active' => true,
+                ]);
+            }
 
-                return $user;
-            });
+            if ($user->device_token) {
+                $this->subscribeToTopic($user->device_token, $category->name);
+            }
 
-            $user->append('is_full_registered');
-            return response()->json([
-                'message' => 'Registration is completely done',
-                'user' => $user,
-            ], 200);
-        } catch (Exception $e) {
-            report($e);
-            return response()->json([
-                'message' => 'some thing goes wrong...!',
-                'error' => $e->getMessage(),
-            ], 422);
-        }
+            return $user;
+        });
 
+        $user->append('is_full_registered');
+        return response()->json([
+            'message' => 'Registration is completely done',
+            'user' => $user,
+        ], 200);
+    } catch (Exception $e) {
+        report($e);
+        return response()->json([
+            'message' => 'Something went wrong...!',
+            'error' => $e->getMessage(),
+        ], 422);
     }
+}
+
 }

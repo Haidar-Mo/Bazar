@@ -54,6 +54,22 @@ trait FirebaseNotificationTrait
         }
     }
 
+
+    public function unsubscribeFromTopic($deviceToken, $topic)
+    {
+        $this->initializeFirebase();
+
+        try {
+            $this->messaging->unsubscribeFromTopic($topic, $deviceToken);
+            Log::info('Unsubscribed from topic: ' . $topic);
+            return ['success' => true];
+        } catch (\Exception $e) {
+            Log::error('Unsubscription error: ' . $e->getMessage());
+            return ['success' => false];
+        }
+    }
+
+
     public function sendNotificationToTopic($topic, $title, $body)
     {
         $this->initializeFirebase();

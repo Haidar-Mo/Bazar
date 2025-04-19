@@ -30,8 +30,8 @@ class NewMessageSent implements ShouldBroadcast,ShouldQueue
         return [
             'id' => $this->message->id,
             'content' => $this->message->content,
-            'sender' => $this->message->sender->name,
-            'sender_id'=>$this->message->sender_id,
+            'sender_id' => $this->message->sender->id,
+            'chat_id'=>$this->message->chat_id,
             'is_read'=>$this->message->is_read,
             'created_from' => $this->message->created_from,
             'time'=>$this->message->time
