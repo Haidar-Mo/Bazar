@@ -19,6 +19,16 @@ class NotificationSetting extends Model
         'type'
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+    protected $appends=[
+
+        'category_name'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -27,5 +37,11 @@ class NotificationSetting extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    //! Accessories
+
+    public function getCategoryNameAttribute(){
+        return $this->category()->first()->name;
     }
 }
