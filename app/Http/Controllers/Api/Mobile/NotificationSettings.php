@@ -66,7 +66,7 @@ class NotificationSettings extends Controller
             foreach ($newCategoryIds as $categoryId) {
                 $user->NotificationSettings()->create([
                     'category_id' => $categoryId,
-                    'active' => true
+                    
                 ]);
             }
 
