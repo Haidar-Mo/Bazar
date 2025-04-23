@@ -14,14 +14,16 @@ class AdvertisementFilter extends BaseFilter
 
         //! Common filters
 
+        if ($this->request->filled('title')) {
+            $query->where('title', 'LIKE', "%" . $this->request->title . "%");
+        }
         if ($this->request->filled('city_id')) {
             $query->where('city_id', $this->request->city_id);
-
         }
         if ($this->request->filled('category_id')) {
             $category = Category::findOrFail($this->request->category_id);
             $query->where('category_id', $this->request->category_id)
-            ->orWhereIn('category_id', $category->children()->get()->pluck('id'));
+                ->orWhereIn('category_id', $category->children()->get()->pluck('id'));
         }
 
         if ($this->request->filled('min_price') && $this->request->filled('max_price')) {

@@ -23,7 +23,7 @@ class AuthenticationController extends Controller
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
-            'deviceToken' => ['sometimes']
+            'device_token' => ['sometimes']
         ]);
         $credentials = $request->only('email', 'password');
 
@@ -32,8 +32,8 @@ class AuthenticationController extends Controller
             return response()->json(['message' => 'password or Email is incorrect'], 401);
         }
         $user = User::find(Auth::user()->id);
-        if ($request->has('deviceToken')) {
-            $user->update(['deviceToken' => $request->deviceToken]);
+        if ($request->has('device_token')) {
+            $user->update(['device_token' => $request->device_token]);
         }
         $user->tokens()->delete();
 

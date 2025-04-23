@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->boolean('is_blocked')->default(false);
+            $table->string('block_reason')->nullable();
             $table->string('provider')->nullable();
             $table->string('provider_id')->nullable();
             $table->string('device_token')->nullable();

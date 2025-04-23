@@ -1,0 +1,13 @@
+[
+    {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.example.bazar",
+        "sha256_cert_fingerprints": [
+          "AF:B3:5D:2B:69:E5:36:3A:41:A5:24:84:8B:4E:AE:E8:CE:CB:79:84:F8:E0:3E:04:95:FF:DD:F7:AF:67:C4:13"
+        ]
+      }
+    }
+  ]
+  

@@ -1,13 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\Mobile\ShareLinkController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-
 
 Route::get('migrate', function () {
 
@@ -42,3 +37,4 @@ Route::get('storage-link', function () {
     return view('artisan-response', compact('title'));
 
 });
+Route::get('/share-link/advertisement/{id}', [ShareLinkController::class, 'handle']);

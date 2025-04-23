@@ -75,6 +75,7 @@ class SocialiteController extends Controller
             // Validate request
             $request->validate([
                 'id_token' => 'required|string',
+                'device_token' => 'sometimes'
             ]);
 
             // Verify the ID token with Google
@@ -104,11 +105,14 @@ class SocialiteController extends Controller
                     'provider' => $provider,
                     'provider_id' => $googleId,
                 ]);
+                $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
             }
-            $user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
 
+            $user->update([
+                'device_token' => $request->device_token ?? null
+            ]);
             $user->tokens()->delete();
-            
+
             // Generate access and refresh tokens
             $accessToken = $user->createToken('access_token', [TokenAbility::ACCESS_API->value], Carbon::now()->addMinutes(config('sanctum.expiration')));
             $refreshToken = $user->createToken('refresh_token', [TokenAbility::ISSUE_ACCESS_TOKEN->value], Carbon::now()->addDays(7));

@@ -41,6 +41,7 @@ class Advertisement extends Model
         'main_category_id',
         'main_category_name',
         'category_name',
+        'is_negotiable',
         'created_from',
         'updated_from',
         'views',
@@ -197,6 +198,11 @@ class Advertisement extends Model
             $this->reported()->where('is_read', false)->first()->user()->first()
             :
             false;
+    }
+
+    public function getIsNegotiableAttribute()
+    {
+        return $this->negotiable ? 'قابل للتفاوض' : 'غير قابل للتفاوض';
     }
 
 }
