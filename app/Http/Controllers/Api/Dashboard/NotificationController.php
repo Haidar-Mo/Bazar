@@ -83,7 +83,7 @@ class NotificationController extends Controller
         $user = User::findOrFail($id);
         try {
             $notification = $user->notify(new CustomNotification($request->input('title'), $request->input('body')));
-            $message = $this->unicast($request, $user->device_token);
+            $this->unicast($request, $user->device_token);
             return $this->showResponse($notification, 'Notification sent successfully !!', 200);
         } catch (Exception $e) {
             report($e);

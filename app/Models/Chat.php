@@ -48,7 +48,6 @@ class Chat extends Model
     }
 
 
-
     public function getChatDetailsAttribute()
     {
         $user = Auth::user();
@@ -79,7 +78,7 @@ class Chat extends Model
             'advertisement_image' => $this->ads->images,
             'created_from' => $this->created_from,
             'last_message' => $lastMessage ? $lastMessage->content : ' ',
-            'has_unread' => $hasUnread //! if true thats meaning chat unreaded || false that chat readed
+            'has_unread' => $hasUnread //! if true thats meaning chat is unread || false that meaning chat is read
         ];
     }
     public function getAdvertisementDetailsAttribute()

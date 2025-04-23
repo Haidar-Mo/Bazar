@@ -58,15 +58,15 @@ class UserController extends Controller
      * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function block(string $id)
+    public function block(Request $request, string $id)
     {
         try {
             $user = User::findOrFail($id);
-            $this->service->block($id);
+            $this->service->block($request, $id);
             return $this->showResponse($user, 'User blocked successfully !!', 200);
         } catch (Exception $e) {
             report($e);
-            return $this->showError($e, 'An error occur while blocking the user', $e->getCode() ?? 500);
+            return $this->showError($e, 'An error occur while blocking the user',  500);
         }
     }
 
