@@ -29,11 +29,11 @@ class ResetPasswordController extends Controller
             $user = User::where('email', $request->email)->first();
             Notification::send($user, new ResetPasswordNotification($resetCode));
             DB::commit();
-            return $this->showMessage('Reset code sent successfully');
+            return $this->showMessage('تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني', 200);
         } catch (Exception $e) {
             report($e);
             DB::rollBack();
-            return $this->showError($e, 'An Error occur while sending reset password code !!');
+            return $this->showError($e, 'فشل إرسال رمز إعادة التعيين. يرجى المحاولة لاحقًا', 500);
         }
     }
     public function verifyResetCode(Request $request)
@@ -50,10 +50,10 @@ class ResetPasswordController extends Controller
             ->first();
 
         if (!$user) {
-            return $this->showMessage('Invalid or expired code', 422, false);
+            return $this->showMessage('رمز التحقق غير صالح أو منتهي الصلاحية', 422, false);
         }
 
-        return $this->showMessage('Code verified');
+        return $this->showMessage('تم التحقق', 200);
     }
     public function resetPassword(Request $request)
     {
@@ -69,7 +69,7 @@ class ResetPasswordController extends Controller
             ->first();
 
         if (!$reset) {
-            return $this->showMessage('Invalid code.', 422);
+            return $this->showMessage('رمز التحقق غير صالح', 422, false);
         }
 
         DB::beginTransaction();
@@ -81,10 +81,10 @@ class ResetPasswordController extends Controller
             // Delete the reset code
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
             DB::commit();
-            return $this->showMessage('Password reset successfully');
+            return $this->showMessage('تم إعادة تعيين كلمة المرور بنجاح', 200);
         } catch (Exception $e) {
             report($e);
-            return $this->showError($e, 'An error occur while reset your password , Please try again');
+            return $this->showError($e, 'فشل إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى', 500);
         }
     }
 
