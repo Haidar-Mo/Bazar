@@ -22,7 +22,6 @@ class Cv extends Model
         'email',
         'phone_number',
         'gender',
-        'language',
         'nationality',
         'birth_date',
     ];
@@ -35,23 +34,9 @@ class Cv extends Model
     protected function casts()
     {
         return [
-            'language' => 'array',
-            'birth_date' => 'date'
+            'birth_date' => 'date:Y-m-d'
         ];
     }
-
-    /**
-     * The attributes that should be appends with cv
-     * @var array
-     */
-    protected $appends = [
-        'file',
-        'documents',
-        'links',
-        'qualification',
-        'experience',
-        'skill',
-    ];
 
     public function user(): BelongsTo
     {
@@ -75,9 +60,12 @@ class Cv extends Model
 
     public function qualification(): HasMany
     {
-
         return $this->hasMany(CvQualification::class);
+    }
 
+    public function language(): HasMany
+    {
+        return $this->hasMany(CvLanguage::class);
     }
 
     public function experience(): HasMany
@@ -96,7 +84,7 @@ class Cv extends Model
 
     public function getFileAttribute()
     {
-        return $this->file()->get();
+        return $this->file();
     }
 
     public function getDocumentsAttribute()

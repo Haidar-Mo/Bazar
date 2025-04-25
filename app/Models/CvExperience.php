@@ -25,7 +25,19 @@ class CvExperience extends Model
     ];
 
 
-
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts()
+    {
+        return [
+            'start_date' => 'date:Y-m-d',
+            'end_date' => 'date:Y-m-d'
+        ];
+    }
+    
     public function cv(): BelongsTo
     {
         return $this->belongsTo(Cv::class);

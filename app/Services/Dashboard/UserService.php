@@ -22,14 +22,17 @@ class UserService
         return $this->userFilter->applyFilters($query)->get();
     }
 
-
-    public function block(string $id)
+    public function block(Request $request, string $id)
     {
+        $request->validate([
+            'block_reason' => 'nullable'
+        ]);
         $user = User::findOrFail($id);
         if ($user->is_blocked)
-            throw new Exception('User is already blocked...!', 400);
+            throw new Exception('User is already blocked...!', 422);
         $user->update([
-            'is_blocked' => 1
+            'is_blocked' => 1,
+            'block_reason' => $request->block_reason
         ]);
         return $user;
 

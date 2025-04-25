@@ -26,10 +26,10 @@ class VerificationRequestController extends Controller
     /**
      * Display the specified resource
      */
-    public function show(string $id)
+    public function show()
     {
         $user = Auth::user();
-        $request = $user->verificationRequest()->findOrFail($id);
+        $request = $user->verificationRequest()->latest()->first();
         return $this->showResponse($request, 'Your request retrieved successfully !!', 200);
     }
 
@@ -49,7 +49,7 @@ class VerificationRequestController extends Controller
             return $this->showResponse($verification_request, 'Verification request sent successfully!!', 200);
         } catch (Exception $e) {
             report($e);
-            return $this->showError($e, 'an Error occur while sending Verification request', 500);
+            return $this->showError($e, 'An error occur while sending Verification request', 500);
         }
     }
 

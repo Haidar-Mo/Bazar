@@ -25,7 +25,6 @@ class CvFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'phone_number' => $this->faker->unique()->phoneNumber,
             'gender' => $this->faker->randomElement(['male', 'female']),
-            'language' => json_encode([$this->faker->languageCode, $this->faker->languageCode]),
             'nationality' => $this->faker->country,
             'birth_date' => $this->faker->dateTimeBetween('1990-01-01', '2005-01-01'),
             'created_at' => now(),

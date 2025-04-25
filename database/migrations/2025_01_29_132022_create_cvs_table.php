@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('phone_number')->unique();
             $table->enum('gender', ['male', 'female']);
-            $table->json('language')->nullable();
             $table->string('nationality');
             $table->date('birth_date')->nullable();
             $table->timestamps();

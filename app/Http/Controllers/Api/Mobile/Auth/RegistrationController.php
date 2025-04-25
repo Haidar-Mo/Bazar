@@ -9,6 +9,7 @@ use App\Models\PendingUser;
 use App\Models\User;
 use App\Models\FavoriteList;
 use App\Notifications\VerificationCodeNotification;
+use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ use App\Traits\FirebaseNotificationTrait;
 
 class RegistrationController extends Controller
 {
-    use FirebaseNotificationTrait;
+    use FirebaseNotificationTrait, ResponseTrait;
 
     /**
      * Register an email into the application
@@ -52,11 +53,11 @@ class RegistrationController extends Controller
             $user->notify(new VerificationCodeNotification($verificationCode));
 
             DB::commit();
-            return response()->json(['message' => "Email registration done \n Verification email sent "], 200);
+            return response()->json(['message' => "تم التسجيل بنجاح. تم إرسال رمز التحقق إلى البريد الإلكتروني."], 200);
         } catch (Exception $e) {
             DB::rollback();
             report($e);
-            return response()->json(['message' => "Error: " . $e->getMessage()], 500);
+            return $this->showError($e, 'حدث خطأ أثناء إنشاء الحساب', 500);
         }
     }
 
@@ -69,13 +70,13 @@ class RegistrationController extends Controller
     public function resendVerificationCode(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'exists:users,email'],
+            'email' => ['required', 'exists:pending_users,email'],
         ]);
         try {
             DB::beginTransaction();
             $user = PendingUser::where('email', $request->email)->firstOrFail();
-            if ($user->verified_at != null)
-                return response()->json(['message' => 'Email is already verified'], 405);
+            if ($user->email_verified_at != null)
+                return response()->json(['message' => 'هذا البريد الإلكتروني مفعل بالفعل'], 400);
             $verificationCode = mt_rand(100000, 999999);
             $expirationTime = Carbon::now()->addMinutes(10);
             $user->update([
@@ -84,10 +85,10 @@ class RegistrationController extends Controller
             ]);
             $user->notify(new VerificationCodeNotification($verificationCode));
             DB::commit();
-            return response()->json(['message' => 'Verification code has been re-sended'], 200);
+            return response()->json(['message' => 'تم إعادة إرسال رمز التحقق بنجاح'], 200);
         } catch (Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'something goes wrong...'], 500);
+            return $this->showError($e, 'حدث خطأ أثناء إعادة إرسال رمز التحقق', 500);
         }
     }
 
@@ -107,13 +108,13 @@ class RegistrationController extends Controller
         $user = PendingUser::where('email', $data['email'])->firstOrFail();
 
         if ($user->email_verified_at != null) {
-            return response()->json(['message' => 'Your email is already verified'], 422);
+            return response()->json(['message' => 'هذا البريد الإلكتروني مفعل بالفعل'], 400);
         }
         if ($user->verification_code_expires_at <= now()) {
-            return response()->json(['message' => 'Your verification code is expired'], 422);
+            return response()->json(['message' => 'انتهت صلاحية رمز التحقق'], 410);
         }
         if ($user->verification_code != $data['verification_code']) {
-            return response()->json(['message' => 'Your verification code is incorrect'], 422);
+            return response()->json(['message' => 'رمز التحقق غير صحيح'], 403);
         }
 
         try {
@@ -152,13 +153,13 @@ class RegistrationController extends Controller
             );
 
             return response()->json([
-                'message' => 'Email verified successfully',
+                'message' => 'تم التحقق من البريد الإلكتروني بنجاح',
                 'access_token' => $accessToken->plainTextToken,
                 'refresh_token' => $refreshToken->plainTextToken,
                 'user' => $new_user,
             ], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Something went wrong, please try again later', 'error:' => $e->getMessage()], 500);
+            return $this->showError($e, 'حدث خطأ أثناء التحقق من الحساب', 500);
         }
     }
 
@@ -170,53 +171,53 @@ class RegistrationController extends Controller
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function informationRegistration(Request $request)
-{
-    $request->validate([
-        "first_name" => ['required', 'string'],
-        "last_name" => ['required', 'string'],
-        'birth_date' => ['required', 'date'],
-        'description' => ['sometimes', 'string'],
-        "gender" => ['required', 'in:male,female'],
-        "address" => ['required'],
-        "device_token" => ['nullable'],
-    ]);
+    {
+        $request->validate([
+            "first_name" => ['required', 'string'],
+            "last_name" => ['required', 'string'],
+            'birth_date' => ['required', 'date'],
+            'description' => ['sometimes', 'string'],
+            "gender" => ['required', 'in:male,female'],
+            "address" => ['required'],
+            "device_token" => ['nullable'],
+        ]);
 
-    try {
-        $user = DB::transaction(function () use ($request) {
-            $user = Auth::user();
-            if ($user->is_full_registered) {
-                throw new Exception("Your account is already fully registered", 422);
-            }
-            $user->update($request->all());
-            $categories = Category::whereNull('parent_id')->get();
-            foreach ($categories as $category) {
-                $user->notificationSettings()->create([
-                    'category_id' => $category->id,
-                    'is_active' => true,
-                ]);
-                
+
+        try {
+            $user = DB::transaction(function () use ($request) {
+                $user = Auth::user();
+                if ($user->is_full_registered) {
+                    throw new Exception("حسابك مفعل ومكتمل بالفعل", 400);
+                }
+                $user->update($request->all());
+                $categories = Category::whereNull('parent_id')->get();
+                foreach ($categories as $category) {
+                    $user->notificationSettings()->create([
+                        'category_id' => $category->id,
+                        'is_active' => true,
+                    ]);
+                }
+
                 if ($user->device_token) {
                     $this->subscribeToTopic($user->device_token, $category->name);
                 }
 
-            }
 
+                return $user;
+            });
 
-            return $user;
-        });
-
-        $user->append('is_full_registered');
-        return response()->json([
-            'message' => 'Registration is completely done',
-            'user' => $user,
-        ], 200);
-    } catch (Exception $e) {
-        report($e);
-        return response()->json([
-            'message' => 'Something went wrong...!',
-            'error' => $e->getMessage(),
-        ], 422);
+            $user->append('is_full_registered');
+            return response()->json([
+                'message' => 'تم إكمال التسجيل بنجاح',
+                'user' => $user,
+            ], 200);
+        } catch (Exception $e) {
+            report($e);
+            return response()->json([
+                'message' => 'حدث خطأ أثناء إكمال التسجيل',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
 
 }

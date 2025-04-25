@@ -4,7 +4,7 @@ namespace App\Http\Requests\Mobile;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CvCreateRequest extends FormRequest
+class CvLanguageCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,14 +22,8 @@ class CvCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'full_name' => 'required|string|max:255',
-            'summary' => 'nullable|string',
-            'image' => 'nullable|image',
-            'email' => 'required|string|email|max:255|unique:cvs,email',
-            'phone_number' => 'required|numeric|max:255|unique:cvs,phone_number',
-            'gender' => 'required|in:male,female',
-            'nationality' => 'required|string|max:255',
-            'birth_date' => 'nullable|date',
+            'name' => 'string',
+            'rate' => 'decimal:0.0,10.0'
         ];
     }
 }

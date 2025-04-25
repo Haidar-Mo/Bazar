@@ -4,17 +4,13 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Carbon\Carbon;
-use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Notifications\ResetPassword;
 use Laravel\Sanctum\HasApiTokens;
-use Ramsey\Uuid\Type\Decimal;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\{
     HasPermissions,
     HasRoles
@@ -41,6 +37,7 @@ class User extends Authenticatable
         'description',
         'is_verified',
         'is_blocked',
+        'block_reason',
         'provider',
         'provider_id',
         'device_token',
@@ -70,6 +67,7 @@ class User extends Authenticatable
         'age',
         'plan_name',
         'is_full_registered',
+        'is_verified_text',
         'rate',
         'notifications_count',
     ];
@@ -88,6 +86,7 @@ class User extends Authenticatable
             'updated_at' => 'date:Y-m-d',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+
         ];
     }
 
@@ -110,7 +109,7 @@ class User extends Authenticatable
     public function chat(): HasMany
     {
         return $this->hasMany(Chat::class, 'user_one_id')
-        ->orWhere('user_two_id', $this->id);
+            ->orWhere('user_two_id', $this->id);
 
     }
 
@@ -224,5 +223,10 @@ class User extends Authenticatable
     public function getNotificationsCountAttribute()
     {
         return $this->unreadNotifications()->count() ?? 0;
+    }
+
+    public function getIsVerifiedTextAttribute()
+    {
+        return $this->is_verified ? 'موثوق' : 'غير موثوق';
     }
 }

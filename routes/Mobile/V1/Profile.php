@@ -29,6 +29,9 @@ Route::prefix('profiles')
             Route::post('file', [CVController::class, 'addCvFile']);
             Route::delete('file', [CVController::class, 'deleteCvFile']);
 
+            Route::post('language', [CVController::class, 'addLanguage']);
+            Route::delete('language/{id}', [CVController::class, 'deleteLanguage']);
+
             Route::post('experience', [CVController::class, 'addExperience']);
             Route::delete('experience/{id}', [CVController::class, 'deleteExperience']);
 
@@ -46,6 +49,7 @@ Route::prefix('profiles')
 
         });
 
-
-
     });
+
+Route::get('profiles/cv/download/{name}', [CVController::class, 'downloadCvResume']);
+Route::get('profiles/document/download/{name}', [CVController::class, 'downloadCvDocument']);

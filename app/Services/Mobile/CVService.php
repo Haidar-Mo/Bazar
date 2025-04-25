@@ -26,13 +26,13 @@ class CVService
     public function create(FormRequest $request, User $user)
     {
         $data = $request->all();
-            return DB::transaction(function () use ($user, $request, $data) {
-                if ($request->hasFile('image'))
-                    $data['image'] = $this->saveFile($request->file('image'), 'CV');
+        return DB::transaction(function () use ($user, $request, $data) {
+            if ($request->hasFile('image'))
+                $data['image'] = $this->saveFile($request->file('image'), 'CV');
 
-                $cv = $user->cv()->create($data);
-                return $cv;
-            });
+            $cv = $user->cv()->create($data);
+            return $cv;
+        });
     }
 
     /**
@@ -44,17 +44,17 @@ class CVService
     public function update(FormRequest $request, User $user)
     {
         $data = $request->all();
-        
-            return DB::transaction(function () use ($request, $user, $data) {
-                if ($request->hasFile('image')) {
-                    if ($user->cv()->first()->image) {
-                        $this->deleteFile($user->cv()->first()->image);
-                    }
-                    $data['image'] = $this->saveFile($request->file('image'), 'CV/Images');
-                }
-                return $user->cv()->update($data);
 
-            });
+        return DB::transaction(function () use ($request, $user, $data) {
+            if ($request->hasFile('image')) {
+                if ($user->cv()->first()->image) {
+                    $this->deleteFile($user->cv()->first()->image);
+                }
+                $data['image'] = $this->saveFile($request->file('image'), 'CV/Images');
+            }
+            return $user->cv()->update($data);
+
+        });
     }
 
 
@@ -66,10 +66,10 @@ class CVService
      */
     public function addFile(Request $request, Cv $cv)
     {
-            return DB::transaction(function () use ($cv, $request) {
-                $filePath = $this->saveFile($request->file('file'), 'CV/Files');
-                return $cv->file()->create(['url' => $filePath]);
-            });
+        return DB::transaction(function () use ($cv, $request) {
+            $filePath = $this->saveFile($request->file('file'), 'CV/Resumes');
+            return $cv->file()->create(['url' => $filePath]);
+        });
     }
 
     /**
@@ -80,9 +80,22 @@ class CVService
      */
     public function addExperience(FormRequest $request, Cv $cv)
     {
-            return DB::transaction(function () use ($request, $cv) {
-                return $cv->experience()->create($request->all());
-            });
+        return DB::transaction(function () use ($request, $cv) {
+            return $cv->experience()->create($request->all());
+        });
+    }
+
+    /**
+     * Add Language to the CV
+     * @param \Illuminate\Foundation\Http\FormRequest $request
+     * @param \App\Models\Cv $cv
+     * @return mixed
+     */
+    public function addLanguage(FormRequest $request, Cv $cv)
+    {
+        return DB::transaction(function () use ($request, $cv) {
+            return $cv->language()->create($request->all());
+        });
     }
 
     /**
@@ -93,9 +106,9 @@ class CVService
      */
     public function addQualification(FormRequest $request, Cv $cv)
     {
-            return DB::transaction(function () use ($request, $cv) {
-                return $cv->qualification()->create($request->all());
-            });
+        return DB::transaction(function () use ($request, $cv) {
+            return $cv->qualification()->create($request->all());
+        });
     }
 
     /**
@@ -106,9 +119,9 @@ class CVService
      */
     public function addSkill(array $request, Cv $cv)
     {
-            return DB::transaction(function () use ($request, $cv) {
-                return $cv->skill()->create($request);
-            });
+        return DB::transaction(function () use ($request, $cv) {
+            return $cv->skill()->create($request);
+        });
     }
 
     /**
@@ -119,9 +132,9 @@ class CVService
      */
     public function addLink(array $request, Cv $cv)
     {
-            return DB::transaction(function () use ($request, $cv) {
-                return $cv->link()->create($request);
-            });
+        return DB::transaction(function () use ($request, $cv) {
+            return $cv->link()->create($request);
+        });
     }
 
     /**
@@ -132,13 +145,13 @@ class CVService
      */
     public function addDocument(Request $request, Cv $cv)
     {
-            return DB::transaction(function () use ($request, $cv) {
-                $file_path = $this->saveFile($request->file('file'), 'CV/Documents');
-                $cv->document()->create([
-                    'name' => $request->name,
-                    'path' => $file_path
-                ]);
-                return $cv;
-            });
+        return DB::transaction(function () use ($request, $cv) {
+            $file_path = $this->saveFile($request->file('file'), 'CV/Documents');
+            $cv->document()->create([
+                'name' => $request->name,
+                'path' => $file_path
+            ]);
+            return $cv;
+        });
     }
 }

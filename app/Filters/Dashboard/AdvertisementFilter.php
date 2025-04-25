@@ -3,6 +3,7 @@
 namespace App\Filters\Dashboard;
 
 use App\Filters\BaseFilter;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
@@ -20,7 +21,8 @@ class AdvertisementFilter extends BaseFilter
         }
 
         if ($this->request->filled('category_id')) {
-            $query->where('category_id', $this->request->category_id);
+            $category = Category::findOrFail($this->request->category_id);
+            $query->WhereIn('category_id', $category->children()->get()->pluck('id'));
         }
 
         if ($this->request->filled('time')) {

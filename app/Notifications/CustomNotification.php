@@ -52,7 +52,8 @@ class CustomNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'title' => $this->title,
+            'body' => $this->body,
         ];
     }
 }
