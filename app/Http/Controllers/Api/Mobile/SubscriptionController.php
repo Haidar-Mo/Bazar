@@ -8,6 +8,8 @@ use App\Http\Requests\{
     SubscriptionUpdateRequest,
     SubscriptionRequest
 };
+use App\Models\Plan;
+use App\Models\User;
 use Illuminate\Support\Facades\{
     Auth,
     DB
@@ -15,6 +17,8 @@ use Illuminate\Support\Facades\{
 use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Str;
+use App\Notifications\Dasboard\NotificationSubscription;
 
 class SubscriptionController extends Controller
 {
@@ -25,7 +29,7 @@ class SubscriptionController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return $this->showResponse($user->subscriptions()->where('status','running')->with(['plan'])->get(), 'done successfully...!');
+        return $this->showResponse($user->subscriptions()->where('status', 'running')->with(['plan'])->get(), 'done successfully...!');
     }
 
     /**
@@ -44,18 +48,24 @@ class SubscriptionController extends Controller
         DB::beginTransaction();
         try {
             $user = Auth::user();
-            if ($user->subscriptions()->where('status', '=', 'running')->exists()) {
+            if ($user->subscriptions()->where('status', 'running')->exists()) {
                 return $this->showMessage('لا يمكنك الاشتراك لوجود باقة مفعلة مسبقا', 422);
             }
             $user->subscriptions()->create(['plan_id' => $request->plan_id]);
+            $admins = User::role(['admin', 'supervisour'], 'api')->get();
+            $plan = Plan::FindOrFail($request->plan_id);
+            foreach ($admins as $admin) {
+                $admin->notify(new NotificationSubscription("قام ( {$user->name} )بالاشتراك بالباقة ( {$plan->name} )"));
+            }
+
+
             DB::commit();
-            return $this->showMessage('تم ارسال طلب الاشتراك بالباقة...يرجى انتظار موافقة الادمن');
+            return $this->showMessage('تم ارسال طلب الاشتراك...');
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->showError($e, 'something goes wrong....!');
+            return $this->showError($e);
         }
     }
-
     /**
      * Display the specified resource.
      */
@@ -92,7 +102,7 @@ class SubscriptionController extends Controller
             $plan = $subscription->plan;
             $subscription->update([
                 'status' => $request->status,
-                'number_of_ads'=>$subscription->plan->size,
+                'number_of_ads' => $subscription->plan->size,
                 'starts_at' => Carbon::now(),
                 'ends_at' => Carbon::now()->addDays(intval($plan->duration))
             ]);

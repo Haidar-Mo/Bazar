@@ -11,7 +11,8 @@ use App\Models\{
 };
 use App\Traits\HasFiles;
 use Illuminate\Support\Arr;
-
+use Illuminate\Support\Str;
+use App\Notifications\Dasboard\NotofcationAddAds;
 /**
  * Class AdvertisementService.
  */
@@ -34,7 +35,7 @@ class AdvertisementService
         $filteredData = Arr::except($request, ['images', 'attributes']);
 
         return DB::transaction(function () use ($user, $filteredData, $request) {
-           
+
             $ad = $user->ads()->create($filteredData);
 
 
@@ -88,6 +89,14 @@ class AdvertisementService
                     $subscription->update(['status' => 'ended']);
                 }
             }
+
+            $admins = User::role(['admin', 'supervisour'], 'api')->get();
+            foreach($admins as $admin){
+                $admin->notify(new NotofcationAddAds("قام {$user->name} باضافة اعلان جديد: {$ad->title}"));
+            }
+
+
+
 
             return $ad;
         });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\{
+    Advertisement,
     User,
     Report
 };
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\{
     DB,
     Auth
 };
+
+use Illuminate\Support\Str;
+use App\Notifications\Dasboard\NotificationDasboard;
+use App\Notifications\Dasboard\NotificationReports;
+
 class ReportController extends Controller
 {
     use ResponseTrait;
@@ -48,6 +54,15 @@ class ReportController extends Controller
             'reportable_type' => User::class,
             'paragraph' => $request->paragraph,
         ]);
+        $adTitle = Advertisement::FindOrFail($request->ads_id)->title;
+        $admins = User::role(['admin', 'supervisour'], 'api')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new NotificationReports("قام المستخدم ( {$user->name} ) بالابلاغ عن الإعلان: ( {$adTitle} )"));
+        }
+
+
+
+
         DB::commit();
         return $this->showMessage('report sent successfully....!');
 
