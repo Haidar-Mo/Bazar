@@ -23,7 +23,9 @@ use Spatie\Permission\Traits\{
 class User extends Authenticatable
 {
 
+
     use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    protected $guard = 'api';
 
     protected $fillable = [
         'first_name',
@@ -71,6 +73,7 @@ class User extends Authenticatable
         'rate',
         'notifications_count',
     ];
+
 
 
     /**

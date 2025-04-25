@@ -11,7 +11,7 @@ class AdExpiredNotification extends Notification implements ShouldQueue
    {
        use Queueable;
 
-      
+
 
        public function __construct(public $adTitle)
        {
@@ -28,7 +28,7 @@ class AdExpiredNotification extends Notification implements ShouldQueue
            return [
                'title' => 'إعلان منتهي الصلاحية',
                'body' => 'تم تعطيل إعلانك "'.$this->adTitle.'" بسبب انتهاء فترة النشر.',
-               'created_at' => now()->diffForHumans(),
+              
            ];
        }
    }
