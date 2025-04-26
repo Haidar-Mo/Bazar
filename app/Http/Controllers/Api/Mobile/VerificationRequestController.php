@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mobile\VerificationRequestCreateRequest;
 use App\Http\Requests\Mobile\VerificationRequestUpdateRequest;
+use App\Models\User;
 use App\Models\VerificationRequest;
+use App\Notifications\Dasboard\NotificationAuthenticationRequest;
 use App\Services\Mobile\VerificationRequestService;
 use App\Traits\ResponseTrait;
 use Exception;
@@ -39,7 +41,11 @@ class VerificationRequestController extends Controller
         $user = $request->user();
         try {
             $verification_request = $this->service->create($request, $user);
-            //do: send Notification to admin
+            $admins = User::role(['admin', 'supervisour'], 'api')->get();
+
+            foreach ($admins as $admin) {
+                $admin->notify(new NotificationAuthenticationRequest("قام ( {$user->name} ) بإرسال طلب توثيق."));
+            }
             return $this->showResponse($verification_request, 'Verification request sent successfully!!', 200);
         } catch (Exception $e) {
             report($e);

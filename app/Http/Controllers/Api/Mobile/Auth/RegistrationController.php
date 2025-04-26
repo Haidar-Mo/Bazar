@@ -182,6 +182,7 @@ class RegistrationController extends Controller
             "device_token" => ['nullable'],
         ]);
 
+
         try {
             $user = DB::transaction(function () use ($request) {
                 $user = Auth::user();
@@ -200,6 +201,7 @@ class RegistrationController extends Controller
                 if ($user->device_token) {
                     $this->subscribeToTopic($user->device_token, $category->name);
                 }
+
 
                 return $user;
             });

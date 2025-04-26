@@ -37,7 +37,7 @@ return [
 
     'firebase' => [
         'credentials' => [
-            'file' => storage_path('app\private\firebase_credentials.json')
+            'file' => storage_path('app/private/firebase_credentials.json')
         ],
     ],
 
