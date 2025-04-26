@@ -25,9 +25,9 @@ class VerificationRequestService
     public function create(FormRequest $request, User $user)
     {
         if ($user->is_verified)
-            throw new Exception('you are already verified', 422);
+            throw new Exception('you are already verified', 400);
         if ($user->verificationRequest()->where('status', 'pending')->first())
-            throw new Exception('you have a pending request', 422);
+            throw new Exception('you have a pending request', 400);
 
         $files = [
             'identity_image' => 'identity_image',
@@ -37,8 +37,9 @@ class VerificationRequestService
         $filePaths = [];
 
         foreach ($files as $key => $fileKey) {
-            $filePaths[$key] = $this->saveFile($request->file($fileKey), 'VerificationRequest');
-
+            $filePaths[$key] = $request->hasFile($fileKey)
+                ? $this->saveFile($request->file($fileKey), 'VerificationRequest')
+                : $filePaths[$key] = null;
         }
         return DB::transaction(function () use ($user, $request, $filePaths) {
 
@@ -47,7 +48,7 @@ class VerificationRequestService
                 'identity_image' => $filePaths['identity_image'],
                 'work_register' => $filePaths['work_register'],
                 'profile_image' => $filePaths['profile_image'],
-                'company_name'=> $request->company_name
+                'company_name' => $request->company_name
             ]);
 
             return $verificationRequest;

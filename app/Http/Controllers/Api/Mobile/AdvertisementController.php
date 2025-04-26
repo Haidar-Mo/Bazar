@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Mobile\AdvertisementCreateRequest;
-use App\Http\Requests\AdvertisementUpdateRequest;
 use App\Models\Advertisement;
 use App\Traits\ResponseTrait;
 use App\Services\Mobile\AdvertisementService;
@@ -58,7 +57,6 @@ class AdvertisementController extends Controller
             report($e);
             return $this->showError($e, 'An error occur while creating your advertisement !!');
         }
-
     }
 
     /**
@@ -79,8 +77,6 @@ class AdvertisementController extends Controller
             return $this->showError($e, 'something goes wrong....!');
 
         }
-
-
     }
 
     /**
