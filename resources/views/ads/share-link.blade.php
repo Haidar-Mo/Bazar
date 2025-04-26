@@ -15,7 +15,7 @@
 
     <script>
         // Redirect to the app
-        window.location.href = "{{ $shareLink }}";
+        window.location.href = "{{ $appLink }}";
         // If the app isn't installed, redirect to app store after delay
         setTimeout(function() {
             window.location.href = "{{ $appStoreUrl }}";
@@ -32,7 +32,7 @@
         <p><strong>Price:</strong> ${{ number_format($ad->price, 2) }}</p>
 
         <!-- Button to open the app (manual fallback) -->
-        <button onclick="window.location.href='bazarapp://advertisement/{{ $ad->id }}'">
+        <button onclick="window.location.href = {{ $appLink }} ">
             Open in App
         </button>
     </div>

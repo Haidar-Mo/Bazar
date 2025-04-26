@@ -187,7 +187,7 @@ class User extends Authenticatable
 
     public function getImageAttribute()
     {
-        return $this->images()->first()->path ?? null;
+        return $this->images()->first()->full_path ?? null;
     }
 
     public function getAgeAttribute()
