@@ -11,7 +11,6 @@ use App\Models\{
 };
 use App\Traits\HasFiles;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use App\Notifications\Dasboard\NotofcationAddAds;
 /**
  * Class AdvertisementService.

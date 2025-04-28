@@ -148,11 +148,15 @@ class User extends Authenticatable
         return $this->hasMany(View::class);
     }
 
+    public function jobRequest(): HasMany
+    {
+        return $this->hasMany(JobRequest::class, 'receiver_id');
+    }
+
     public function favorite(): HasMany
     {
         return $this->hasMany(FavoriteList::class);
     }
-
 
     public function NotificationSettings(): HasMany
     {
