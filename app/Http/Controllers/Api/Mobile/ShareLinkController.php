@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
-use Illuminate\Http\Request;
 
 class ShareLinkController extends Controller
 {

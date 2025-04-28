@@ -26,7 +26,7 @@ class CvCreateRequest extends FormRequest
             'summary' => 'nullable|string',
             'image' => 'nullable|image',
             'email' => 'required|string|email|max:255|unique:cvs,email',
-            'phone_number' => 'required|numeric|max:255|unique:cvs,phone_number',
+            'phone_number' => 'required|numeric|unique:cvs,phone_number',
             'gender' => 'required|in:male,female',
             'nationality' => 'required|string|max:255',
             'birth_date' => 'nullable|date',

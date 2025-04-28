@@ -78,8 +78,9 @@ class CVController extends Controller
     public function update(CvUpdateRequest $request)
     {
         $user = $request->user();
+        $cv = $user->cv()->first();
         try {
-            $cv = $this->service->update($request, $user);
+            $cv = $this->service->update($request, $cv);
             $cv->load([
                 'file',
                 'document',

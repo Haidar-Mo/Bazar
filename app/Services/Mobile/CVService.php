@@ -41,19 +41,19 @@ class CVService
      * @param \App\Models\User $user
      * @return mixed
      */
-    public function update(FormRequest $request, User $user)
+    public function update(FormRequest $request, Cv $cv)
     {
         $data = $request->all();
 
-        return DB::transaction(function () use ($request, $user, $data) {
+        return DB::transaction(function () use ($request, $cv, $data) {
             if ($request->hasFile('image')) {
-                if ($user->cv()->first()->image) {
-                    $this->deleteFile($user->cv()->first()->image);
+                if ($cv->image) {
+                    $this->deleteFile($cv->image);
                 }
                 $data['image'] = $this->saveFile($request->file('image'), 'CV/Images');
             }
-            return $user->cv()->update($data);
-
+            $cv->update($data);
+            return $cv;
         });
     }
 

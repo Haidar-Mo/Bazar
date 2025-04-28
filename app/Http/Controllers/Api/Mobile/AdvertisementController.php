@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Mobile\AdvertisementCreateRequest;
 use App\Models\Advertisement;
+use App\Models\JobRequest;
 use App\Traits\ResponseTrait;
 use App\Services\Mobile\AdvertisementService;
 use Exception;
@@ -46,10 +47,12 @@ class AdvertisementController extends Controller
     {
         try {
             $user = $request->user();
-            //- CHECK THE PLAN AND ADD "EXPIRY-DATE , IS-SPECIAL" TO THE REQUEST DEPEND ON IT
+            $plan = $user->subscriptions()
+                ->where('status', 'running')->first()
+                ->plan()->first();
             $mergedData = array_merge($request->all(), [
                 'expiry_date' => now()->addDays(30),
-                'is_special' => 0
+                'is_special' => $plan->is_special
             ]);
             $ads = $this->service->create($mergedData, $user);
             return $this->showResponse($ads->append('attributes'), 'create ads successfully ...!');
@@ -138,5 +141,57 @@ class AdvertisementController extends Controller
 
         return $this->showResponse($similarAds, 'Similar advertisements retrieved successfully !!');
     }
+
+
+    public function indexJobRequest(Request $request)
+    {
+        $user = $request->user();
+        $job_requests = $user->jobRequest()->with(['sender', 'advertisement'])->get();
+        return $this->showResponse($job_requests, 'Requests retrieved successfully', 200);
+    }
+
+    public function createJobRequest(Request $request, string $id)
+    {
+        $user = $request->user();
+        $advertisement = Advertisement::where('main_category_name', 'فرص عمل و وظائف')
+            ->where('status', 'active')
+            ->where('id', $id)
+            ->first();
+        if (!$advertisement)
+            return $this->showMessage('لم يتم العثور على الإعلان المطلوب, ربما تم حذفه', 400);
+        $old_request = $user->jobRequest()
+            ->where('advertisement_id', $advertisement->id)
+            ->where('status', 'new')
+            ->first();
+        if ($old_request)
+            return $this->showMessage('طلبك السابق قيد المعالجة', 400);
+
+        $advertisement->jobRequest()->create(
+            [
+                'sender_id' => $user->id,
+                'receiver_id' => $advertisement->user_id
+            ]
+        );
+        return $this->showMessage('تم إرسال الطلب بنجاح', 200);
+    }
+
+
+    public function showJobRequest(string $id)
+    {
+        $job_request = JobRequest::findOrFail($id);
+        $sender = $job_request->sender;
+        $cv = $sender->cv()->with([
+            'file',
+            'document',
+            'link',
+            'language',
+            'qualification',
+            'experience',
+            'skill',
+        ]);
+
+        return $this->showResponse($cv, 'Data retrieved successfully', 200);
+    }
+
 
 }

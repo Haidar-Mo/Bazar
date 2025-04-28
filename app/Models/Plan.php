@@ -18,14 +18,25 @@ class Plan extends Model
         'size',
         'price',
         'discount_price',
-        'details'
+        'details',
+        'is_special'
     ];
 
+    protected $appends = [
+        'is_special_text'
+    ];
 
     public function subscription(): HasMany
     {
         return $this->hasMany(Subscription::class);
     }
 
+
+    //! Accessories
+
+    public function getIsSpecialTextAttribute()
+    {
+        return $this->is_special ? 'مميزة' : 'عادية';
+    }
 
 }
