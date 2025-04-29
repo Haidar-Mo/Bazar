@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsEndedPlan;
 
 
-Route::get('Advertisements/ads/advertisements/id', [AdvertisementController::class, 'show']);
+Route::get('Advertisements/ads/advertisements/{id}', [AdvertisementController::class, 'show']);
 
 Route::prefix('Advertisements/')
     ->middleware([
@@ -30,5 +30,5 @@ Route::prefix('Advertisements/')
 
         Route::get('job-requests/index', [AdvertisementController::class, 'indexJobRequest']);
         Route::get('job-requests/show/{id}', [AdvertisementController::class, 'showJobRequest']);
-        Route::post('job-requests/create', [AdvertisementController::class, 'createJobRequest']);
+        Route::post('job-requests/create/{id}', [AdvertisementController::class, 'createJobRequest']);
     });

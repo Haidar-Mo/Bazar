@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Mobile\AdvertisementCreateRequest;
 use App\Models\Advertisement;
+use App\Models\Category;
 use App\Models\JobRequest;
 use App\Traits\ResponseTrait;
 use App\Services\Mobile\AdvertisementService;
@@ -72,7 +73,7 @@ class AdvertisementController extends Controller
         DB::beginTransaction();
         try {
             $ad = Advertisement::with(['user'])->where('id', $id)->first();
-            $user->views()->firstOrCreate(['advertisement_id' => $id]);
+            $user?->views()->firstOrCreate(['advertisement_id' => $id]);
             DB::commit();
             return $this->showResponse($ad->append('attributes'), 'done successfully....!');
         } catch (Exception $e) {
@@ -143,23 +144,26 @@ class AdvertisementController extends Controller
     }
 
 
+
+    //- Job Requests
     public function indexJobRequest(Request $request)
     {
         $user = $request->user();
-        $job_requests = $user->jobRequest()->with(['sender', 'advertisement'])->get();
+        $job_requests = $user->jobRequest()->with(['sender:id,first_name,last_name,birth_date', 'advertisement'])->get();
         return $this->showResponse($job_requests, 'Requests retrieved successfully', 200);
     }
 
     public function createJobRequest(Request $request, string $id)
     {
         $user = $request->user();
-        $advertisement = Advertisement::where('main_category_name', 'فرص عمل و وظائف')
+        $category_id = Category::where('name', 'فرص عمل و وظائف')->value('id');
+        $advertisement = Advertisement::where('category_id', $category_id)
             ->where('status', 'active')
             ->where('id', $id)
             ->first();
         if (!$advertisement)
             return $this->showMessage('لم يتم العثور على الإعلان المطلوب, ربما تم حذفه', 400);
-        $old_request = $user->jobRequest()
+        $old_request = $user->sendedJobRequest()
             ->where('advertisement_id', $advertisement->id)
             ->where('status', 'new')
             ->first();
@@ -188,7 +192,7 @@ class AdvertisementController extends Controller
             'qualification',
             'experience',
             'skill',
-        ]);
+        ])->first();
 
         return $this->showResponse($cv, 'Data retrieved successfully', 200);
     }

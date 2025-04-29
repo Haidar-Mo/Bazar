@@ -52,6 +52,7 @@ class FavoriteListItemController extends Controller
             DB::commit();
             return $this->showMessage('added item to list successfully....!');
         } catch (Exception $e) {
+            DB::rollBack();
             return $this->showError($e, 'Something goes wrong....!');
 
         }
