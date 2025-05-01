@@ -156,8 +156,9 @@ class AdvertisementController extends Controller
     public function createJobRequest(Request $request, string $id)
     {
         $user = $request->user();
-        $category_id = Category::where('name', 'فرص عمل و وظائف')->value('id');
-        $advertisement = Advertisement::where('category_id', $category_id)
+
+        $category = Category::where('name', 'فرص عمل')->first();
+        $advertisement = Advertisement::whereIn('category_id', array_merge([$category->id], $category->children()->get()->pluck('id')->toArray()))
             ->where('status', 'active')
             ->where('id', $id)
             ->first();

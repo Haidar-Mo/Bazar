@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\{
     DB,
     Auth
 };
-
-use Illuminate\Support\Str;
-use App\Notifications\Dasboard\NotificationDasboard;
 use App\Notifications\Dasboard\NotificationReports;
 
 class ReportController extends Controller
@@ -55,14 +52,10 @@ class ReportController extends Controller
             'paragraph' => $request->paragraph,
         ]);
         $adTitle = Advertisement::FindOrFail($request->ads_id)->title;
-        $admins = User::role(['admin', 'supervisour'], 'api')->get();
+        $admins = User::role(['admin', 'supervisor'], 'api')->get();
         foreach ($admins as $admin) {
             $admin->notify(new NotificationReports("قام المستخدم ( {$user->name} ) بالابلاغ عن الإعلان: ( {$adTitle} )"));
         }
-
-
-
-
         DB::commit();
         return $this->showMessage('report sent successfully....!');
 
