@@ -176,7 +176,7 @@ class RegistrationController extends Controller
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
             'birth_date' => ['required', 'date'],
-            'description' => ['sometimes', 'string'],
+            'description' => ['nullable', 'string'],
             "gender" => ['required', 'in:male,female'],
             "address" => ['required'],
             "device_token" => ['nullable'],
@@ -213,10 +213,9 @@ class RegistrationController extends Controller
             ], 200);
         } catch (Exception $e) {
             report($e);
-            return response()->json([
-                'message' => 'حدث خطأ أثناء إكمال التسجيل',
-                'error' => $e->getMessage(),
-            ], 500);
+            if (is_int($e->getCode()))
+                return $this->showError($e, 'حدث خطأ أثناء إكمال التسجيل', $e->getCode());
+            return $this->showError($e, 'حدث خطأ أثناء إكمال التسجيل', 500);
         }
     }
 

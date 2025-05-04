@@ -41,8 +41,8 @@ class SubscriptionController extends Controller
 
     public function show(string $id)
     {
-        $subscription=Subscription::with(['plan','user'])->findOrFail($id);
-        return $this->showResponse($subscription,'done successfully...!');
+        $subscription = Subscription::with(['plan', 'user'])->findOrFail($id);
+        return $this->showResponse($subscription, 'done successfully...!');
     }
 
 
@@ -51,7 +51,7 @@ class SubscriptionController extends Controller
         DB::beginTransaction();
         try {
             $subscription = Subscription::find($id);
-            $user =User::find($subscription->user_id);
+            $user = User::find($subscription->user_id);
             $activeSubscription = $user->subscriptions()
                 ->where('status', 'running')
                 ->where('id', '!=', $id)
@@ -63,7 +63,8 @@ class SubscriptionController extends Controller
             $plan = $subscription->plan;
             $subscription->update([
                 'status' => $request->status,
-                'number_of_ads'=>$subscription->plan->size,
+                'number_of_ads' => $subscription->plan->size,
+                'afford_price' => $plan->discount_price ?? $plan->price,
                 'starts_at' => Carbon::now(),
                 'ends_at' => Carbon::now()->addDays(intval($plan->duration))
             ]);
@@ -78,12 +79,12 @@ class SubscriptionController extends Controller
 
                     $subscription->unicast($Request, $token);
                 } catch (Exception $e) {
-                    Log::error('Faild to send Notification Firebase: ' . $e->getMessage());
+                    Log::error('Failed to send Notification Firebase: ' . $e->getMessage());
                 }
             }
 
 
-            $user->notify(new SubscriptiondNotification($subscription->plan->name,'تجديد اشتراك','تم تفعيل اشتراكك بالباقة'));
+            $user->notify(new SubscriptiondNotification($subscription->plan->name, 'تجديد اشتراك', 'تم تفعيل اشتراكك بالباقة'));
 
             DB::commit();
             return $this->showResponse($subscription, 'subscription updated successfully...!');

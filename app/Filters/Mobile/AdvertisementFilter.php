@@ -22,8 +22,7 @@ class AdvertisementFilter extends BaseFilter
         }
         if ($this->request->filled('category_id')) {
             $category = Category::findOrFail($this->request->category_id);
-            $query->where('category_id', $this->request->category_id)
-                ->orWhereIn('category_id', $category->children()->get()->pluck('id'));
+            $query->whereIn('category_id', array_merge([$this->request->category_id], $category->children()->get()->pluck('id')->toArray()));
         }
 
         if ($this->request->filled('min_price') && $this->request->filled('max_price')) {
