@@ -28,7 +28,21 @@ class NotificationSettings extends Controller
     public function index()
     {
         $user = Auth::user();
-        return $this->showResponse($user->NotificationSettings()->get(), 'done successfully...!');
+
+       
+        $categories = Category::query()->parent()->with(['notificationSetting' => function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])->get();
+
+
+        $categories->each(function ($category) {
+            $category->is_active = $category->notificationSetting->isNotEmpty()
+                                ? $category->notificationSetting->first()->is_active
+                                : 0;
+            unset($category->notificationSetting);
+        });
+
+        return $this->showResponse($categories, 'done successfully...!');
     }
 
 
