@@ -24,7 +24,7 @@ Route::prefix('profiles')
         Route::prefix('cv')->group(function () {
             Route::get('show', [CVController::class, 'show']);
             Route::post('create', [CVController::class, 'store']);
-            Route::put('update', [CVController::class, 'update']);
+            Route::post('update', [CVController::class, 'update']);
 
             Route::post('file', [CVController::class, 'addCvFile']);
             Route::delete('file', [CVController::class, 'deleteCvFile']);

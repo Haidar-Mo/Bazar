@@ -92,6 +92,11 @@ class Advertisement extends Model
         return $this->hasMany(AdvertisementAttribute::class);
     }
 
+    public function jobRequest(): HasMany
+    {
+        return $this->hasMany(JobRequest::class);
+    }
+
     public function items()
     {
         return $this->hasMany(FavoriteListItem::class);

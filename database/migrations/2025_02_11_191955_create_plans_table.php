@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->decimal('price');
             $table->decimal('discount_price')->nullable();
             $table->string('details');
+            $table->boolean('is_special');
             $table->timestamps();
         });
     }

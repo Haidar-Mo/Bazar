@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
-use Illuminate\Http\Request;
 
 class ShareLinkController extends Controller
 {
@@ -19,8 +18,7 @@ class ShareLinkController extends Controller
             ? 'https://apps.apple.com/app/idYOUR_APP_ID'
             : 'https://play.google.com/store/apps/details?id=com.example.bazar';
 
-        $shareLink = "bazarapp://share-link/advertisement/$id";
-
-        return view('ads/share-link', compact('appStoreUrl', 'ad', 'shareLink'));
+        $appLink = "bazarapp://share-link/advertisements/$id";
+        return view('ads/share-link', compact('appStoreUrl', 'ad', 'appLink'));
     }
 }

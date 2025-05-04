@@ -73,7 +73,7 @@ class ProfileController extends Controller
             return $this->showResponse($user, 'Profile image changes successfully !!');
         } catch (Exception $e) {
             report($e);
-            return $this->showError($e, 'An error occur while updating profile image', 422);
+            return $this->showError($e, 'An error occur while updating profile image', 500);
         }
     }
 

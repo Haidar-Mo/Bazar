@@ -148,11 +148,15 @@ class User extends Authenticatable
         return $this->hasMany(View::class);
     }
 
+    public function jobRequest(): HasMany
+    {
+        return $this->hasMany(JobRequest::class, 'receiver_id');
+    }
+
     public function favorite(): HasMany
     {
         return $this->hasMany(FavoriteList::class);
     }
-
 
     public function NotificationSettings(): HasMany
     {
@@ -187,7 +191,7 @@ class User extends Authenticatable
 
     public function getImageAttribute()
     {
-        return $this->images()->first()->path ?? null;
+        return $this->images()->first()->full_path ?? null;
     }
 
     public function getAgeAttribute()

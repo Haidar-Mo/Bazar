@@ -26,8 +26,9 @@ class PlanRequest extends FormRequest
             'duration' => 'required|string',
             'size' => 'required|string',
             'price' => 'required|decimal:0,99999.99',
-            'discount_price'=>'nullable',
-            'details'=>'required'
+            'discount_price' => 'nullable',
+            'details' => 'required',
+            'is_special' => 'required|boolean'
         ];
     }
 }

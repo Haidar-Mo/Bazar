@@ -24,12 +24,12 @@ class ProfileUpdateRequest extends FormRequest
     {
         $user = Auth::user();
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'gender' => 'required|in:male,female',
-            'birth_date' => 'required|date',
-            'phone_number' => 'numeric|unique:users,phone_number,' . $user->id.',id',
+            'first_name' => 'sometimes|string|max:255',
+            'last_name' => 'sometimes|string|max:255',
+            'address' => 'sometimes|string|max:255',
+            'gender' => 'sometimes|in:male,female',
+            'birth_date' => 'sometimes|date',
+            'phone_number' => 'sometimes|numeric|unique:users,phone_number,' . $user->id.',id',
             'description' => 'sometimes|string',
         ];
     }

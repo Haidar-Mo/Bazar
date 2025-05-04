@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Mobile\Auth;
 
 use App\Enums\TokenAbility;
 use App\Http\Controllers\Controller;
+use App\Traits\ResponseTrait;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use Spatie\Permission\Models\Role;
 
 class SocialiteController extends Controller
 {
+    use ResponseTrait;
     /*
         public function redirect($provider)
         {
@@ -82,7 +84,7 @@ class SocialiteController extends Controller
             $googleResponse = Http::get("https://oauth2.googleapis.com/tokeninfo?id_token={$request->id_token}");
 
             if ($googleResponse->failed()) {
-                return response()->json(['error' => 'Invalid ID token'], 401);
+                return $this->showMessage('الرقم التعريفي غير صالح', 401, false);
             }
 
             $socialUser = $googleResponse->json();
@@ -124,7 +126,7 @@ class SocialiteController extends Controller
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Failed to authenticate',
+                'error' => 'فشلت عملية المصادقة',
                 'message' => $e->getMessage(),
             ], 401);
         }

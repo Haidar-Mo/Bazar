@@ -11,7 +11,7 @@ class CvUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -30,7 +30,6 @@ class CvUpdateRequest extends FormRequest
             'email' => 'sometimes|string|email|max:255|unique:c_v_s,email,' . $cvId,
             'phone_number' => 'sometimes|string|max:255|unique:c_v_s,phone_number,' . $cvId,
             'gender' => 'sometimes|in:male,female',
-            'language' => 'nullable|json',
             'nationality' => 'sometimes|string|max:255',
             'birth_date' => 'nullable|date',
         ];

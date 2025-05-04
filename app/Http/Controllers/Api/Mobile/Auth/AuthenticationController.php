@@ -29,7 +29,7 @@ class AuthenticationController extends Controller
 
         if (!Auth::attempt($credentials)) {
 
-            return response()->json(['message' => 'password or Email is incorrect'], 401);
+            return response()->json(['message' => 'البريد أو كلمة المرور غير صحيحة'], 401);
         }
         $user = User::find(Auth::user()->id);
         if ($request->has('device_token')) {
