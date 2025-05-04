@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 
 use App\Models\Advertisement;
 use App\Observers\AdvertisementObserver;
+use App\Observers\NewUserObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +26,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Advertisement::observe(AdvertisementObserver::class);
+        User::observe(NewUserObserver::class);
     }
 }
