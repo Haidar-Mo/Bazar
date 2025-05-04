@@ -16,6 +16,7 @@ class Subscription extends Model
     protected $fillable = [
         'user_id',
         'plan_id',
+        'afford_price',
         'status',
         'starts_at',
         'ends_at',
@@ -29,7 +30,7 @@ class Subscription extends Model
 
 
     protected $appends = [
-        'created_from',
+       // 'created_from',
 
     ];
 
@@ -78,10 +79,10 @@ class Subscription extends Model
             'user_name' => $this->user_name,
             'plan_name' => $this->plan_name,
             'plan_price' => $this->plan_price,
-            'status'=>$this->status,
-            'starts_at'=>$this->starts_at,
-            'ends_at'=>$this->ends_at,
-            'number_of_ads'=>$this->number_of_ads,
+            'status' => $this->status,
+            'starts_at' => $this->starts_at,
+            'ends_at' => $this->ends_at,
+            'number_of_ads' => $this->number_of_ads,
             'created_from' => $this->created_from,
 
         ];

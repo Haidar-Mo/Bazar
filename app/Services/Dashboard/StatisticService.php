@@ -32,6 +32,8 @@ class StatisticService
             default => 'DATE(created_at)',
         };
 
+
+
         //- Group ads by time range
         $all_ads = Advertisement::whereBetween('created_at', [$date_1, $date_2])
             ->select(DB::raw("$groupByFormat as period"), DB::raw('count(*) as count'))
@@ -43,6 +45,7 @@ class StatisticService
             'total_ads' => $item->count,
         ]);
 
+
         //- Group subscriptions by time range
         $all_subs = Subscription::whereBetween('created_at', [$date_1, $date_2])
             ->select(DB::raw("$groupByFormat as period"), DB::raw('count(*) as count'))
@@ -53,6 +56,7 @@ class StatisticService
             'date' => strval($item->period),
             'total_subs' => $item->count,
         ]);
+
 
         //- Calculate verified/unverified ratio
         $verified_users = User::where('is_verified', 1)->count();
@@ -67,6 +71,7 @@ class StatisticService
             'unverified' => 0,
         ];
 
+
         //- Get most viewed activated ads
         $most_viewed_ads = Advertisement::where('status', 'active')
             ->withCount('views')
@@ -74,11 +79,24 @@ class StatisticService
             ->limit(20)
             ->get(['id', 'title', 'created_at', 'main_category_name', 'category_name']);
 
+
+
+        //- Financial statistic
+        $subscriptions = Subscription::where('status', '!=', 'pending')->whereBetween('created_at', [$date_1, $date_2])
+            ->groupBy('plan_id')
+            ->selectRaw('plan_id, COUNT(*) as subscription_count, SUM(afford_price) as total_benefits')
+            ->get();
+
+        $total_benefits = $subscriptions->sum('total_benefits');
+
         return [
             'ads_count' => $ads_count,
             'subs_count' => $subs_count,
             'users_ratio' => $users_ratio,
             'most_viewed_ads' => $most_viewed_ads,
+            'subscriptions' => $subscriptions,
+            'total_benefits' => $total_benefits,
+
         ];
     }
 
