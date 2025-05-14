@@ -23,49 +23,17 @@ class PlanController extends Controller
      */
     public function index()
     {
-       return $this->showResponse(Plan::get(),'done successfully.....!');
+        return $this->showResponse(Plan::where('name', '!=', 'starter')->get(), 'done successfully.....!');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    /*public function store(PlanRequest $request)
-    {
-        DB::beginTransaction();
-    try{
-      $plan=Plan::create([
-        'price'=>$request->price,
-        'duration'=>$request->duration,
-        'name'=>$request->name,
-        'discount_price'=>$request->discount_price,
-        'details'=>$request->details
-      ]);
-         DB::commit();
-         return $this->showResponse($plan,'done successfully.....!');
-    }
-    catch(Exception $e){
-        DB::rollBack();
-        return $this->showError($e,'SomeThing goes wrong....!');
-
-    }
-
-    }*/
 
     /**
      * Display the specified resource.
      */
-   /* public function show(string $id)
-    {
-        return $this->showResponse(Plan::FindOrFail($id)->first(),'done successfully...!');
-    }*/
+    /* public function show(string $id)
+     {
+         return $this->showResponse(Plan::FindOrFail($id)->first(),'done successfully...!');
+     }*/
 
     /**
      * Show the form for editing the specified resource.

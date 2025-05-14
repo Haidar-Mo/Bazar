@@ -29,7 +29,6 @@ class User extends Authenticatable
         'email',
         'password',
         'phone_number',
-        'birth_date',
         'address',
         'gender',
         'job',
@@ -153,6 +152,12 @@ class User extends Authenticatable
         return $this->hasMany(JobRequest::class, 'receiver_id');
     }
 
+    public function sendedJobRequest(): HasMany
+    {
+        return $this->hasMany(JobRequest::class, 'sender_id');
+
+    }
+
     public function favorite(): HasMany
     {
         return $this->hasMany(FavoriteList::class);
@@ -208,7 +213,7 @@ class User extends Authenticatable
 
     public function getIsFullRegisteredAttribute()
     {
-        return $this->first_name && $this->last_name && $this->gender && $this->birth_date ? true : false;
+        return $this->first_name && $this->last_name ? true : false;
     }
     public function getRateAttribute()
     {

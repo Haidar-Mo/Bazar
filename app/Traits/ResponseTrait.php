@@ -15,7 +15,7 @@ trait ResponseTrait
      * @param int $status
      * @return JsonResponse
      */
-    public function showResponse($data, string $message = 'Operation successful', int $status = 200): JsonResponse
+    public function showResponse($data, string $message = 'Operation succeeded', int $status = 200): JsonResponse
     {
         return response()->json([
             'success' => true,

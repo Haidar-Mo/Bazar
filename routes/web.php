@@ -37,7 +37,8 @@ Route::get('storage-link', function () {
     return view('artisan-response', compact('title'));
 
 });
-Route::get('/share-link/advertisement/{id}', [ShareLinkController::class, 'handle']);
+
+
 
 
 
@@ -66,3 +67,6 @@ Route::get('/test-send-notification', function () {
 
     return $notifier->sendNotificationToTopic($topic, $title, $body);
 });
+
+Route::get('/share-link/advertisements/{id}', [ShareLinkController::class, 'handle']);
+

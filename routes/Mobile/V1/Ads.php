@@ -5,9 +5,6 @@ use App\Http\Controllers\Api\Mobile\AdvertisementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsEndedPlan;
 
-
-Route::get('Advertisements/ads/advertisements/id', [AdvertisementController::class, 'show']);
-
 Route::prefix('Advertisements/')
     ->middleware([
         'auth:sanctum',
@@ -18,7 +15,7 @@ Route::prefix('Advertisements/')
 
 
         Route::prefix('ads')->group(function () {
-            Route::apiResource('advertisements', AdvertisementController::class)->only(['index', 'update', 'destroy']);
+            Route::apiResource('advertisements', AdvertisementController::class)->only(['index', 'show', 'update', 'destroy']);
             Route::post('advertisements', [AdvertisementController::class, 'store'])->middleware(IsEndedPlan::class);
         });
 
@@ -30,5 +27,5 @@ Route::prefix('Advertisements/')
 
         Route::get('job-requests/index', [AdvertisementController::class, 'indexJobRequest']);
         Route::get('job-requests/show/{id}', [AdvertisementController::class, 'showJobRequest']);
-        Route::post('job-requests/create', [AdvertisementController::class, 'createJobRequest']);
+        Route::post('job-requests/create/{id}', [AdvertisementController::class, 'createJobRequest']);
     });

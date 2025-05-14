@@ -89,7 +89,7 @@ class AdvertisementService
                 }
             }
 
-            $admins = User::role(['admin', 'supervisour'], 'api')->get();
+            $admins = User::role(['admin', 'supervisor'], 'api')->get();
             foreach($admins as $admin){
                 $admin->notify(new NotofcationAddAds("قام {$user->name} باضافة اعلان جديد: {$ad->title}"));
             }

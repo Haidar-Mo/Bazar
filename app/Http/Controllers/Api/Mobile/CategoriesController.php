@@ -15,62 +15,18 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $Categories = Category::query()->parent()->with(['children'])->get();
-        return $this->showResponse($Categories,'done successfully.....!');
-
-
+        $Categories = Category::query()->parent()->with(['children'])->get()->append('icon_path');
+        return $this->showResponse($Categories, 'done successfully.....!');
     }
-
 
     public function show(string $id)
     {
         try {
             $category = Category::with(['children'])->findOrFail($id);
             return $this->showResponse($category, 'done successfully....!');
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return $this->showError($e, 'something goes wrong....!');
         }
     }
 
-
-/*
-    public function show(string $id)
-    {
-        try {
-            $category = Category::with(['children'])->findOrFail($id);
-            $ads = $category->ads()
-                ->with(['images','category', 'city'])
-                ->where('status','active')
-                ->paginate(10);
-            $category->setRelation('ads', $ads);
-            return $this->showResponse($category, 'done successfully....!');
-        } catch(Exception $e) {
-            return $this->showError($e, 'something goes wrong....!');
-        }
-    }*/
-
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

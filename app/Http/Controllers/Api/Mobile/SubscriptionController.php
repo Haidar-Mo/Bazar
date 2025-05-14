@@ -33,14 +33,6 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(SubscriptionRequest $request)
@@ -51,67 +43,24 @@ class SubscriptionController extends Controller
             if ($user->subscriptions()->where('status', 'running')->exists()) {
                 return $this->showMessage('لا يمكنك الاشتراك لوجود باقة مفعلة مسبقا', 422);
             }
+
             $user->subscriptions()->create(['plan_id' => $request->plan_id]);
             $admins = User::role(['admin', 'supervisor'], 'api')->get();
-            $plan = Plan::FindOrFail($request->plan_id);
-            foreach ($admins as $admin) {
-                $admin->notify(new NotificationSubscription("قام ( {$user->name} )بالاشتراك بالباقة ( {$plan->name} )"));
-            }
 
+            $plan = Plan::FindOrFail($request->plan_id);
+            $user->subscriptions()->create([
+                'plan_id' => $plan->id,
+            ]);
+            $admins = User::role(['admin', 'supervisor'], 'api')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new NotificationSubscription("قام ( {$user->name} )بإرسال طلب اشتراك بالباقة ( {$plan->name} )"));
+            }
 
             DB::commit();
             return $this->showMessage('تم ارسال طلب الاشتراك بنجاح');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e);
-        }
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(SubscriptionUpdateRequest $request, string $id)
-    {
-        DB::beginTransaction();
-        try {
-            $subscription = Subscription::find($id);
-            $user = Auth::user();
-            $activeSubscription = $user->subscriptions()
-                ->where('status', 'running')
-                ->where('id', '!=', $id)
-                ->first();
-            if ($activeSubscription) {
-                $activeSubscription->update(['status' => 'ended']);
-            }
-
-            $plan = $subscription->plan;
-            $subscription->update([
-                'status' => $request->status,
-                'number_of_ads' => $subscription->plan->size,
-                'starts_at' => Carbon::now(),
-                'ends_at' => Carbon::now()->addDays(intval($plan->duration))
-            ]);
-
-            DB::commit();
-            return $this->showResponse($subscription, 'subscription updated successfully...!');
-        } catch (Exception $e) {
-            DB::rollBack();
-            return $this->showError($e, 'something goes wrong.....!');
         }
     }
 
@@ -125,9 +74,9 @@ class SubscriptionController extends Controller
         try {
             $user = Auth::user();
             $subscription = $user->subscriptions()->find($id)->first();
-            $subscription->delete();
+            $subscription->update(['status' => 'ended']);
             DB::commit();
-            return $this->showResponse($subscription, 'subscription delete successfully....!');
+            return $this->showResponse($subscription, 'تم إنهاء الاشتراك بنجاح');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e, 'something goes wrong....!');

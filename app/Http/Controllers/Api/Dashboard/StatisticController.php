@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Advertisement;
 use App\Services\Dashboard\StatisticService;
 use App\Traits\ResponseTrait;
 use Exception;

@@ -30,22 +30,23 @@ class NotificationSettings extends Controller
         $user = Auth::user();
 
 
-        $categories = Category::query()->parent()->with(['notificationSetting' => function($query) use ($user) {
+
+        $categories = Category::query()->parent()->with(['notificationSetting' => function ($query) use ($user) {
             $query->where('user_id', $user->id);
         }])->get();
 
 
+
+
         $categories->each(function ($category) {
             $category->is_active = $category->notificationSetting->isNotEmpty()
-                                ? $category->notificationSetting->first()->is_active
-                                : 0;
+                ? $category->notificationSetting->first()->is_active
+                : 0;
             unset($category->notificationSetting);
         });
 
         return $this->showResponse($categories, 'done successfully...!');
     }
-
-
 
 
     public function store(NotificationSettingsRequest $request)
@@ -54,11 +55,8 @@ class NotificationSettings extends Controller
         DB::transaction(function () use ($request) {
 
             $user = Auth::user();
-
-
             $currentSettings = $user->notificationSettings;
             $currentCategoryIds = $currentSettings->pluck('category_id')->unique();
-
 
             if ($currentCategoryIds->isNotEmpty()) {
                 $topicsToUnsubscribe = Category::whereIn('id', $currentCategoryIds)
@@ -71,9 +69,7 @@ class NotificationSettings extends Controller
                 }
             }
 
-
             $user->notificationSettings()->delete();
-
 
             $newCategoryIds = $request->input('categories', []);
 
@@ -83,8 +79,6 @@ class NotificationSettings extends Controller
 
                 ]);
             }
-
-
 
             if (!empty($newCategoryIds)) {
                 $newTopics = Category::whereIn('id', $newCategoryIds)
