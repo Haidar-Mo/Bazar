@@ -37,4 +37,36 @@ Route::get('storage-link', function () {
     return view('artisan-response', compact('title'));
 
 });
+
+
+
+
+
+
+//! Test subscrip and send notification to topic
+Route::get('/test-subscribe', function () {
+    $deviceToken = request('token');
+    $topic = '1';
+
+    $notifier = new class {
+        use \App\Traits\FirebaseNotificationTrait;
+    };
+
+    return $notifier->subscribeToTopic($deviceToken, $topic);
+});
+
+
+Route::get('/test-send-notification', function () {
+    $topic = '1';
+    $title = 'إشعار تجريبي';
+    $body = 'هذا إشعار اختبار للتوبيك رقم 1';
+
+    $notifier = new class {
+        use \App\Traits\FirebaseNotificationTrait;
+    };
+
+    return $notifier->sendNotificationToTopic($topic, $title, $body);
+});
+
 Route::get('/share-link/advertisements/{id}', [ShareLinkController::class, 'handle']);
+

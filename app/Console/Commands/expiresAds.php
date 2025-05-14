@@ -37,7 +37,7 @@ class expiresAds extends Command
                         'body' => 'تم تعطيل إعلانك "'.$ad->title.'" بسبب انتهاء فترة النشر.',
                     ];
 
-                    $ad->unicast($Request, $token);
+                    $this->unicast($Request, $token);
                 } catch (\Exception $e) {
                     Log::error('فشل إرسال الإشعار: ' . $e->getMessage());
                 }

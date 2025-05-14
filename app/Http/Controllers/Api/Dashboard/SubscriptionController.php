@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\{
     DB,
     Log
 };
-use App\Traits\ResponseTrait;
+use App\Traits\{
+ResponseTrait,
+FirebaseNotificationTrait
+};
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Exception;
@@ -22,7 +25,7 @@ use App\Notifications\SubscriptiondNotification;
 
 class SubscriptionController extends Controller
 {
-    use ResponseTrait;
+    use ResponseTrait,FirebaseNotificationTrait;
     /**
      * Display a listing of the resource.
      */
@@ -77,7 +80,8 @@ class SubscriptionController extends Controller
                     ];
 
 
-                    $subscription->unicast($Request, $token);
+                    $this->unicast($Request, $token);
+                    Log::error('done');
                 } catch (Exception $e) {
                     Log::error('Failed to send Notification Firebase: ' . $e->getMessage());
                 }

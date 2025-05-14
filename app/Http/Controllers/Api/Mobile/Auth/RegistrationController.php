@@ -176,7 +176,7 @@ class RegistrationController extends Controller
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
             'birth_date' => ['required', 'date'],
-            'description' => ['nullable', 'string'],
+            'description' => ['sometimes', 'string'],
             "gender" => ['required', 'in:male,female'],
             "address" => ['required'],
             "device_token" => ['nullable'],
@@ -196,11 +196,13 @@ class RegistrationController extends Controller
                         'category_id' => $category->id,
                         'is_active' => true,
                     ]);
+                    if ($user->device_token) {
+                    $this->subscribeToTopic($user->device_token,$category->id);
                 }
 
-                if ($user->device_token) {
-                    $this->subscribeToTopic($user->device_token, $category->name);
                 }
+
+
 
                 return $user;
             });
@@ -212,9 +214,10 @@ class RegistrationController extends Controller
             ], 200);
         } catch (Exception $e) {
             report($e);
-            if (is_int($e->getCode()))
-                return $this->showError($e, 'حدث خطأ أثناء إكمال التسجيل', $e->getCode());
-            return $this->showError($e, 'حدث خطأ أثناء إكمال التسجيل', 500);
+            return response()->json([
+                'message' => 'حدث خطأ أثناء إكمال التسجيل',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 

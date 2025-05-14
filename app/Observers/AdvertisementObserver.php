@@ -11,10 +11,11 @@ class AdvertisementObserver
 
     public function created(Advertisement $advertisement)
     {
+
         $this->sendNotificationToTopic(
-            topic: $advertisement->main_category_name,
-            title: 'إعلان جديد في قسم ' . $advertisement->main_category_name,
-            body: $advertisement->title
+             $advertisement->main_category_id,
+             'إعلان جديد في قسم ' . $advertisement->main_category_name,
+             $advertisement->title
         );
     }
 }
