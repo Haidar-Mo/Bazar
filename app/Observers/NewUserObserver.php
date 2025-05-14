@@ -2,11 +2,14 @@
 
 namespace App\Observers;
 
+use App\Models\Category;
 use App\Models\Plan;
 use App\Models\User;
+use App\Traits\FirebaseNotificationTrait;
 
-class StarterPlan
+class NewUserObserver
 {
+    use FirebaseNotificationTrait;
     /**
      * Handle the User "created" event.
      */
@@ -28,7 +31,7 @@ class StarterPlan
      */
     public function updated(User $user): void
     {
-        //
+
     }
 
     /**

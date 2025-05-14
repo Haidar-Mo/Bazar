@@ -202,7 +202,6 @@ class RegistrationController extends Controller
                     $this->subscribeToTopic($user->device_token, $category->name);
                 }
 
-
                 return $user;
             });
 

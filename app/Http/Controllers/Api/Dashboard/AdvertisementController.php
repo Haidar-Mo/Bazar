@@ -83,13 +83,18 @@ class AdvertisementController extends Controller
     }
 
 
-    public function reject(string $id)
+    public function reject(Request $request, string $id)
     {
+        $request->validate(['rejecting_reason' => 'sometimes|string']);
+
         $ad = Advertisement::findOrFail($id);
         if ($ad->status != 'pending')
             return $this->showMessage('this advertisement is already processed !!', 422, false);
         try {
-            $ad->update(['status' => 'rejected']);
+            $ad->update([
+                'rejecting_reason' => $request->rejecting_reason,
+                'status' => 'rejected'
+            ]);
             return $this->showResponse($ad, 'Advertisement rejected !!', 200);
         } catch (Exception $e) {
             report($e);

@@ -16,7 +16,6 @@ class NotificationSetting extends Model
         'user_id',
         'category_id',
         'is_active',
-        'type'
     ];
 
     protected $hidden = [
@@ -24,7 +23,7 @@ class NotificationSetting extends Model
         'updated_at',
     ];
 
-    protected $appends=[
+    protected $appends = [
 
         'category_name'
     ];
@@ -41,7 +40,8 @@ class NotificationSetting extends Model
 
     //! Accessories
 
-    public function getCategoryNameAttribute(){
+    public function getCategoryNameAttribute()
+    {
         return $this->category()->first()->name;
     }
 }

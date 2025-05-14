@@ -29,22 +29,21 @@ class NotificationSettings extends Controller
     {
         $user = Auth::user();
 
-       
-        $categories = Category::query()->parent()->with(['notificationSetting' => function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        }])->get();
-
+        $categories = Category::query()->parent()->with([
+            'notificationSetting' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }
+        ])->get();
 
         $categories->each(function ($category) {
             $category->is_active = $category->notificationSetting->isNotEmpty()
-                                ? $category->notificationSetting->first()->is_active
-                                : 0;
+                ? $category->notificationSetting->first()->is_active
+                : 0;
             unset($category->notificationSetting);
         });
 
         return $this->showResponse($categories, 'done successfully...!');
     }
-
 
 
     public function store(NotificationSettingsRequest $request)
