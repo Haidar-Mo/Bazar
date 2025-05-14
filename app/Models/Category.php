@@ -12,8 +12,15 @@ class Category extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'parent_id'
+        'parent_id',
+        'icon'
     ];
+
+
+    protected $hidden = [
+        'icon',
+    ];
+
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
@@ -40,4 +47,9 @@ class Category extends Model
         return $query->whereNull('parent_id');
     }
 
+    public function getIconPathAttribute()
+    {
+        $this->makeVisible('icon');
+        return $this->icon ? asset($this->icon) : null;
+    }
 }
