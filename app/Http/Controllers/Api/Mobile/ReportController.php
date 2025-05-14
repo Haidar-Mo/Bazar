@@ -64,11 +64,11 @@ class ReportController extends Controller
 
 
         DB::commit();
-        return $this->showMessage('report sent successfully....!');
+        return $this->showMessage('تم ارسال بلاغك بنجاح');
 
     }catch(Exception $e){
         DB::rollBack();
-        return $this->showError($e,'something goes wrong.....!');
+        return $this->showError($e,'حدث خطأ ما يرجى المحالة لاحقا');
 
     }
 

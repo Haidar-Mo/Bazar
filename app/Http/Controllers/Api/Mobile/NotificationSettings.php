@@ -29,7 +29,7 @@ class NotificationSettings extends Controller
     {
         $user = Auth::user();
 
-       
+
         $categories = Category::query()->parent()->with(['notificationSetting' => function($query) use ($user) {
             $query->where('user_id', $user->id);
         }])->get();
@@ -98,6 +98,6 @@ class NotificationSettings extends Controller
             }
         });
 
-        return $this->showMessage('done successfully...!');
+        return $this->showMessage('تم التعديل بنجاح');
     }
 }

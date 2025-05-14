@@ -52,7 +52,7 @@ class SubscriptionController extends Controller
                 return $this->showMessage('لا يمكنك الاشتراك لوجود باقة مفعلة مسبقا', 422);
             }
             $user->subscriptions()->create(['plan_id' => $request->plan_id]);
-            $admins = User::role(['admin', 'supervisour'], 'api')->get();
+            $admins = User::role(['admin', 'supervisor'], 'api')->get();
             $plan = Plan::FindOrFail($request->plan_id);
             foreach ($admins as $admin) {
                 $admin->notify(new NotificationSubscription("قام ( {$user->name} )بالاشتراك بالباقة ( {$plan->name} )"));
@@ -60,7 +60,7 @@ class SubscriptionController extends Controller
 
 
             DB::commit();
-            return $this->showMessage('تم ارسال طلب الاشتراك...');
+            return $this->showMessage('تم ارسال طلب الاشتراك بنجاح');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->showError($e);

@@ -40,11 +40,11 @@ class RateController extends Controller
                 'comment' => $request->comment,
             ]);
             DB::commit();
-            return $this->showMessage('rate sent successfully....!');
+            return $this->showMessage('تم ارسال تقيمك بنجاح');
 
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->showError($e, 'something goes wrong.....!');
+            return $this->showError($e, 'حدث خطأ ما يرجى المحاولة لاحقا');
 
         }
     }

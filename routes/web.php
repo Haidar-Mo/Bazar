@@ -38,3 +38,31 @@ Route::get('storage-link', function () {
 
 });
 Route::get('/share-link/advertisement/{id}', [ShareLinkController::class, 'handle']);
+
+
+
+
+//! Test subscrip and send notification to topic
+Route::get('/test-subscribe', function () {
+    $deviceToken = request('token');
+    $topic = '1';
+
+    $notifier = new class {
+        use \App\Traits\FirebaseNotificationTrait;
+    };
+
+    return $notifier->subscribeToTopic($deviceToken, $topic);
+});
+
+
+Route::get('/test-send-notification', function () {
+    $topic = '1';
+    $title = 'إشعار تجريبي';
+    $body = 'هذا إشعار اختبار للتوبيك رقم 1';
+
+    $notifier = new class {
+        use \App\Traits\FirebaseNotificationTrait;
+    };
+
+    return $notifier->sendNotificationToTopic($topic, $title, $body);
+});

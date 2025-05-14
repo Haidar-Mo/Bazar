@@ -119,6 +119,7 @@ class Advertisement extends Model
         return $this->user()->first()->phone_number ?? null;
     }
 
+
     public function getCityNameAttribute()
     {
         return $this->city()->first()->name;

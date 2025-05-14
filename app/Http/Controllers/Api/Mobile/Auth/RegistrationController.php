@@ -196,11 +196,12 @@ class RegistrationController extends Controller
                         'category_id' => $category->id,
                         'is_active' => true,
                     ]);
+                    if ($user->device_token) {
+                    $this->subscribeToTopic($user->device_token,$category->id);
                 }
 
-                if ($user->device_token) {
-                    $this->subscribeToTopic($user->device_token, $category->name);
                 }
+
 
 
                 return $user;
