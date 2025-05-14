@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Mobile;
 
-use App\Rules\SyrianPhoneNumberRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class VerificationRequestUpdateRequest extends FormRequest
@@ -23,7 +22,7 @@ class VerificationRequestUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone_number' => 'sometimes|string|' . new SyrianPhoneNumberRule(),
+            'phone_number' => 'sometimes|string',
             'identity_image' => 'sometimes|image',
             'work_register' => 'sometimes|file',
             'other_document' => 'sometimes|file',

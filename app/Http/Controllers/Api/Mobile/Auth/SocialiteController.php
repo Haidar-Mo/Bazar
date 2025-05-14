@@ -158,8 +158,6 @@ class SocialiteController extends Controller
                     'email' => $googleData['email'] ?? null,
                     'id' => $googleData['sub'],
                     'name' => $googleData['name'] ?? '',
-                    'birthday' => null,
-                    'gender' => null,
                 ];
             } 
             
@@ -179,7 +177,6 @@ class SocialiteController extends Controller
                     'email' => $fbData['email'] ?? null,
                     'id' => $fbData['id'],
                     'name' => $fbData['name'] ?? '',
-                    'birthday' => $fbData['birthday'] ?? null,
                     'gender' => $fbData['gender'] ?? null,
                 ];
             } 
@@ -201,7 +198,6 @@ class SocialiteController extends Controller
                     'email' => $socialUser['email'],
                     'first_name' => $first_name,
                     'last_name' => $last_name,
-                    'birth_date' => $socialUser['birthday'],
                     'gender' => $socialUser['gender'],
                     'password' => bcrypt(Str::random(16)),
                     'provider' => $provider,
