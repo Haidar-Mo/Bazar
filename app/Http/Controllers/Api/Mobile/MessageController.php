@@ -40,10 +40,10 @@ class MessageController extends Controller
             event(new NewMessageSent($message));
             Log::info('Message sent and broadcasted: ', ['message' => $message]);
             DB::commit();
-            return $this->showMessage('Message sent..!');
+            return $this->showMessage('تم الارسال');
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->showError($e, 'something goes wrong...!');
+            return $this->showError($e, 'حدث خطأ ما يرجى المحاولة لاحقا');
         }
     }
 

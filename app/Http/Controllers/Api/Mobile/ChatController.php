@@ -46,9 +46,9 @@ class ChatController extends Controller
                 'advertisement_id' => $request->advertisement_id
             ]);
             DB::commit();
-            return $this->showResponse($chat, 'chat created successfully....!');
+            return $this->showResponse($chat, 'تم انشاء محادثة');
         } catch (Exception $e) {
-            return $this->showError($e, 'something goes wrong....!');
+            return $this->showError($e, 'حدث خطأ ما رجى المحاولة لاحقا');
         }
     }
 

@@ -49,7 +49,7 @@ class expiresSubscription extends Command
                             'body' => 'تم الغاء اشتراكك بالباقة',
                         ];
 
-                        $subscription->unicast($Request, $token);
+                        $this->unicast($Request, $token);
                     } catch (\Exception $e) {
                         Log::error('فشل إرسال الإشعار: ' . $e->getMessage());
                     }
