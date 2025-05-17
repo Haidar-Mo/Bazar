@@ -8,7 +8,6 @@ use App\Http\Requests\Mobile\CvLanguageCreateRequest;
 use App\Http\Requests\Mobile\CvQualificationCreateRequest;
 use App\Http\Requests\Mobile\CvUpdateRequest;
 use App\Http\Requests\Mobile\CvCreateRequest;
-use App\Models\CvFile;
 use App\Services\Mobile\CVService;
 use App\Traits\HasFiles;
 use App\Traits\ResponseTrait;
@@ -471,18 +470,9 @@ class CVController extends Controller
      */
     public function addDocument(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'file' => 'required|file'
-        ], [
-            'file.required' => 'You must upload a file!',
-            'file.file' => 'The uploaded item must be a valid file format.'
-        ]);
-
-        $user = $request->user();
-        $cv = $user->cv()->first();
+        
         try {
-            $this->service->addDocument($request, $cv);
+           $cv =  $this->service->addDocument($request);
             $cv->load([
                 'file',
                 'document',

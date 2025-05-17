@@ -149,7 +149,7 @@ class AdvertisementController extends Controller
     public function indexJobRequest(Request $request)
     {
         $user = $request->user();
-        $job_requests = $user->jobRequest()->with(['sender:id,first_name,last_name,birth_date', 'advertisement'])->get();
+        $job_requests = $user->jobRequest()->with(['sender:id,first_name,last_name', 'advertisement'])->get();
         return $this->showResponse($job_requests, 'Requests retrieved successfully', 200);
     }
 

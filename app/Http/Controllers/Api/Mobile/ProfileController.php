@@ -32,7 +32,6 @@ class ProfileController extends Controller
             'last_name',
             'phone_number',
             'email',
-            'birth_date',
             'address',
             'gender',
             'job',

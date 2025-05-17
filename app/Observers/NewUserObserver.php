@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use App\Models\Category;
 use App\Models\Plan;
 use App\Models\User;
 use App\Traits\FirebaseNotificationTrait;
@@ -15,7 +14,7 @@ class NewUserObserver
      */
     public function created(User $user): void
     {
-        $plan = Plan::where('name', 'starter')->first();
+        $plan = Plan::where('name', 'افتراضية')->first();
         if ($plan) {
             $user->subscriptions()->create([
                 'plan_id' => $plan->id,
