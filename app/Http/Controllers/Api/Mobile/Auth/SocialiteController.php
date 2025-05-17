@@ -177,7 +177,6 @@ class SocialiteController extends Controller
                     'email' => $fbData['email'] ?? null,
                     'id' => $fbData['id'],
                     'name' => $fbData['name'] ?? '',
-                    'gender' => $fbData['gender'] ?? null,
                 ];
             } 
             
@@ -198,7 +197,6 @@ class SocialiteController extends Controller
                     'email' => $socialUser['email'],
                     'first_name' => $first_name,
                     'last_name' => $last_name,
-                    'gender' => $socialUser['gender'],
                     'password' => bcrypt(Str::random(16)),
                     'provider' => $provider,
                     'provider_id' => $socialUser['id'],
@@ -222,8 +220,8 @@ class SocialiteController extends Controller
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'فشلت عملية المصادقة',
-                'message' => $e->getMessage(),
+                'message' => 'فشلت عملية المصادقة',
+                'error' => $e->getMessage(),
             ], 401);
         }
     }

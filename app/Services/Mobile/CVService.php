@@ -143,10 +143,28 @@ class CVService
      * @param \App\Models\Cv $cv
      * @return mixed
      */
-    public function addDocument(Request $request, Cv $cv)
+    public function addDocument(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'file' => 'required|file'
+        ], [
+            'file.required' => 'You must upload a file!',
+            'file.file' => 'The uploaded item must be a valid file format.'
+        ]);
+        $user = $request->user();
+        $cv = $user->cv()->first();
+
         return DB::transaction(function () use ($request, $cv) {
-            $file_path = $this->saveFile($request->file('file'), 'CV/Documents');
+            $file = $request->file('file');
+            $mimeType = $file->getMimeType();
+
+            // Determine if the file is an image
+            $isImage = str_starts_with($mimeType, 'image/');
+            if ($isImage) {
+                $file = $this->convertImageToPdf($file);
+            }
+            $file_path = $this->saveFile($file, 'CV/Documents');
             $cv->document()->create([
                 'name' => $request->name,
                 'path' => $file_path

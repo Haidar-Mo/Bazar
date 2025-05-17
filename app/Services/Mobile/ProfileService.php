@@ -26,9 +26,9 @@ class ProfileService
      */
     public function update(FormRequest $request, User $user)
     {
-
-        return DB::transaction(function () use ($request, $user) {
-            $user->update($request->all());
+        $data = $request->validated();
+        return DB::transaction(function () use ($data, $user) {
+            $user->update($data);
             return $user;
         });
     }

@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\Mobile\AdvertisementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsEndedPlan;
 
+Route::get('Advertisements/similar/{id}', [AdvertisementController::class, 'getSimilarAds']);
+
 Route::prefix('Advertisements/')
     ->middleware([
         'auth:sanctum',
@@ -19,9 +21,7 @@ Route::prefix('Advertisements/')
             Route::post('advertisements', [AdvertisementController::class, 'store'])->middleware(IsEndedPlan::class);
         });
 
-
         Route::get('filter', [AdvertisementController::class, 'indexWithFilter']);
-        Route::get('similar/{id}', [AdvertisementController::class, 'getSimilarAds']);
 
         Route::get('share/{id}', [AdvertisementController::class, 'share']);
 

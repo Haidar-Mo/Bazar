@@ -41,15 +41,15 @@ class VerificationRequestController extends Controller
         $user = $request->user();
         try {
             $verification_request = $this->service->create($request, $user);
-            $admins = User::role(['admin', 'supervisour'], 'api')->get();
+            $admins = User::role(['admin', 'supervisor'], 'api')->get();
 
             foreach ($admins as $admin) {
                 $admin->notify(new NotificationAuthenticationRequest("قام ( {$user->name} ) بإرسال طلب توثيق."));
             }
-            return $this->showResponse($verification_request, 'Verification request sent successfully!!', 200);
+            return $this->showResponse($verification_request, 'تم إرسال طلب التوثيق بنجاح', 200);
         } catch (Exception $e) {
             report($e);
-            return $this->showError($e, 'An error occur while sending Verification request', 500);
+            return $this->showError($e, 'حدث خطأ ما أثناء إرسال طلب توثيق', 500);
         }
     }
 

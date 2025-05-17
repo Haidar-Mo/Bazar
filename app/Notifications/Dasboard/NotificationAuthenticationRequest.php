@@ -17,7 +17,7 @@ class NotificationAuthenticationRequest extends Notification implements ShouldQu
 
     public function databaseType(object $notifiable): string
     {
-        return 'Auth-Dasboard-Notification';
+        return 'Auth-Dashboard-Notification';
     }
 
     public function via($notifiable)
