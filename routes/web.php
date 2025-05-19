@@ -46,7 +46,7 @@ Route::get('storage-link', function () {
 //! Test subscrip and send notification to topic
 Route::get('/test-subscribe', function () {
     $deviceToken = request('token');
-    $topic = '1';
+    $topic = '2';
 
     $notifier = new class {
         use \App\Traits\FirebaseNotificationTrait;

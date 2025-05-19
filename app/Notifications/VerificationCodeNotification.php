@@ -35,6 +35,7 @@ class VerificationCodeNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
+            ->mailer('smtp')
             ->subject('Account Verification Code')
             ->greeting('Hello!')
             ->line('Your account verification code is:')
