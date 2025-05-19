@@ -32,6 +32,8 @@ class AdvertisementService
         }
 
         $filteredData = Arr::except($request, ['images', 'attributes']);
+        if ($user->subscriptions()->latest()->first()->status == 'active' && $user->subscriptions()->latest()->first()->is_special == true)
+            $filteredData['is_special'] = true;
 
         return DB::transaction(function () use ($user, $filteredData, $request) {
 
@@ -81,7 +83,7 @@ class AdvertisementService
             }
 
 
-            $subscription = $user->subscriptions()->where('status','=','running')->first();
+            $subscription = $user->subscriptions()->where('status', '=', 'running')->first();
             if ($subscription) {
                 $subscription->decrement('number_of_ads');
                 if ($subscription->number_of_ads <= 0) {
@@ -90,7 +92,7 @@ class AdvertisementService
             }
 
             $admins = User::role(['admin', 'supervisor'], 'api')->get();
-            foreach($admins as $admin){
+            foreach ($admins as $admin) {
                 $admin->notify(new NotofcationAddAds("قام {$user->name} باضافة اعلان جديد: {$ad->title}"));
             }
 

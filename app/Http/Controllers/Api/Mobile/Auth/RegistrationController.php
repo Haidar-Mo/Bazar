@@ -175,7 +175,6 @@ class RegistrationController extends Controller
         $request->validate([
             "first_name" => ['required', 'string'],
             "last_name" => ['required', 'string'],
-            'birth_date' => ['required', 'date'],
             'description' => ['nullable', 'string'],
             "gender" => ['required', 'in:male,female'],
             "address" => ['required'],

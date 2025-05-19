@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -20,7 +18,7 @@ class User extends Authenticatable
 {
 
 
-    use HasApiTokens, HasFactory, HasRoles, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, HasPermissions, Notifiable;
     protected $guard = 'api';
 
     protected $fillable = [
@@ -63,14 +61,12 @@ class User extends Authenticatable
     protected $appends = [
         'role',
         'image',
-        'age',
         'plan_name',
         'is_full_registered',
         'is_verified_text',
         'rate',
         'notifications_count',
     ];
-
 
 
     /**
@@ -132,11 +128,6 @@ class User extends Authenticatable
         return $this->morphMany(Report::class, 'reportable');
     }
 
-    /*public function rate(): HasMany
-    {
-        return $this->hasMany(Rate::class);
-    }*/
-
     public function rated(): HasMany
     {
         return $this->hasMany(Rate::class, 'rated_user_id');
@@ -197,11 +188,6 @@ class User extends Authenticatable
     public function getImageAttribute()
     {
         return $this->images()->first()->full_path ?? null;
-    }
-
-    public function getAgeAttribute()
-    {
-        return Carbon::parse($this->birth_date)->age;
     }
 
     public function getPlanNameAttribute()

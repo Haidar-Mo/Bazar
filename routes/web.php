@@ -38,7 +38,7 @@ Route::get('storage-link', function () {
 
 });
 
-
+Route::get('/share-link/advertisement/{id}', [ShareLinkController::class, 'handle'])->name('share-link');
 
 
 
@@ -67,6 +67,4 @@ Route::get('/test-send-notification', function () {
 
     return $notifier->sendNotificationToTopic($topic, $title, $body);
 });
-
-Route::get('/share-link/advertisements/{id}', [ShareLinkController::class, 'handle']);
 
