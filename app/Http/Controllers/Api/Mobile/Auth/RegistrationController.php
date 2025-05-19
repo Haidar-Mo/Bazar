@@ -201,8 +201,6 @@ class RegistrationController extends Controller
 
                 }
 
-
-
                 return $user;
             });
 
@@ -213,10 +211,9 @@ class RegistrationController extends Controller
             ], 200);
         } catch (Exception $e) {
             report($e);
-            return response()->json([
-                'message' => 'حدث خطأ أثناء إكمال التسجيل',
-                'error' => $e->getMessage(),
-            ], 500);
+            if (is_int($e->getCode()))
+                return $this->showError($e, 'حدث خطأ أثناء إكمال التسجيل', $e->getCode());
+            return $this->showError($e, 'حدث خطأ أثناء إكمال التسجيل', 500);
         }
     }
 

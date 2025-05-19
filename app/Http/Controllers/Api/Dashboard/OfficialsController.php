@@ -53,7 +53,8 @@ class OfficialsController extends Controller
             ]));
 
             $user->assignRole(Role::where('name', 'supervisor')->where('guard_name', 'api')->first());
-
+            $user->subscriptions()->delete();
+            $user->NotificationSettings()->delete();
             DB::commit();
             return $this->showResponse($user, 'Official add successfully....!');
         } catch (Exception $e) {
