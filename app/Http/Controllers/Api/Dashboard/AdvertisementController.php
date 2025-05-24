@@ -6,14 +6,19 @@ use App\Filters\Dashboard\AdvertisementFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdvertisementUpdateRequest;
 use App\Models\Advertisement;
+use App\Models\User;
 use App\Services\Dashboard\AdvertisementService;
-use App\Traits\ResponseTrait;
+use App\Traits\{
+ResponseTrait,
+FirebaseNotificationTrait
+};
 use Illuminate\Http\Request;
 use Exception;
-
+use Illuminate\Support\Facades\Log;
+use App\Notifications\ApprovedAdsNotification;
 class AdvertisementController extends Controller
 {
-    use ResponseTrait;
+    use ResponseTrait,FirebaseNotificationTrait;
 
     public function __construct(protected AdvertisementFilter $advertisementFilter, protected AdvertisementService $service)
     {
@@ -71,10 +76,27 @@ class AdvertisementController extends Controller
     public function approve(string $id)
     {
         $ad = Advertisement::findOrFail($id);
+        $user=User::findOrFail($ad->user_id);
         if ($ad->status != 'pending')
             return $this->showMessage('this advertisement is already processed !!', 422, false);
         try {
             $ad->update(['status' => 'active']);
+            $token = $user->device_token;
+            if ($token) {
+                try {
+                    $Request = (object) [
+                        'title' => 'قبول اعلان',
+                        'body' => 'تم قبول اعلانك "' . $ad->title . '" من قبل الادمن',
+                        'type'=>'approved-Ads',
+                    ];
+
+                    $this->unicast($Request, $token);
+                    Log::error('done');
+                } catch (Exception $e) {
+                    Log::error('Failed to send Notification Firebase: ' . $e->getMessage());
+                }
+            }
+            $user->notify(new ApprovedAdsNotification($ad));
             return $this->showResponse($ad, 'Advertisement approved !!', 200);
         } catch (Exception $e) {
             report($e);

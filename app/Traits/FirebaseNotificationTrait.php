@@ -32,7 +32,7 @@ trait FirebaseNotificationTrait
     {
         $this->initializeFirebase();
 
-        $notification = Notification::create($request->title, $request->body);
+        $notification = Notification::create($request->title, $request->body,$request->type);
         $message = CloudMessage::new();
          $message = CloudMessage::withTarget('token', $token)
             ->withNotification($notification);
