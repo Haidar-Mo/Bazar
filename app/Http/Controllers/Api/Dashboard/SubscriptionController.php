@@ -77,6 +77,7 @@ class SubscriptionController extends Controller
                     $Request = (object) [
                         'title' => 'تفعيل الباقة',
                         'body' => 'تم تفعيل باقتك بنجاح!',
+                        'type'=>'subscription-plan',
                     ];
 
 
