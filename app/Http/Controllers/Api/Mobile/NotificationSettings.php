@@ -60,7 +60,7 @@ class NotificationSettings extends Controller
 
             if ($currentCategoryIds->isNotEmpty()) {
                 $topicsToUnsubscribe = Category::whereIn('id', $currentCategoryIds)
-                    ->pluck('name');
+                    ;
 
                 foreach ($topicsToUnsubscribe as $topic) {
                     if ($user->device_token) {

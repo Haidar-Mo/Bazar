@@ -47,6 +47,7 @@ class expiresSubscription extends Command
                         $Request = (object) [
                             'title' => 'انهاء الاشتراك',
                             'body' => 'تم الغاء اشتراكك بالباقة',
+                            'type'=>'subscription-plan',
                         ];
 
                         $this->unicast($Request, $token);

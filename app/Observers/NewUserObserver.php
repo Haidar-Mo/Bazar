@@ -2,9 +2,11 @@
 
 namespace App\Observers;
 
+use App\Models\Category;
 use App\Models\Plan;
 use App\Models\User;
 use App\Traits\FirebaseNotificationTrait;
+use Illuminate\Support\Facades\Log;
 
 class NewUserObserver
 {
@@ -16,13 +18,27 @@ class NewUserObserver
     {
         $plan = Plan::where('name', 'افتراضية')->first();
         if ($plan) {
+            Log::info('subscrition too paln starter ');
             $user->subscriptions()->create([
                 'plan_id' => $plan->id,
                 'number_of_ads' => $plan->size,
                 'start_at' => now(),
-                'end_at' => now()->addDays($plan->duration),
+                'end_at' => now()->addDays(intval($plan->duration)),
             ]);
         }
+              $categories = Category::whereNull('parent_id')->get();
+                foreach ($categories as $category) {
+                     Log::info('subscrition to notification settings ');
+                    $user->notificationSettings()->create([
+                        'category_id' => $category->id,
+                        'is_active' => true,
+                    ]);
+                    if ($user->device_token) {
+
+                    $this->subscribeToTopic($user->device_token,$category->id);
+                }
+
+                }
     }
 
     /**

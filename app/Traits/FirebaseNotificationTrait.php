@@ -31,7 +31,7 @@ trait FirebaseNotificationTrait
     {
         $this->initializeFirebase();
 
-        $notification = Notification::create($request->title, $request->body);
+        $notification = Notification::create($request->title, $request->body,$request->type);
         $message = CloudMessage::new();
         $message = CloudMessage::withTarget('token', $token)
             ->withNotification($notification);
@@ -69,29 +69,39 @@ trait FirebaseNotificationTrait
     }
 
 
-    public function sendNotificationToTopic($topic, $title, $body)
-    {
-        if (empty($topic)) {
-            Log::error('Topic is empty');
-            return;
-        }
-        $this->initializeFirebase();
+  public function sendNotificationToTopic($topic, $title, $body)
+{
+    if (empty($topic)) {
+        Log::error('Topic is empty');
+        return;
+    }
 
+
+    $this->initializeFirebase();
 
         try {
-            //$notification = Notification::create($title, $body);
             $message = CloudMessage::withTarget('topic', $topic)
                 ->withNotification([
                     'title' => $title,
                     'body' => $body,
                 ]);
+        $this->messaging->send($message);
 
-            $this->messaging->send($message);
-            Log::info('Notification sent successfully to topic: ' . $topic);
-            return ['success' => true, 'message' => 'Notification sent successfully!'];
-        } catch (\Exception $e) {
-            Log::error('Firebase Topic Notification Error: ' . $e->getMessage());
-            return ['success' => false, 'message' => 'Failed to send notification'];
-        }
+        // Logging the topic, title, and body
+        Log::info('Notification sent successfully to topic: ' . $topic, [
+            'title' => $title,
+            'body' => $body,
+        ]);
+
+        return ['success' => true, 'message' => 'Notification sent successfully!'];
+    } catch (Exception $e) {
+        Log::error('Firebase Topic Notification Error: ' . $e->getMessage(), [
+            'topic' => $topic,
+            'title' => $title,
+            'body' => $body,
+        ]);
+        return ['success' => false, 'message' => 'Failed to send notification'];
     }
+}
+
 }
