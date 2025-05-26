@@ -25,8 +25,7 @@ Route::prefix('auth/')->group(function () {
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value
     ]);
-    // Route::post('forget-password', [ResetPasswordController::class, 'sendResetLink'])->name('password.request');
-    // Route::post('reset-password', [ResetPasswordController::class, 'resetPassword'])->name('password.reset');
+
     Route::post('send-reset-code', [ResetPasswordController::class, 'sendResetCode']);
     Route::post('verify-reset-code', [ResetPasswordController::class, 'verifyResetCode']);
     Route::post('reset-password', [ResetPasswordController::class, 'resetPassword']);
@@ -42,17 +41,17 @@ Route::prefix('auth/')->group(function () {
 
     Route::middleware([
         'auth:sanctum',
-        'ability:' . TokenAbility::ACCESS_API->value,
-    ])->
-        get('check-token', function (Request $request) {
+        'ability:' . TokenAbility::ACCESS_API->value
+    ])->group(function () {
+        Route::get('check-token', function (Request $request) {
             return response()->json([
                 'success' => true,
                 'message' => 'Token is valid',
                 'user' => $request->user(),
             ]);
         });
-    Route::post('logout', [AuthenticationController::class, 'delete'])->middleware([
-        'auth:sanctum',
-        'ability:' . TokenAbility::ACCESS_API->value
-    ]);
+        Route::post('password/change', [ResetPasswordController::class, 'changePassword']);
+        Route::post('logout', [AuthenticationController::class, 'delete']);
+        Route::post('account/delete', [RegistrationController::class, 'deleteAccount']);
+    });
 });

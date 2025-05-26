@@ -196,13 +196,10 @@ class RegistrationController extends Controller
                         'is_active' => true,
                     ]);
                     if ($user->device_token) {
-                    $this->subscribeToTopic($user->device_token,$category->id);
-                }
+                        $this->subscribeToTopic($user->device_token, $category->id);
+                    }
 
                 }
-
-
-
                 return $user;
             });
 
@@ -220,4 +217,16 @@ class RegistrationController extends Controller
         }
     }
 
+    /**
+     * Delete authenticated user's account 
+     * @param \Illuminate\Http\Request $request
+     *
+     */
+    public function deleteAccount()
+    {
+        $user = Auth::user();
+        Auth::user()->tokens()->delete();
+        $user->delete();
+    }
+    
 }

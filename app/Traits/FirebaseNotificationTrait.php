@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use Exception;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
@@ -34,7 +33,7 @@ trait FirebaseNotificationTrait
 
         $notification = Notification::create($request->title, $request->body);
         $message = CloudMessage::new();
-         $message = CloudMessage::withTarget('token', $token)
+        $message = CloudMessage::withTarget('token', $token)
             ->withNotification($notification);
         $this->messaging->send($message);
         return $message;
@@ -46,9 +45,9 @@ trait FirebaseNotificationTrait
 
         try {
             $this->messaging->subscribeToTopic($topic, $deviceToken);
-            Log::info('Subscribed to topic: ' . $topic . ' with device token: ' . $deviceToken);
+            Log::info("Subscribed to topic: $topic with device token: $deviceToken");
             return ['success' => true, 'message' => 'Subscribed to topic successfully!'];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Firebase Topic Subscription Error: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Failed to subscribe to topic'];
         }
@@ -64,27 +63,27 @@ trait FirebaseNotificationTrait
             Log::info('Unsubscribed from topic: ' . $topic);
             return ['success' => true];
         } catch (\Exception $e) {
-            Log::error('Unsubscription error: ' . $e->getMessage());
+            Log::error('Unsubscribe error: ' . $e->getMessage());
             return ['success' => false];
         }
     }
 
 
-   public function sendNotificationToTopic($topic, $title, $body)
+    public function sendNotificationToTopic($topic, $title, $body)
     {
-         if (empty($topic)) {
-          Log::error('Topic is empty');
-          return;
-      }
+        if (empty($topic)) {
+            Log::error('Topic is empty');
+            return;
+        }
         $this->initializeFirebase();
 
 
-       try {
+        try {
             //$notification = Notification::create($title, $body);
             $message = CloudMessage::withTarget('topic', $topic)
                 ->withNotification([
-                    'title'=>$title,
-                    'body'=>$body,
+                    'title' => $title,
+                    'body' => $body,
                 ]);
 
             $this->messaging->send($message);
