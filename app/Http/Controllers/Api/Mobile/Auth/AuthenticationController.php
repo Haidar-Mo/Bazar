@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AuthenticationController extends Controller
 {
@@ -21,15 +22,17 @@ class AuthenticationController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', Rule::exists('users', 'email')->whereNotNull('email_verified_at')],
             'password' => ['required', 'string'],
             'device_token' => ['sometimes']
+        ], [
+            'email.exists' => 'البريد الإلكتروني غير مسجل بعد'
         ]);
         $credentials = $request->only('email', 'password');
 
         if (!Auth::attempt($credentials)) {
 
-            return response()->json(['message' => 'البريد أو كلمة المرور غير صحيحة'], 401);
+            return response()->json(['message' => ' كلمة المرور غير صحيحة'], 401);
         }
         $user = User::find(Auth::user()->id);
         if ($request->has('device_token')) {
