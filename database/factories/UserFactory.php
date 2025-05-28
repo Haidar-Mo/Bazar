@@ -33,7 +33,6 @@ class UserFactory extends Factory
             'address' => $this->faker->address(),
             'job' => $this->faker->jobTitle(),
             'company' => $this->faker->company(),
-            'birth_date' => $this->faker->date(),
             'gender' => 'male',
             'description' => $this->faker->sentences(4, true),
             'is_verified' => $this->faker->boolean(0),
@@ -50,6 +49,27 @@ class UserFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function isHaidar(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'first_name' => 'mohammad',
+            'last_name' => 'Haidar',
+            'email' => 'mohammad44.haidar@gmail.com',
+            'password' => bcrypt('password'),
+            'phone_number' => '0936287134',
+            'gender' => 'male',
+            'job' => 'IT job',
+            'company' => 'Haidar Company',
+            'description' => 'a junior Laravel developer',
+            'address' => 'Yabroud',
+            'provider' => null,
+            'provider_id' => null,
+            'is_verified' => true,
+            'device_token' => 'eu26jBhbREWOqjl8Js22dS:APA91bFj-oif-QpSgN0RFE5fuDQwIPdc1uLGiMidPkvMp3wUca85loQvB0TVNi5SvBkVrZNcTwj_9XQzFC1w79a7AxugdFQp4RaDcmydH3OC3Ce5unodVww',
+            'email_verified_at' => now(),
         ]);
     }
 

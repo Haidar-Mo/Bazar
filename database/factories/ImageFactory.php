@@ -18,7 +18,7 @@ class ImageFactory extends Factory
     public function definition(): array
     {
         return [
-            'imageable_id' => Advertisement::inRandomOrder()->first()->id,
+            'imageable_id' => Advertisement::factory(),
             'imageable_type' => Advertisement::class,
             'path' => 'ads/adImage.jpg',
             'created_at' => now(),

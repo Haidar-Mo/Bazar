@@ -18,7 +18,7 @@ class CvExperienceFactory extends Factory
     public function definition(): array
     {
         return [
-            'cv_id' => Cv::inRandomOrder()->first()->id, // Create a related Cv record
+            'cv_id' => Cv::factory(),
             'job_name' => $this->faker->jobTitle,
             'job_type' => $this->faker->randomElement(['Full-time', 'Part-time', 'Contract', 'Freelance']),
             'company_sector' => $this->faker->randomElement(['IT', 'Finance', 'Education', 'Healthcare', 'Retail']),

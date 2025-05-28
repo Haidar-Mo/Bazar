@@ -14,9 +14,9 @@ class PlanSeeder extends Seeder
     public function run(): void
     {
         Plan::updateOrCreate(
-            ['name', 'starter'],
+            ['name', 'افتراضية'],
             [
-                'name' => 'starter',
+                'name' => 'افتراضية',
                 'duration' => 30,
                 'size' => 5,
                 'price' => 0,
