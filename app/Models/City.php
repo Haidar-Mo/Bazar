@@ -14,14 +14,14 @@ class City extends Model
 
 
     protected $fillable = [
+        'parent_id',
         'name'
     ];
 
 
-    public function ads():HasMany
+    public function ads(): HasMany
     {
         return $this->hasMany(Advertisement::class);
     }
 
-    
 }

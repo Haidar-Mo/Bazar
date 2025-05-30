@@ -21,13 +21,13 @@ class AdvertisementFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_id' => User::factory(),
             'city_id' => City::inRandomOrder()->first()->id,
             'category_id' => Category::inRandomOrder()->first()->id,
-            'title' => $this->faker->title(),
+            'title' => $this->faker->word(),
             'price' => $this->faker->randomNumber(4),
-            'type' => $this->faker->randomElement(['offer', 'order']),
-            'currency_type' => $this->faker->randomElement(['syrian_pound', 'turkish_pound', 'dollar']),
+            'type' => $this->faker->randomElement(['عرض', 'طلب']),
+            'currency_type' => $this->faker->randomElement(['ليرة', 'دولار']),
             'negotiable' => $this->faker->boolean(),
             'is_special' => $this->faker->boolean(),
             'status' => $this->faker->randomElement(['active', 'inactive', 'pending']),

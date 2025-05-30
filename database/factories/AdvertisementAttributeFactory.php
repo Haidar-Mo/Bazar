@@ -18,8 +18,8 @@ class AdvertisementAttributeFactory extends Factory
     public function definition(): array
     {
         return [
-            'advertisement_id' => Advertisement::inRandomOrder()->first()->id,
-            'title' => $this->faker->title(),
+            'advertisement_id' => Advertisement::factory(),
+            'title' => $this->faker->word(),
             'name' => $this->faker->name,
             'value' => $this->faker->sentence()
         ];

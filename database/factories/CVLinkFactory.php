@@ -18,7 +18,7 @@ class CvLinkFactory extends Factory
     public function definition(): array
     {
         return [
-            'cv_id' => Cv::inRandomOrder()->first()->id,
+            'cv_id' => Cv::factory(),
             'name' => $this->faker->randomElement(['LinkedIn', 'GitHub', 'Portfolio', 'Personal Website']),
             'link' =>  $this->faker->url,
             'created_at' => now(),

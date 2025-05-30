@@ -18,7 +18,7 @@ class CvSkillFactory extends Factory
     public function definition(): array
     {
         return [
-            'cv_id' => Cv::inRandomOrder()->first()->id, // Create a related Cv record
+            'cv_id' => Cv::factory(),
             'title' => $this->faker->title(),
         ];
     }

@@ -22,25 +22,19 @@ class RateFactory extends Factory
     public function definition(): array
     {
         $user = User::inRandomOrder()->first();
-        $ratedUser = User::inRandomOrder()
-            ->where('id', '!=', $user->id)
-            ->first();
-        while (
-            Rate::where('rated_user_id', $ratedUser->id)
-                ->where('user_id', $user->id)
-                ->exists()
-        ) {
-            $user = User::inRandomOrder()
-                ->where('id', '!=', $user->id)
-                ->where('id', '!=', $ratedUser->id)
-                ->first();
-        }
         return [
             'user_id' => $user->id,
-            'rated_user_id' => $ratedUser->id,
+            'rated_user_id' => User::factory(),
             'rate' => $this->faker->randomFloat(1, 0.0, 5.0),
             'comment' => $this->faker->sentence(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Rate $rate) {
+            $rate->user_id = User::inRandomOrder()->where('id', '!=', $rate->ratedUser()->id)->first()->id;
+        });
     }
 }
 

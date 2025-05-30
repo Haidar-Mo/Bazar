@@ -18,7 +18,7 @@ class CvQualificationFactory extends Factory
     public function definition(): array
     {
         return [
-            'cv_id' => Cv::inRandomOrder()->first()->id, // Create a related Cv record
+            'cv_id' => Cv::factory(),
             'certificate' => $this->faker->randomElement(['Bachelor\'s', 'Master\'s', 'PhD']),
             'specialization' => $this->faker->word,
             'university' => $this->faker->company,

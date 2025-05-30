@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class AdvertisementFilter extends BaseFilter
 {
-
     public function apply(Builder $query)
     {
 

@@ -25,7 +25,7 @@ class ReportFactory extends Factory
             Rate::where('comment', '!=', null)->inRandomOrder()->first()
         ]);
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_id' => User::factory(),
             'reportable_type' => get_class($randomElement),
             'reportable_id' => $randomElement->id,
             'paragraph' => $this->faker->sentence(),

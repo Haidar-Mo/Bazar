@@ -6,6 +6,7 @@ use App\Models\Cv;
 use App\Models\CvDocument;
 use App\Models\CvExperience;
 use App\Models\CvFile;
+use App\Models\CvLanguage;
 use App\Models\CvLink;
 use App\Models\CvQualification;
 use App\Models\CvSkill;
@@ -31,26 +32,64 @@ class DatabaseSeeder extends Seeder
         //Report::factory(20)->create();
 
 
-        $this->call(RoleSeeder::class);
-        $this->call(PermissionSeeder::class);
-        $this->call(CategorySeeder::class);
-        $this->call(PlanSeeder::class);
+        /*  $this->call(RoleSeeder::class);
+          $this->call(PermissionSeeder::class);
+          $this->call(CategorySeeder::class);
+          $this->call(PlanSeeder::class);*/
+        User::factory(3)->create();
 
-        /*
-                User::factory(10)->create();
-                Cv::factory(10)->create();
-                CvFile::factory(10);
-                CvDocument::factory(20)->create();
-                CvLink::factory(20)->create();
-                CvExperience::factory(20)->create();
-                CvQualification::factory(20)->create();
-                CvSkill::factory(20)->create();
-                City::factory(7)->create();
-                Advertisement::factory(20)->create();
-                AdvertisementAttribute::factory(150)->create();
-                Image::factory(80)->create();
-                View::factory(100)->create();
-                Rate::factory(100)->create();
+        User::factory()
+            ->has(Cv::factory()
+                ->has(CvFile::factory(), 'file')
+                ->has(CvDocument::factory(), 'document')
+                ->has(CvLink::factory(3), 'link')
+                ->has(CvExperience::factory(3), 'experience')
+                ->has(CvQualification::factory(3), 'qualification')
+                //->has(CvLanguage::factory(3)) لا يوجد
+                ->has(CvSkill::factory(3), 'skill'))
+            ->has(Advertisement::factory(2)
+                ->has(AdvertisementAttribute::factory(10), 'attributes')
+                ->has(Image::factory(3), 'images')
+                ->has(View::factory(20), 'views'), 'ads')
+            ->has(
+                Rate::factory()
+                    ->count(5)
+                    ->state(function (array $attributes, User $user) {
+                        $otherUsers = User::where('id', '!=', $user->id)->pluck('id')->toArray();
+                        return [
+                            'rated_user_id' => fake()->randomElement($otherUsers),
+                        ];
+                    }),
+                'rated'
+            )
+            ->has(Report::factory(3))
+            ->count(1)
+            ->create();
+
+        /* User::factory()->isHaidar()
+             ->has(Cv::factory()
+                 ->has(CvFile::factory(), 'file')
+                 ->has(CvDocument::factory(), 'document')
+                 ->has(CvLink::factory(3), 'link')
+                 ->has(CvExperience::factory(3), 'experience')
+                 ->has(CvQualification::factory(3), 'qualification')
+                 ->has(CvSkill::factory(3), 'skill'))
+             ->has(Advertisement::factory(2)
+                 ->has(AdvertisementAttribute::factory(10), 'attributes')
+                 ->has(Image::factory(3), 'images')
+                 ->has(View::factory(20), 'views'), 'ads')
+             ->has(Rate::factory()
+                 ->count(5)
+                 ->state(function (array $attributes, User $user) {
+                     $otherUsers = User::where('id', '!=', $user->id)->pluck('id')->toArray();
+                     return [
+                         'rated_user_id' => fake()->randomElement($otherUsers),
+                     ];
+                 }))
+             ->create();*/
+
+
+        /*               
         User::create([
             'first_name' => 'mario',
             'last_name' => 'andrawos',
@@ -67,28 +106,7 @@ class DatabaseSeeder extends Seeder
             'provider_id' => null,
             'device_token' => 'k',
             'email_verified_at' => now(),
-        ]);
-        User::create([
-            'first_name' => 'haider',
-            'last_name' => 'haider',
-            'email' => 'haider@gmail.com',
-            'password' => bcrypt('password'),
-            'phone_number' => '0937723418',
-            'birth_date' => '1990-01-01',
-            'gender' => 'male',
-            'job' => 'IT job',
-            'company' => 'Androws Company',
-            'description' => 'a junior Laravel developer',
-            'address' => 'yabroud',
-            'provider' => null,
-            'provider_id' => null,
-            'device_token' => 'k',
-            'email_verified_at' => now(),
         ]);*/
-
-
-
-
 
     }
 }
