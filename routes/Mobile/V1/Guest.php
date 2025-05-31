@@ -12,7 +12,7 @@ Route::prefix('guest/')->group(function () {
     Route::get('advertisement/{id}', [AdvertisementController::class, 'show'])->name('guest-ad');
     Route::get('advertisement/similar/{id}', [AdvertisementController::class, 'getSimilarAds']);
     Route::get('homepage', [HomePageController::class, 'index']);
-    Route::get('homepage/filter', [HomePageController::class, 'indexWithFilter']);
+    Route::get('homepage/filter', [HomePageController::class, 'index']);
     Route::get('cities/index', [CitiesController::class, 'index']);
     Route::apiResource('categories', CategoriesController::class);
 

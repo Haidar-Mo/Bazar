@@ -2,7 +2,6 @@
 
 namespace App\Services\Mobile;
 use App\Filters\Mobile\AdvertisementFilter;
-use Exception;
 use Illuminate\Support\Facades\DB;
 use App\Models\{
     Advertisement,
@@ -24,6 +23,11 @@ class AdvertisementService
     {
     }
 
+    public function index()
+    {
+        $query = Advertisement::query();
+        return $this->advertisementFilter->apply($query);
+    }
 
     public function create($request, User $user)
     {
@@ -82,7 +86,6 @@ class AdvertisementService
                 }
             }
 
-
             $subscription = $user->subscriptions()->where('status', '=', 'running')->first();
             if ($subscription) {
                 $subscription->decrement('number_of_ads');
@@ -96,19 +99,8 @@ class AdvertisementService
                 $admin->notify(new NotofcationAddAds("قام {$user->name} باضافة اعلان جديد: {$ad->title}"));
             }
 
-
-
-
             return $ad;
         });
     }
 
-
-
-
-    public function indexWithFilter()
-    {
-        $query = Advertisement::query()->with('attributes');
-        return $this->advertisementFilter->apply($query)->get();
-    }
 }

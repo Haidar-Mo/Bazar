@@ -13,5 +13,5 @@ Route::prefix('homePage')
     ->group(function () {
         Route::apiResource('home', HomePageController::class);
 
-        Route::get('index/filter', [HomePageController::class, 'indexWithFilter']);
+        Route::get('index/filter', [HomePageController::class, 'index']);
     });
