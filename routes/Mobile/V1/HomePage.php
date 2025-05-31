@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('homePage')
     ->middleware([
-        // 'auth:sanctum',
-        // 'ability:' . TokenAbility::ACCESS_API->value,
+         'auth:sanctum',
+         'ability:' . TokenAbility::ACCESS_API->value,
         //'role:client'
     ])
     ->group(function () {
