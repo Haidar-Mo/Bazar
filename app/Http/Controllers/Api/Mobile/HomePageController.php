@@ -26,7 +26,6 @@ class HomePageController extends Controller
     {
         DB::beginTransaction();
         try {
-
             $ads = $this->service->index()
                 ->with(['images'])
                 ->orderByRaw('is_special DESC, created_at DESC')
