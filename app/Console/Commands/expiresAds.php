@@ -35,6 +35,7 @@ class expiresAds extends Command
                     $Request = (object) [
                         'title' => 'إعلان منتهي الصلاحية',
                         'body' => 'تم تعطيل إعلانك "'.$ad->title.'" بسبب انتهاء فترة النشر.',
+                        'type'=>'delete-ads',
                     ];
 
                     $this->unicast($Request, $token);

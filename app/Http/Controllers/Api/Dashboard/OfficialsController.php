@@ -94,7 +94,7 @@ class OfficialsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id, string $permission)
+    public function destroy(string $id)
     {
         DB::beginTransaction();
         try {
