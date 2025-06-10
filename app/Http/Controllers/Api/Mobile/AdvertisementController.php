@@ -117,13 +117,16 @@ class AdvertisementController extends Controller
     public function indexWithFilter()
     {
         try {
-            $data = $this->service->indexWithFilter();
+            $data = $this->service->index()
+                ->with(['images'])
+                ->orderByRaw('is_special DESC, created_at DESC')
+                ->where('status', 'active')
+                ->get();
             return $this->showResponse($data, 'filtered Ads retrieved successfully !!', 200);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while filtering the advertisements', 500);
         }
-
     }
 
     public function getSimilarAds(string $id)

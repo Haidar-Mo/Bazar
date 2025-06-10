@@ -24,19 +24,15 @@ class HomePageController extends Controller
 
     public function index(Request $request)
     {
-        DB::beginTransaction();
         try {
             $ads = $this->service->index()
                 ->with(['images'])
                 ->orderByRaw('is_special DESC, created_at DESC')
                 ->where('status', 'active')
                 ->paginate(10);
-            DB::commit();
             return $this->showResponse($ads, 'done successfully...!');
         } catch (Exception $e) {
-            DB::rollBack();
             return $this->showError($e, 'something goes wrong...!');
-
         }
     }
 }
