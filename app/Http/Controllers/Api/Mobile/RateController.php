@@ -31,6 +31,10 @@ class RateController extends Controller
     public function store(RateRequest $request)
     {
         $user = Auth::user();
+
+        $old_rate = $user->rates()->where('rated_user_id', '=', $request->rated_user_id)->first();
+        if ($old_rate)
+            return $this->showMessage('لا يمكنك تقييم هذا المستخدم نفسه أكثر من مرة', 400, false);
         DB::beginTransaction();
         try {
             Rate::create([
@@ -40,7 +44,7 @@ class RateController extends Controller
                 'comment' => $request->comment,
             ]);
             DB::commit();
-            return $this->showMessage('تم ارسال تقيمك بنجاح');
+            return $this->showMessage('تم ارسال تقييمك بنجاح');
 
         } catch (Exception $e) {
             DB::rollBack();

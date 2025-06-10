@@ -9,8 +9,8 @@ use App\Models\Advertisement;
 use App\Models\User;
 use App\Services\Dashboard\AdvertisementService;
 use App\Traits\{
-ResponseTrait,
-FirebaseNotificationTrait
+    ResponseTrait,
+    FirebaseNotificationTrait
 };
 use Illuminate\Http\Request;
 use Exception;
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 use App\Notifications\ApprovedAdsNotification;
 class AdvertisementController extends Controller
 {
-    use ResponseTrait,FirebaseNotificationTrait;
+    use ResponseTrait, FirebaseNotificationTrait;
 
     public function __construct(protected AdvertisementFilter $advertisementFilter, protected AdvertisementService $service)
     {
@@ -76,18 +76,21 @@ class AdvertisementController extends Controller
     public function approve(string $id)
     {
         $ad = Advertisement::findOrFail($id);
-        $user=User::findOrFail($ad->user_id);
+        $user = User::findOrFail($ad->user_id);
         if ($ad->status != 'pending')
             return $this->showMessage('this advertisement is already processed !!', 422, false);
         try {
-            $ad->update(['status' => 'active']);
+            $ad->update([
+                'expiry_date' => now()->addDays(30),
+                'status' => 'active'
+            ]);
             $token = $user->device_token;
             if ($token) {
                 try {
                     $Request = (object) [
                         'title' => 'قبول اعلان',
                         'body' => 'تم قبول اعلانك "' . $ad->title . '" من قبل الادمن',
-                        'type'=>'approved-Ads',
+                        'type' => 'approved-Ads',
                     ];
 
                     $this->unicast($Request, $token);

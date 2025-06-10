@@ -49,10 +49,10 @@ class AdvertisementController extends Controller
         try {
             $user = $request->user();
             $plan = $user->subscriptions()
-                ->where('status', 'running')->first()
+                ->where('status', 'running')->oldest()
                 ->plan()->first();
             $mergedData = array_merge($request->all(), [
-                'expiry_date' => now()->addDays(30),
+                // 'expiry_date' => now()->addDays(30),
                 'is_special' => $plan->is_special
             ]);
             $ads = $this->service->create($mergedData, $user);
@@ -117,13 +117,16 @@ class AdvertisementController extends Controller
     public function indexWithFilter()
     {
         try {
-            $data = $this->service->indexWithFilter();
+            $data = $this->service->index()
+                ->with(['images'])
+                ->orderByRaw('is_special DESC, created_at DESC')
+                ->where('status', 'active')
+                ->get();
             return $this->showResponse($data, 'filtered Ads retrieved successfully !!', 200);
         } catch (Exception $e) {
             report($e);
             return $this->showError($e, 'An error occur while filtering the advertisements', 500);
         }
-
     }
 
     public function getSimilarAds(string $id)

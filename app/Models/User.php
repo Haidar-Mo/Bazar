@@ -128,6 +128,10 @@ class User extends Authenticatable
         return $this->morphMany(Report::class, 'reportable');
     }
 
+    public function rates(): HasMany
+    {
+        return $this->hasMany(Rate::class, 'user_id');
+    }
     public function rated(): HasMany
     {
         return $this->hasMany(Rate::class, 'rated_user_id');
