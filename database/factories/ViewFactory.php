@@ -19,14 +19,9 @@ class ViewFactory extends Factory
      */
     public function definition(): array
     {
-        do {
-            $user_id = User::inRandomOrder()->first()->id ;
-            $advertisement_id = Advertisement::inRandomOrder()->first()->id;
-        } while (View::where('user_id', $user_id)->where('advertisement_id', $advertisement_id)->exists()); 
-
         return [
-            'user_id' => $user_id,
-            'advertisement_id' => $advertisement_id,
+            'user_id' => User::inRandomOrder()->first()->id,
+            'advertisement_id' => Advertisement::factory(),
             'created_at' => now(),
             'updated_at' => now(),
         ];

@@ -8,14 +8,21 @@ use Illuminate\Database\Eloquent\Builder;
 
 class AdvertisementFilter extends BaseFilter
 {
-
     public function apply(Builder $query)
     {
 
-        //! Common filters
+        //: COMMON FILTERS
 
-        if ($this->request->filled('title')) {
-            $query->where('title', 'LIKE', "%" . $this->request->title . "%");
+        if ($this->request->filled('word')) {
+            $searchTerm = "%" . $this->request->word . "%";
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', $searchTerm)
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('first_name', 'LIKE', $searchTerm)
+                            ->orWhere('last_name', 'LIKE', $searchTerm);
+                    });
+            });
         }
         if ($this->request->filled('city_id')) {
             $query->where('city_id', $this->request->city_id);
@@ -41,7 +48,7 @@ class AdvertisementFilter extends BaseFilter
             $query->where('negotiable', $this->request->negotiable);
         }
 
-        //- PROPRIETIES
+        //: PROPRIETIES
 
         if ($this->request->filled('min_area') && $this->request->filled('max_area')) {
 
@@ -122,11 +129,7 @@ class AdvertisementFilter extends BaseFilter
             });
         }
 
-        //- Vehicle
-
-        //- Jobs
-
-        //- electronics
+        //: electronics
 
         if ($this->request->filled('duration_of_use')) {
             $duration_of_use = $this->request->duration_of_use;
@@ -151,7 +154,7 @@ class AdvertisementFilter extends BaseFilter
 
 
 
-        //-CLOTHES AND FASHION
+        //: CLOTHES AND FASHION
 
         if ($this->request->filled('color')) {
             $color = $this->request->color;

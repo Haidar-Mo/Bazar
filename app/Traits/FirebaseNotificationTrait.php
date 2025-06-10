@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use Exception;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
@@ -34,7 +33,7 @@ trait FirebaseNotificationTrait
 
         $notification = Notification::create($request->title, $request->body,$request->type);
         $message = CloudMessage::new();
-         $message = CloudMessage::withTarget('token', $token)
+        $message = CloudMessage::withTarget('token', $token)
             ->withNotification($notification);
         $this->messaging->send($message);
         return $message;
@@ -46,9 +45,9 @@ trait FirebaseNotificationTrait
 
         try {
             $this->messaging->subscribeToTopic($topic, $deviceToken);
-            Log::info('Subscribed to topic: ' . $topic . ' with device token: ' . $deviceToken);
+            Log::info("Subscribed to topic: $topic with device token: $deviceToken");
             return ['success' => true, 'message' => 'Subscribed to topic successfully!'];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Firebase Topic Subscription Error: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Failed to subscribe to topic'];
         }
@@ -64,7 +63,7 @@ trait FirebaseNotificationTrait
             Log::info('Unsubscribed from topic: ' . $topic);
             return ['success' => true];
         } catch (\Exception $e) {
-            Log::error('Unsubscription error: ' . $e->getMessage());
+            Log::error('Unsubscribe error: ' . $e->getMessage());
             return ['success' => false];
         }
     }
@@ -77,15 +76,15 @@ trait FirebaseNotificationTrait
         return;
     }
 
+
     $this->initializeFirebase();
 
-    try {
-        $message = CloudMessage::withTarget('topic', $topic)
-            ->withNotification([
-                'title' => $title,
-                'body' => $body,
-            ]);
-
+        try {
+            $message = CloudMessage::withTarget('topic', $topic)
+                ->withNotification([
+                    'title' => $title,
+                    'body' => $body,
+                ]);
         $this->messaging->send($message);
 
         // Logging the topic, title, and body

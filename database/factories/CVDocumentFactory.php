@@ -18,7 +18,7 @@ class CvDocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'cv_id' => Cv::inRandomOrder()->first()->id,
+            'cv_id' => Cv::factory(),
             'name' => $this->faker->word . '.pdf',
             'path' => 'cv_documents/cvDocument.pdf',
             'created_at' => now(),
