@@ -52,7 +52,7 @@ class AdvertisementController extends Controller
                 ->where('status', 'running')->first()
                 ->plan()->first();
             $mergedData = array_merge($request->all(), [
-                'expiry_date' => now()->addDays(30),
+               // 'expiry_date' => now()->addDays(30),
                 'is_special' => $plan->is_special
             ]);
             $ads = $this->service->create($mergedData, $user);
