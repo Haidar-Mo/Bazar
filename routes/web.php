@@ -56,6 +56,22 @@ Route::get('/test-subscribe', function () {
 });
 
 
+Route::get('/test-notification', function () {
+    $deviceToken = request('token');
+    $Request = (object) [
+                    'title' => 'رسالة جديدة',
+                    'body' => 'لديك رسالة  ' ,
+                    'type' => 'chat',
+                ];
+
+    $notifier = new class {
+        use \App\Traits\FirebaseNotificationTrait;
+    };
+
+    return $notifier->unicast($Request,$deviceToken);
+});
+
+
 Route::get('/test-send-notification', function () {
     $topic = '1';
     $title = 'إشعار تجريبي';

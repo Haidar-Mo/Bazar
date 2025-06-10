@@ -23,7 +23,7 @@ class RateRequest extends FormRequest
     {
         return [
             'rate'=>'required',
-            'comment'=>'required',
+            'comment'=>'nullable',
             'rated_user_id'=>'required'
         ];
     }

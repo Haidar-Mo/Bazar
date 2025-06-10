@@ -41,7 +41,7 @@ class RateController extends Controller
                 'user_id' => $user->id,
                 'rated_user_id' => $request->rated_user_id,
                 'rate' => $request->rate,
-                'comment' => $request->comment,
+                 'comment' => $request->comment ?: '',
             ]);
             DB::commit();
             return $this->showMessage('تم ارسال تقييمك بنجاح');
