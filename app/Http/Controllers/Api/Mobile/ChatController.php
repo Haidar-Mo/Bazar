@@ -26,7 +26,7 @@ class ChatController extends Controller
 
         $chats = $user->chat()
             ->with(['client', 'seller', 'ads', 'messages'])
-            ->get();
+            ->orderByDesc('updated_at')->get();
 
         return $this->showResponse($chats->pluck('chat_details'), 'تم جلب المحادثات');
     }
