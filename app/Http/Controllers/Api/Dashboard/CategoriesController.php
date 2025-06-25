@@ -24,20 +24,12 @@ class CategoriesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(CreateCategoryRequest $request)
     {
-        $category=Category::create($request->all());
-        return $this->showResponse($category,'category created successfully...!');
+        $category = Category::create($request->all());
+        return $this->showResponse($category, 'category created successfully...!');
     }
 
     /**
@@ -45,16 +37,8 @@ class CategoriesController extends Controller
      */
     public function show(string $id)
     {
-        return $this->showResponse($category=Category::with(['children'])->findOrFail($id),'done successfully') ;
+        return $this->showResponse(Category::with(['children'])->findOrFail($id), 'done successfully');
 
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -62,9 +46,9 @@ class CategoriesController extends Controller
      */
     public function update(UpdateCategories $request, string $id)
     {
-        $category=Category::findOrFail($id);
+        $category = Category::findOrFail($id);
         $category->update($request->all());
-        return $this->showResponse($category,'category updated successfully...!');
+        return $this->showResponse($category, 'category updated successfully...!');
     }
 
     /**
@@ -72,8 +56,21 @@ class CategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        $category=Category::findOrFail($id);
+        $category = Category::findOrFail($id);
         $category->delete();
         return $this->showMessage('Category deleted successfully...!');
+    }
+
+
+    public function changeAppointmentable(string $id)
+    {
+        $category = Category::findOrFail($id);
+        $category->appointable = !$category->appointable;
+        $category->save();
+        $category->children->each(function ($child) use ($category) {
+            $child->appointable = $category->appointable;
+            $child->save();
+        });
+        return $category;
     }
 }

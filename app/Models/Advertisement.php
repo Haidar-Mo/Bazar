@@ -107,6 +107,11 @@ class Advertisement extends Model
         return $this->morphMany(Report::class, 'reportable');
     }
 
+    public function appointment()
+    {
+        return $this->hasMany(AdvertisementAppointment::class);
+    }
+
     //! Accessories
 
     public function getUserNameAttribute()
@@ -209,6 +214,11 @@ class Advertisement extends Model
     public function getIsNegotiableAttribute()
     {
         return $this->negotiable ? 'قابل للتفاوض' : 'غير قابل للتفاوض';
+    }
+
+    public function getIsAppointableAttribute()
+    {
+        return $this->category->appointable;
     }
 
 }
