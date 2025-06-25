@@ -139,7 +139,7 @@ class RegistrationController extends Controller
                 return $newUser;
             });
             $new_user->assignRole(Role::where('name', 'client')->where('guard_name', 'api')->first());
-
+            $user->delete();
             $accessToken = $new_user->createToken(
                 'access_token',
                 [TokenAbility::ACCESS_API->value],

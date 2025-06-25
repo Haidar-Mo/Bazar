@@ -53,9 +53,6 @@ class Subscription extends Model
         return preg_replace('/(d+)/', '<strong>$1</strong>', $diff);
     }
 
-
-
-
     public function getUserNameAttribute()
     {
         return $this->user->first_name . ' ' . $this->user->last_name;

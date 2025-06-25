@@ -168,6 +168,10 @@ class User extends Authenticatable
         return $this->hasMany(Subscription::class);
     }
 
+    public function appointment()
+    {
+        return $this->hasMany(AdvertisementAppointment::class, 'user_owner_id');
+    }
 
     //! Accessories
 

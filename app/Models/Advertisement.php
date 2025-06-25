@@ -42,6 +42,7 @@ class Advertisement extends Model
         'main_category_name',
         'category_name',
         'is_negotiable',
+        'is_appointmentable',
         'created_from',
         'updated_from',
         'views',
@@ -105,6 +106,11 @@ class Advertisement extends Model
     public function reported(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function appointment()
+    {
+        return $this->hasMany(AdvertisementAppointment::class);
     }
 
     //! Accessories
@@ -209,6 +215,11 @@ class Advertisement extends Model
     public function getIsNegotiableAttribute()
     {
         return $this->negotiable ? 'قابل للتفاوض' : 'غير قابل للتفاوض';
+    }
+
+    public function getIsAppointmentableAttribute()
+    {
+        return $this->category->appointmentable;
     }
 
 }

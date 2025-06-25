@@ -49,7 +49,7 @@ class AdvertisementController extends Controller
         try {
             $user = $request->user();
             $plan = $user->subscriptions()
-                ->where('status', 'running')->oldest()
+                ->where('status', 'running')->oldest()->first()
                 ->plan()->first();
             $mergedData = array_merge($request->all(), [
 
@@ -184,7 +184,6 @@ class AdvertisementController extends Controller
         );
         return $this->showMessage('تم إرسال الطلب بنجاح', 200);
     }
-
 
     public function showJobRequest(string $id)
     {

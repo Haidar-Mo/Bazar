@@ -31,6 +31,7 @@ Route::prefix('v1/')->group(function () {
         include __DIR__ . "/Mobile/V1/Profile.php";
         include __DIR__ . "/Mobile/V1/Guest.php";
         include __DIR__ . "/Mobile/V1/Ads.php";
+        include __DIR__ . "/Mobile/V1/AdsAppointment.php";
         include __DIR__ . "/Mobile/V1/VerificationRequest.php";
         include __DIR__ . "/Mobile/V1/Favorite.php";
         include __DIR__ . "/Mobile/V1/FavoriteListItem.php";

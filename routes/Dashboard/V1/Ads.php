@@ -9,7 +9,7 @@ Route::prefix('advertisements')
         ->middleware([
                 //'auth:sanctum',
                 //'ability:' . TokenAbility::ACCESS_API->value,
-                // 'role:client'
+                // 'role:admin'
         ])->group(function () {
 
                 Route::get('index', [AdvertisementController::class, 'index']);
