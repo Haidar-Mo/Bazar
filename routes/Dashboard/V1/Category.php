@@ -15,6 +15,6 @@ Route::middleware([
 /*     'auth:sanctum',
     'ability:' . TokenAbility::ACCESS_API->value,
     'role:admin' */
-])->post('categories/change-appointmentable', [CategoriesController::class, 'changeAppointmentable']);
+])->post('categories/change-appointmentable/{id}', [CategoriesController::class, 'changeAppointmentable']);
 
 

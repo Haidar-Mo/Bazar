@@ -42,6 +42,7 @@ class Advertisement extends Model
         'main_category_name',
         'category_name',
         'is_negotiable',
+        'is_appointmentable',
         'created_from',
         'updated_from',
         'views',
@@ -216,9 +217,9 @@ class Advertisement extends Model
         return $this->negotiable ? 'قابل للتفاوض' : 'غير قابل للتفاوض';
     }
 
-    public function getIsAppointableAttribute()
+    public function getIsAppointmentableAttribute()
     {
-        return $this->category->appointable;
+        return $this->category->appointmentable;
     }
 
 }

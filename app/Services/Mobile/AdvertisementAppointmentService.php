@@ -17,16 +17,41 @@ class AdvertisementAppointmentService
     {
         return auth()->user()
             ->appointment()->with(['user', 'advertisement'])
-            ->latest()->get();
+            ->latest()->get()->each(function ($appointment) {
+                $appointment->user->makeHidden([
+                    'email',
+                    'address',
+                    'gender',
+                    'job',
+                    'company',
+                    'description',
+                    'is_verified',
+                    'is_blocked',
+                    'block_reason',
+                    'provider',
+                    'provider_id',
+                    'device_token',
+                    'email_verified_at',
+                    'created_at',
+                    'updated_at',
+                    'role',
+                    'plan_name',
+                    'is_full_registered',
+                    'is_verified_text',
+                    'rate',
+                    'notifications_count'
+                ]);
+
+            });
     }
 
     public function create(Request $request, string $id)
     {
         $user = auth()->user();
         $advertisement = Advertisement::where('status', '=', 'active')->findOrFail($id);
-        if ($user->id == $advertisement->user_id)
-            throw new \Exception("لا يمكنك حجز موعد مع نفسك", 400);
-
+        /*  if ($user->id == $advertisement->user_id)
+             throw new \Exception("لا يمكنك حجز موعد مع نفسك", 400);
+  */
         $data = $request->validate([
             'date' => 'required|date',
             'note' => 'nullable|string'
@@ -77,7 +102,7 @@ class AdvertisementAppointmentService
     {
         $appointment = auth()->user()->appointment()
             ->findOrFail($appointmentId);
-             $appointment->delete();
+        $appointment->delete();
     }
 
 

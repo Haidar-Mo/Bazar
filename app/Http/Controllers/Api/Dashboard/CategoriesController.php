@@ -65,10 +65,10 @@ class CategoriesController extends Controller
     public function changeAppointmentable(string $id)
     {
         $category = Category::findOrFail($id);
-        $category->appointable = !$category->appointable;
+        $category->appointmentable = !$category->appointmentable;
         $category->save();
         $category->children->each(function ($child) use ($category) {
-            $child->appointable = $category->appointable;
+            $child->appointmentable = $category->appointmentable;
             $child->save();
         });
         return $category;
