@@ -24,6 +24,7 @@ class ChatController extends Controller
 {
     $user = Auth::user();
 
+
     $chats = $user->chat()
         ->with(['client', 'seller', 'ads', 'messages'])
         ->get()
@@ -41,6 +42,8 @@ class ChatController extends Controller
 
     return $this->showResponse($chats, 'تم جلب المحادثات بنجاح');
 }
+
+
 
 
 

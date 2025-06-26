@@ -20,8 +20,9 @@ class Message extends Model
         'is_read'
     ];
 
-    protected $appends = ['created_from','time'];
+    protected $appends = ['created_from', 'time'];
 
+    protected $touches = ['chat'];
 
     public function chat(): BelongsTo
     {
@@ -36,9 +37,9 @@ class Message extends Model
     //! Accessories
 
     public function getTimeAttribute()
-{
-    return $this->created_at->format('H:i:s');
-}
+    {
+        return $this->created_at->format('H:i:s');
+    }
 
 
     public function getCreatedFromAttribute()

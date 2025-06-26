@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->decimal('price', 16, 2);
             $table->string('currency_type');
             $table->string('location')->default(' ');
-            $table->boolean('negotiable')->default(0);
+            $table->boolean('negotiable')->default(false);
             $table->boolean('is_special')->default(false);
             $table->enum('status', ['active', 'inactive', 'rejected', 'pending'])->default('pending');
             $table->text('rejecting_reason')->nullable();

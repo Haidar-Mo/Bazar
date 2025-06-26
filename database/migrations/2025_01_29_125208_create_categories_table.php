@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->boolean('appointmentable')->default(1);
             $$table->string('icon')->nullable();
             $table->timestamps();
         });
