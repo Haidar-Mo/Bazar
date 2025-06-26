@@ -15,14 +15,16 @@ use App\Traits\{
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use App\Notifications\ApprovedAdsNotification;
+use App\Notifications\{
+    ApprovedAdsNotification,
+    AddAdsNotification
+};
+
 class AdvertisementController extends Controller
 {
     use ResponseTrait, FirebaseNotificationTrait;
 
-    public function __construct(protected AdvertisementFilter $advertisementFilter, protected AdvertisementService $service)
-    {
-    }
+    public function __construct(protected AdvertisementFilter $advertisementFilter, protected AdvertisementService $service) {}
 
     public function index(Request $request)
     {
@@ -84,6 +86,21 @@ class AdvertisementController extends Controller
                 'expiry_date' => now()->addDays(30),
                 'status' => 'active'
             ]);
+            $this->sendNotificationToTopic(
+                $ad->main_category_id,
+                'إعلان جديد في قسم ' . $ad->main_category_name,
+                $ad->title,
+                $ad->id
+            );
+            $users = User::all();
+            foreach ($users as $recipient) {
+                $recipient->notify(new AddAdsNotification(
+                    $ad->main_category_id,
+                    $ad->main_category_name,
+                    $ad->title,
+                    $ad->id
+                ));
+            }
             $token = $user->device_token;
             if ($token) {
                 try {

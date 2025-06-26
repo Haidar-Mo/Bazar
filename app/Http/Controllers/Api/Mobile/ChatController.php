@@ -20,37 +20,67 @@ class ChatController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $user = Auth::user();
+   public function index()
+{
+    $user = Auth::user();
 
-        $chats = $user->chat()
-            ->with(['client', 'seller', 'ads', 'messages'])
-            ->orderByDesc('updated_at')->get();
 
-        return $this->showResponse($chats->pluck('chat_details'), 'تم جلب المحادثات');
-    }
+    $chats = $user->chat()
+        ->with(['client', 'seller', 'ads', 'messages'])
+        ->get()
+        ->map(function ($chat) use ($user) {
+            $otherUser = $chat->user_one_id == $user->id
+                ? $chat->seller
+                : $chat->client;
+
+            return [
+                'chat' => $chat->chat_details,
+                'other_user_name' => $otherUser->first_name,
+                'other_user_image' => $otherUser->images,
+            ];
+        });
+
+    return $this->showResponse($chats, 'تم جلب المحادثات بنجاح');
+}
+
+
+
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ChatRequest $request)
-    {
-        $user_one_id = Auth::user();
-        DB::beginTransaction();
-        try {
-            $chat = Chat::FirstOrCreate([
-                'user_one_id' => $user_one_id->id,
-                'user_two_id' => $request->user_two_id,
-                'advertisement_id' => $request->advertisement_id
-            ]);
-            DB::commit();
-            return $this->showResponse($chat, 'تم انشاء محادثة');
-        } catch (Exception $e) {
-            return $this->showError($e, 'حدث خطأ ما رجى المحاولة لاحقا');
-        }
+public function store(ChatRequest $request)
+{
+    $user = Auth::user();
+
+    DB::beginTransaction();
+    try {
+        $chat = Chat::firstOrCreate([
+            'user_one_id' => $user->id,
+            'user_two_id' => $request->user_two_id,
+            'advertisement_id' => $request->advertisement_id
+        ]);
+
+        // نحدد الطرف الثاني
+        $otherUser = $chat->user_one_id == $user->id
+            ? $chat->seller
+            : $chat->client;
+
+        DB::commit();
+
+        return $this->showResponse([
+            'chat'=>$chat,
+            'other_user_name' => $otherUser->first_name,
+            'other_user_image' => $otherUser->images,
+        ], 'تم إنشاء المحادثة بنجاح');
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        return $this->showError($e, 'حدث خطأ ما، يرجى المحاولة لاحقًا');
     }
+}
+
 
     /**
      * Display the specified resource.

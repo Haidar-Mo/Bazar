@@ -69,39 +69,44 @@ trait FirebaseNotificationTrait
     }
 
 
-  public function sendNotificationToTopic($topic, $title, $body)
+  public function sendNotificationToTopic($topic, $title, $body, $advertisementId = null)
 {
     if (empty($topic)) {
         Log::error('Topic is empty');
-        return;
+        return ['success' => false, 'message' => 'Topic is empty'];
     }
-
 
     $this->initializeFirebase();
 
-        try {
-            $message = CloudMessage::withTarget('topic', $topic)
-                ->withNotification([
-                    'title' => $title,
-                    'body' => $body,
-                ]);
+    try {
+        $message = CloudMessage::withTarget('topic', $topic)
+            ->withNotification([
+                'title' => $title,
+                'body' => $body,
+            ])
+            ->withData([ 
+                'advertisement_id' => $advertisementId ?? '',
+            ]);
+
         $this->messaging->send($message);
 
-        // Logging the topic, title, and body
         Log::info('Notification sent successfully to topic: ' . $topic, [
             'title' => $title,
             'body' => $body,
+            'advertisement_id' => $advertisementId,
         ]);
 
         return ['success' => true, 'message' => 'Notification sent successfully!'];
-    } catch (Exception $e) {
+    } catch (\Exception $e) {
         Log::error('Firebase Topic Notification Error: ' . $e->getMessage(), [
             'topic' => $topic,
             'title' => $title,
             'body' => $body,
+            'advertisement_id' => $advertisementId,
         ]);
         return ['success' => false, 'message' => 'Failed to send notification'];
     }
 }
+
 
 }
