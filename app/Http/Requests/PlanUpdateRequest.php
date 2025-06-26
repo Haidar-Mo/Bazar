@@ -24,7 +24,7 @@ class PlanUpdateRequest extends FormRequest
         return [
             'name' => 'sometimes|string',
             'price' => 'sometimes|string',
-            'size' => 'required|string',
+            'size' => 'sometimes|string',
             'duration' => 'sometimes|decimal:0,99999.99',
             'discount_price'=>'nullable',
             'details'=>'sometimes'

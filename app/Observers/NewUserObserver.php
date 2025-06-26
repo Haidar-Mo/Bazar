@@ -23,9 +23,11 @@ class NewUserObserver
             $user->subscriptions()->create([
                 'plan_id' => $plan->id,
                 'number_of_ads' => $plan->size,
+
                 'status' => 'running',
                 'starts_at' => Carbon::now(),
                 'ends_at' => Carbon::now()->addDays(intval($plan->duration)),
+
             ]);
         }
         $categories = Category::whereNull('parent_id')->get();
