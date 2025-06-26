@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('user_owner_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('advertisement_id')->constrained('advertisements')->cascadeOnDelete();
             $table->date('date');
+            $table->time('time');
             $table->text('note')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();

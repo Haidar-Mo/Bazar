@@ -13,6 +13,7 @@ class AdvertisementAppointment extends Model
         'user_owner_id',
         'advertisement_id',
         'date',
+        'time',
         'note',
         'status' //: pending , accepted , rejected
     ];

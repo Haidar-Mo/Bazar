@@ -49,11 +49,12 @@ class AdvertisementAppointmentService
     {
         $user = auth()->user();
         $advertisement = Advertisement::where('status', '=', 'active')->findOrFail($id);
-        /*  if ($user->id == $advertisement->user_id)
-             throw new \Exception("لا يمكنك حجز موعد مع نفسك", 400);
-  */
+        if ($user->id == $advertisement->user_id)
+            throw new \Exception("لا يمكنك حجز موعد مع نفسك", 400);
+
         $data = $request->validate([
             'date' => 'required|date',
+            'time' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
             'note' => 'nullable|string'
         ]);
 
@@ -62,6 +63,7 @@ class AdvertisementAppointmentService
                 'user_id' => $user->id,
                 'user_owner_id' => $advertisement->user_id,
                 'date' => $data['date'],
+                'time' => $data['time'],
                 'note' => $data['note'],
                 'status' => 'pending'
             ]);
