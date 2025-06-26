@@ -22,7 +22,8 @@ class Chat extends Model
 
     protected $appends = ['created_from'];
     protected $hidden = [
-        'ads'
+        'ads',
+        'seller'
     ];
 
 

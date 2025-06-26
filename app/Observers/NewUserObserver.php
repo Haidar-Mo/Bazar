@@ -16,12 +16,13 @@ class NewUserObserver
      */
     public function created(User $user): void
     {
-        $plan = Plan::where('name', 'افتراضية')->first();
+        $plan = Plan::where('name', 'الباقة المجانية')->first();
         if ($plan) {
             Log::info('subscrition too paln starter ');
             $user->subscriptions()->create([
                 'plan_id' => $plan->id,
                 'number_of_ads' => $plan->size,
+                'status'=>'running',
                 'start_at' => now(),
                 'end_at' => now()->addDays(intval($plan->duration)),
             ]);
