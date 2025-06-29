@@ -91,7 +91,8 @@ class ProfileController extends Controller
     public function showAds(string $id)
     {
         $user = User::findOrFail($id);
-        return $this->showResponse($user->ads()->get(), 'User advertisement retrieved successfully !!', 200);
+        $advertisements = $user->ads()->latest()->get();
+        return $this->showResponse($advertisements, 'User advertisement retrieved successfully !!', 200);
     }
 
 

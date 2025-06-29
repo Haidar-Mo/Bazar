@@ -33,10 +33,14 @@ class AdvertisementController extends Controller
 
         $user = Auth::user();
         if ($request->has('status') && $request->status != '') {
-            $ads = $user->ads()->where('status', $request->status)->orderBy('created_at', 'desc')->paginate(10);
+            $ads = $user->ads()->where('status', $request->status)
+                ->latest()
+                ->paginate(10);
         } else {
 
-            $ads = $user->ads()->orderBy('created_at', 'desc')->paginate(10);
+            $ads = $user->ads()
+                ->latest()
+                ->paginate(10);
         }
         return $this->showResponse($ads, 'done');
     }
@@ -154,7 +158,9 @@ class AdvertisementController extends Controller
     public function indexJobRequest(Request $request)
     {
         $user = $request->user();
-        $job_requests = $user->jobRequest()->with(['sender:id,first_name,last_name', 'advertisement'])->get();
+        $job_requests = $user->jobRequest()->with(['sender:id,first_name,last_name', 'advertisement'])
+            ->latest()
+            ->get();
         return $this->showResponse($job_requests, 'Requests retrieved successfully', 200);
     }
 
