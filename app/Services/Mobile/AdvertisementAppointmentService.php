@@ -4,6 +4,8 @@ namespace App\Services\Mobile;
 
 use App\Models\Advertisement;
 use App\Models\AdvertisementAppointment;
+use App\Notifications\AppointmentNotification;
+use App\Traits\FirebaseNotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,12 +14,15 @@ use Illuminate\Support\Facades\DB;
  */
 class AdvertisementAppointmentService
 {
+    use FirebaseNotificationTrait;
 
     public function index()
     {
         return auth()->user()
             ->appointment()->with(['user', 'advertisement'])
-            ->latest()->get()->each(function ($appointment) {
+            ->latest()
+            ->get()
+            ->each(function ($appointment) {
                 $appointment->user->makeHidden([
                     'email',
                     'address',
@@ -49,11 +54,12 @@ class AdvertisementAppointmentService
     {
         $user = auth()->user();
         $advertisement = Advertisement::where('status', '=', 'active')->findOrFail($id);
-        /*  if ($user->id == $advertisement->user_id)
-             throw new \Exception("لا يمكنك حجز موعد مع نفسك", 400);
-  */
+        if ($user->id == $advertisement->user_id)
+            throw new \Exception("لا يمكنك حجز موعد مع نفسك", 400);
+
         $data = $request->validate([
             'date' => 'required|date',
+            'time' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
             'note' => 'nullable|string'
         ]);
 
@@ -62,6 +68,7 @@ class AdvertisementAppointmentService
                 'user_id' => $user->id,
                 'user_owner_id' => $advertisement->user_id,
                 'date' => $data['date'],
+                'time' => $data['time'],
                 'note' => $data['note'],
                 'status' => 'pending'
             ]);
@@ -74,10 +81,24 @@ class AdvertisementAppointmentService
             ->findOrFail($appointmentId);
         if ($appointment->status != 'pending')
             throw new \Exception("this appointment is already processed", 400);
-        return DB::transaction(function () use ($appointment) {
+        $user = $appointment->user;
+        $advertisement = Advertisement::findOfFail($appointment->advertisement_id);
+        return DB::transaction(function () use ($appointment, $user, $advertisement) {
 
             $appointment->status = 'accepted';
             $appointment->save();
+
+            //:notifications
+            $title = "تم تأكيد الموعد";
+            $body = "نشكرك على حجزك. يسعدنا إبلاغك بأنه تم تأكيد موعدك للإعلان: " . $advertisement->title;
+            $request = (object) [
+                'title' => $title,
+                'body' => $body,
+                'type' => AdvertisementAppointment::class
+            ];
+            $this->unicast($request, $user->device_token);
+            $user->notify(new AppointmentNotification($title, $body, $appointment));
+
             return $appointment;
         });
 
@@ -89,13 +110,27 @@ class AdvertisementAppointmentService
             ->findOrFail($appointmentId);
         if ($appointment->status != 'pending')
             throw new \Exception("this appointment is already processed", 400);
-        return DB::transaction(function () use ($appointment) {
+        $user = $appointment->user;
+        $advertisement = Advertisement::findOfFail($appointment->advertisement_id);
+        return DB::transaction(function () use ($appointment, $user, $advertisement) {
 
             $appointment->status = 'rejected';
             $appointment->save();
+
+            //:notifications
+            $title = "تعذر تأكيد الموعد";
+            $body = "نعتذر منك، لم نتمكن من تأكيد موعدك للإعلان: " . $advertisement->title . "، يمكنك اختيار موعد آخر يناسبك.";
+
+            $request = (object) [
+                'title' => $title,
+                'body' => $body,
+                'type' => AdvertisementAppointment::class
+            ];
+            $this->unicast($request, $user->device_token);
+            $user->notify(new AppointmentNotification($title, $body, $appointment));
+
             return $appointment;
         });
-
     }
 
     public function delete(string $appointmentId)
