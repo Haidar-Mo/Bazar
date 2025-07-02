@@ -183,7 +183,6 @@ class AdvertisementFilter extends BaseFilter
 
 
 
-
         // if ($this->request->filled('attributes') && is_array($this->request->get('attributes'))) {
         //     $attributes = $this->request->get('attributes');
 
