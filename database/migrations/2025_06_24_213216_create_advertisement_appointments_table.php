@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignId('advertisement_id')->constrained('advertisements')->cascadeOnDelete();
             $table->date('date');
             $table->time('time');
-            $table->text('note')->nullable();
+            $table->text('note')->nullable()->default('(لا يوجد)');
             $table->string('status')->default('pending');
             $table->timestamps();
         });
