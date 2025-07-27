@@ -19,7 +19,7 @@
         // If the app isn't installed, redirect to app store after delay
         setTimeout(function() {
             window.location.href = "{{ $appStoreUrl }}";
-        }, 1000); // 1-second delay
+        }, 3000); // 1-second delay
     </script>
 </head>
 
