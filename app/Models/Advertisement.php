@@ -118,6 +118,11 @@ class Advertisement extends Model
         return $this->hasMany(AdvertisementAppointment::class);
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
     //! Booted functions
 
     protected static function booted()
