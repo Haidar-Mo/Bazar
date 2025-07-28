@@ -11,7 +11,7 @@ class ReservationDates extends Model
     use HasFactory;
 
     protected $fillable = [
-        "reservation_id",
+        'reservation_id',
         'date'
     ];
 

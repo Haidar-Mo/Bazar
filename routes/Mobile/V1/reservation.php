@@ -13,6 +13,6 @@ Route::middleware([
     Route::get('/index/sent', [ReservationController::class, 'indexSended']);
     Route::get('/show/{id}', [ReservationController::class, 'show']);
     Route::post('/create', [ReservationController::class, 'store']);
-    Route::post('/{id}/accept', [ReservationController::class, 'accept']);
-    Route::post('/{id}/reject', [ReservationController::class, 'reject']);
+    Route::post('/accept/{id}', [ReservationController::class, 'accept']);
+    Route::post('/reject/{id}', [ReservationController::class, 'reject']);
 });

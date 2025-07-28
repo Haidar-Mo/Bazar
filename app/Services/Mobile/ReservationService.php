@@ -6,6 +6,7 @@ use App\Filters\Mobile\ReservationFilter;
 use App\Models\Advertisement;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -22,13 +23,13 @@ class ReservationService
     {
         $array = request()->user()->ads()->pluck("id")->toArray();
         $reservation = Reservation::query()->whereIn("advertisement_id", $array);
-        return $this->filter->apply($reservation);
+        return $this->filter->apply($reservation)->get();
     }
 
     public function getSendedReservations(Request $request)
     {
         $reservation = request()->user()->reservations()->getQuery();
-        return $this->filter->apply($reservation);
+        return $this->filter->apply($reservation)->get();
     }
 
     public function getReservation($reservation_id)
@@ -40,7 +41,7 @@ class ReservationService
     public function createReservation(Request $request)
     {
         $request->validate([
-            'advertisement_id' => 'required|exist:advertisements,id',
+            'advertisement_id' => 'required|exists:advertisements,id',
             'dates' => 'array',
             'dates.*' => 'date'
         ]);
@@ -49,14 +50,20 @@ class ReservationService
         if ($advertisement->status != 'active') {
             throw new \Exception('Sorry, this advertisement is out of date', Response::HTTP_BAD_REQUEST);
         }
-        $reservation = Reservation::create([
-            'user_id' => auth()->user()->id,
-            'advertisement_id' => $advertisement->id,
-            'status' => 'pending'
-        ]);
-        $reservation->reservationDates()->createMany($request->dates);
+        return DB::transaction(function () use ($advertisement, $request) {
+            $reservation = Reservation::create([
+                'user_id' => auth()->user()->id,
+                'advertisement_id' => $advertisement->id,
+                'status' => 'pending'
+            ]);
+            foreach ($request->dates as $date) {
+                $reservation->reservationDates()->create([
+                    'date' => $date
+                ]);
+            }
+            return $reservation->load('reservationDates');
+        });
 
-        return $reservation->with('reservationDates');
     }
 
     public function acceptReservation($reservation_id)
