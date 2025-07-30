@@ -6,6 +6,7 @@ use App\Filters\Mobile\ReservationFilter;
 use App\Models\Advertisement;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,28 +43,32 @@ class ReservationService
     {
         $request->validate([
             'advertisement_id' => 'required|exists:advertisements,id',
-            'dates' => 'array',
-            'dates.*' => 'date'
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
         $advertisement = Advertisement::findOrFail($request->advertisement_id);
         if ($advertisement->status != 'active') {
             throw new \Exception('Sorry, this advertisement is out of date', Response::HTTP_BAD_REQUEST);
         }
+
         return DB::transaction(function () use ($advertisement, $request) {
             $reservation = Reservation::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => auth()->id(),
                 'advertisement_id' => $advertisement->id,
-                'status' => 'pending'
+                'status' => 'pending',
             ]);
-            foreach ($request->dates as $date) {
+
+            $start = Carbon::parse($request->start_date);
+            $end = Carbon::parse($request->end_date);
+
+            for ($date = $start; $date->lte($end); $date->addDay()) {
                 $reservation->reservationDates()->create([
-                    'date' => $date
+                    'date' => $date->toDateString()
                 ]);
             }
             return $reservation->load('reservationDates');
         });
-
     }
 
     public function acceptReservation($reservation_id)
