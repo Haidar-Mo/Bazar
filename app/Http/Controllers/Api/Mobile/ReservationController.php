@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReservationResource;
 use Illuminate\Http\Request;
 use App\Services\Mobile\ReservationService;
 use App\Traits\ResponseTrait;
@@ -40,7 +41,7 @@ class ReservationController extends Controller
     {
         try {
             $reservation = $this->reservationService->getReservation($id);
-            return $this->showResponse($reservation, 'Reservation details retrieved successfully');
+            return $this->showResponse(new ReservationResource($reservation), 'Reservation details retrieved successfully');
         } catch (\Exception $e) {
             return $this->showError($e, 'Failed to retrieve reservation');
         }
