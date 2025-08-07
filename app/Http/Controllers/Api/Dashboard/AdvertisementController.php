@@ -90,7 +90,8 @@ class AdvertisementController extends Controller
                 $ad->main_category_id,
                 'إعلان جديد في قسم ' . $ad->main_category_name,
                 $ad->title,
-                $ad->id
+                $ad->id,
+                'add-Ads'
             );
             $users = User::all();
             foreach ($users as $recipient) {
