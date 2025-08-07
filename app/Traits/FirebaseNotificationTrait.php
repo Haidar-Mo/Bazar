@@ -31,12 +31,37 @@ trait FirebaseNotificationTrait
     {
         $this->initializeFirebase();
 
-        $notification = Notification::create($request->title, $request->body,$request->type);
-        $message = CloudMessage::new();
+        
+        $notification = Notification::create(
+            $request->title,
+            $request->body
+        );
+
+
+        $data = [
+            'notification_type' => $request->type,
+            'id' => isset($request->id) ? (string) $request->id : '0',
+        ];
+
+
         $message = CloudMessage::withTarget('token', $token)
-            ->withNotification($notification);
+            ->withNotification($notification)
+            ->withData($data);
+
+
         $this->messaging->send($message);
-        return $message;
+
+
+        return [
+            'message' => [
+                'token' => $token,
+                'notification' => [
+                    'title' => $request->title,
+                    'body' => $request->body,
+                ],
+                'data' => $data
+            ]
+        ];
     }
 
     public function subscribeToTopic($deviceToken, $topic)
@@ -69,44 +94,54 @@ trait FirebaseNotificationTrait
     }
 
 
-  public function sendNotificationToTopic($topic, $title, $body, $advertisementId = null)
-{
-    if (empty($topic)) {
-        Log::error('Topic is empty');
-        return ['success' => false, 'message' => 'Topic is empty'];
-    }
+    public function sendNotificationToTopic($topic, $title, $body, $advertisementId = null, $type = ' ')
+    {
+        if (empty($topic)) {
+            Log::error('Topic is empty');
+            return ['success' => false, 'message' => 'Topic is empty'];
+        }
 
-    $this->initializeFirebase();
+        $this->initializeFirebase();
 
-    try {
-        $message = CloudMessage::withTarget('topic', $topic)
-            ->withNotification([
+        try {
+            $data = [
+                'notification_type' => $type,
+                'id' => $advertisementId ? (string)$advertisementId : '0',
+            ];
+
+            $message = CloudMessage::withTarget('topic', $topic)
+                ->withNotification([
+                    'title' => $title,
+                    'body' => $body,
+                ])
+                ->withData($data);
+
+            $this->messaging->send($message);
+
+
+            return [
+                'message' => [
+                    'topic' => $topic,
+                    'notification' => [
+                        'title' => $title,
+                        'body' => $body,
+                    ],
+                    'data' => $data,
+                ]
+            ];
+        } catch (\Exception $e) {
+            Log::error('Firebase Topic Notification Error: ' . $e->getMessage(), [
+                'topic' => $topic,
                 'title' => $title,
                 'body' => $body,
-            ])
-            ->withData([ 
-                'advertisement_id' => $advertisementId ?? '',
+                'advertisement_id' => $advertisementId,
             ]);
 
-        $this->messaging->send($message);
-
-        Log::info('Notification sent successfully to topic: ' . $topic, [
-            'title' => $title,
-            'body' => $body,
-            'advertisement_id' => $advertisementId,
-        ]);
-
-        return ['success' => true, 'message' => 'Notification sent successfully!'];
-    } catch (\Exception $e) {
-        Log::error('Firebase Topic Notification Error: ' . $e->getMessage(), [
-            'topic' => $topic,
-            'title' => $title,
-            'body' => $body,
-            'advertisement_id' => $advertisementId,
-        ]);
-        return ['success' => false, 'message' => 'Failed to send notification'];
+            return [
+                'success' => false,
+                'message' => 'Failed to send notification',
+                'error' => $e->getMessage()
+            ];
+        }
     }
-}
-
-
 }

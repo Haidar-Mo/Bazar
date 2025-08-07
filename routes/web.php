@@ -35,7 +35,6 @@ Route::get('storage-link', function () {
     Artisan::call('storage:link');
     $title = 'Storage linked successfully !!';
     return view('artisan-response', compact('title'));
-
 });
 
 Route::get('/share-link/advertisement/{id}', [ShareLinkController::class, 'handle'])->name('share-link');
@@ -46,7 +45,7 @@ Route::get('/share-link/advertisement/{id}', [ShareLinkController::class, 'handl
 //! Test subscrip and send notification to topic
 Route::get('/test-subscribe', function () {
     $deviceToken = request('token');
-    $topic = '2';
+    $topic = '13';
 
     $notifier = new class {
         use \App\Traits\FirebaseNotificationTrait;
@@ -59,28 +58,29 @@ Route::get('/test-subscribe', function () {
 Route::get('/test-notification', function () {
     $deviceToken = request('token');
     $Request = (object) [
-                    'title' => 'رسالة جديدة',
-                    'body' => 'لديك رسالة  ' ,
-                    'type' => 'chat',
-                ];
+       'title' => 'قبول اعلان',
+        'body' => 'تم قبول اعلانك من قبل الادمن',
+       'type' => 'approved-Ads',
+    ];
 
     $notifier = new class {
         use \App\Traits\FirebaseNotificationTrait;
     };
 
-    return $notifier->unicast($Request,$deviceToken);
+    return $notifier->unicast($Request, $deviceToken);
 });
 
 
 Route::get('/test-send-notification', function () {
-    $topic = '1';
-    $title = 'إشعار تجريبي';
-    $body = 'هذا إشعار اختبار للتوبيك رقم 1';
+    $topic = '13';
+    $title = ' إشعار تجربة';
+    $body = 'هذا إشعار اختباري لنوع مخصص';
+    $advertisementId = 117;
+    $type = 'add-Ads';
 
     $notifier = new class {
         use \App\Traits\FirebaseNotificationTrait;
     };
 
-    return $notifier->sendNotificationToTopic($topic, $title, $body);
+    return $notifier->sendNotificationToTopic($topic, $title, $body, $advertisementId, $type);
 });
-
