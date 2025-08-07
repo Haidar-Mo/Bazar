@@ -27,7 +27,9 @@ class ChatController extends Controller
 
     $chats = $user->chat()
         ->with(['client', 'seller', 'ads', 'messages'])
-        ->orderBy('updated_at', 'desc')
+
+        ->latest('updated_at')
+
         ->get()
         ->map(function ($chat) use ($user) {
             $otherUser = $chat->user_one_id == $user->id

@@ -173,6 +173,11 @@ class User extends Authenticatable
         return $this->hasMany(AdvertisementAppointment::class, 'user_owner_id');
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
     //! Accessories
 
     public function getRoleAttribute()

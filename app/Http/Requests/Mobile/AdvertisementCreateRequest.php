@@ -69,6 +69,9 @@ class AdvertisementCreateRequest extends FormRequest
             'اعلانات تجارية و متفرقات' => [
                 'attributes.details' => ['required'],
             ],
+            'سياحة و حجوزات' => [
+                'attributes.details' => ['required'],
+            ],
 
             default => [],
         };

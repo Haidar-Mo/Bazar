@@ -93,6 +93,11 @@ class Advertisement extends Model
         return $this->hasMany(AdvertisementAttribute::class);
     }
 
+    public function chats(): HasMany
+    {
+        return $this->hasMany(Chat::class);
+    }
+
     public function jobRequest(): HasMany
     {
         return $this->hasMany(JobRequest::class);
@@ -111,6 +116,28 @@ class Advertisement extends Model
     public function appointment()
     {
         return $this->hasMany(AdvertisementAppointment::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    //! Booted functions
+
+    protected static function booted()
+    {
+        static::deleting(function ($parent) {
+
+            $parent->attributes()->delete();
+            $parent->appointment()->delete();
+            $parent->jobRequest()->delete();
+            $parent->items()->delete();
+            $parent->views()->delete();
+            $parent->chats()->delete();
+            $parent->images()->delete();
+
+        });
     }
 
     //! Accessories
