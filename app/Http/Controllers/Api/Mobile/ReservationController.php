@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReservationResource;
 use Illuminate\Http\Request;
 use App\Services\Mobile\ReservationService;
 use App\Traits\ResponseTrait;
@@ -20,7 +21,11 @@ class ReservationController extends Controller
     {
         try {
             $reservations = $this->reservationService->getReceivedReservations($request);
-            return $this->showResponse($reservations, 'Received reservations retrieved successfully');
+            $reservationsResource = ReservationResource::collection($reservations)->map(function ($item) {
+                return collect($item)->except(['user', 'advertisement']);
+            });
+
+            return $this->showResponse($reservationsResource, 'Received reservations retrieved successfully');
         } catch (\Exception $e) {
             return $this->showError($e, 'Failed to retrieve received reservations');
         }
@@ -30,7 +35,11 @@ class ReservationController extends Controller
     {
         try {
             $reservations = $this->reservationService->getSendedReservations($request);
-            return $this->showResponse($reservations, 'Sent reservations retrieved successfully');
+            $reservationsResource = ReservationResource::collection($reservations)->map(function ($item) {
+                return collect($item)->except(['user', 'advertisement']);
+            });
+
+            return $this->showResponse($reservationsResource, 'Sent reservations retrieved successfully');
         } catch (\Exception $e) {
             return $this->showError($e, 'Failed to retrieve sent reservations');
         }
@@ -40,7 +49,7 @@ class ReservationController extends Controller
     {
         try {
             $reservation = $this->reservationService->getReservation($id);
-            return $this->showResponse($reservation, 'Reservation details retrieved successfully');
+            return $this->showResponse(new ReservationResource($reservation), 'Reservation details retrieved successfully');
         } catch (\Exception $e) {
             return $this->showError($e, 'Failed to retrieve reservation');
         }
@@ -50,7 +59,7 @@ class ReservationController extends Controller
     {
         try {
             $reservation = $this->reservationService->createReservation($request);
-            return $this->showResponse($reservation, 'Reservation created successfully');
+            return $this->showResponse(new ReservationResource($reservation), 'Reservation created successfully');
         } catch (\Exception $e) {
             return $this->showError($e, 'Failed to create reservation');
         }

@@ -82,7 +82,7 @@ class AdvertisementAppointmentService
         if ($appointment->status != 'pending')
             throw new \Exception("this appointment is already processed", 400);
         $user = $appointment->user;
-        $advertisement = Advertisement::findOfFail($appointment->advertisement_id);
+        $advertisement = Advertisement::findOrFail($appointment->advertisement_id);
         return DB::transaction(function () use ($appointment, $user, $advertisement) {
 
             $appointment->status = 'accepted';
@@ -111,7 +111,7 @@ class AdvertisementAppointmentService
         if ($appointment->status != 'pending')
             throw new \Exception("this appointment is already processed", 400);
         $user = $appointment->user;
-        $advertisement = Advertisement::findOfFail($appointment->advertisement_id);
+        $advertisement = Advertisement::findOrFail($appointment->advertisement_id);
         return DB::transaction(function () use ($appointment, $user, $advertisement) {
 
             $appointment->status = 'rejected';

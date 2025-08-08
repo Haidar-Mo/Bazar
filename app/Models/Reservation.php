@@ -13,6 +13,7 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'advertisement_id',
+        'total_cost',
         'status', //: pending, accepted, rejected
     ];
 
