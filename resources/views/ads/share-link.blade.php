@@ -27,7 +27,7 @@
     <!-- Web Fallback Content (shown if not mobile or if redirection fails) -->
     <div class="ad-container">
         <h1>{{ $ad->title }}</h1>
-        <img src="{{ asset($ad->image) }}" alt="{{ $ad->title }}" style="max-width: 100%;">
+        <img src="{{ asset($ad->images) }}" alt="{{ $ad->title }}" style="max-width: 100%;">
         <p>{{ $ad->description }}</p>
         <p><strong>Price:</strong> ${{ number_format($ad->price, 2) }}</p>
 

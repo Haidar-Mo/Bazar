@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthenticationController extends Controller
 {
@@ -77,26 +79,51 @@ class AuthenticationController extends Controller
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function refreshToken(Request $request)
-    {
-        $user = $request->user();
-        $user->tokens()->delete();
-        $accessToken = $user->createToken(
-            'access_token',
-            [TokenAbility::ACCESS_API->value, 'role:' . $user->roles->first()->name],
-            Carbon::now()->addMinutes(config('sanctum.expiration'))
-        );
+{
+    $authHeader = $request->header('Authorization');
 
-        $refreshToken = $user->createToken(
-            'refresh_token',
-            [TokenAbility::ISSUE_ACCESS_TOKEN->value],
-            Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
-        );
+    if (!$authHeader || !Str::startsWith($authHeader, 'Bearer ')) {
         return response()->json([
-            'message' => 'Token created successfully!',
-            'access_token' => $accessToken->plainTextToken,
-            'refresh_token' => $refreshToken->plainTextToken,
-            'user' => $user,
-        ]);
+            'success' => false,
+            'message' => 'Missing or invalid Authorization header',
+        ], 401);
     }
+
+    $accessToken = Str::after($authHeader, 'Bearer ');
+    $token = PersonalAccessToken::findToken($accessToken);
+
+    if (!$token || !$token->can(TokenAbility::ISSUE_ACCESS_TOKEN->value)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid or unauthorized token',
+        ], 403);
+    }
+
+    $user = $token->tokenable;
+
+    // Delete old tokens
+    $user->tokens()->delete();
+
+    // Create new access token
+    $accessToken = $user->createToken(
+        'access_token',
+        [TokenAbility::ACCESS_API->value, 'role:' . $user->roles->first()->name],
+        Carbon::now()->addMinutes(config('sanctum.expiration'))
+    );
+
+    // Create new refresh token
+    $refreshToken = $user->createToken(
+        'refresh_token',
+        [TokenAbility::ISSUE_ACCESS_TOKEN->value],
+        Carbon::now()->addMinutes(2 * config('sanctum.expiration'))
+    );
+
+    return response()->json([
+        'message' => 'Token created successfully!',
+        'access_token' => $accessToken->plainTextToken,
+        'refresh_token' => $refreshToken->plainTextToken,
+        'user' => $user,
+    ]);
+}
 
 }

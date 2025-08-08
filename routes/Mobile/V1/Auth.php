@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Mobile\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\Mobile\Auth\SocialiteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Laravel\Sanctum\PersonalAccessToken;
 
 
 Route::prefix('auth/')->group(function () {
@@ -39,17 +40,47 @@ Route::prefix('auth/')->group(function () {
         'ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value
     ]);
 
+    Route::get('check-token', function (Request $request) {
+        $authHeader = $request->header('Authorization');
+
+        if (!$authHeader || !Str::startsWith($authHeader, 'Bearer ')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Missing or invalid Authorization header',
+            ], 401);
+        }
+
+        $accessToken = Str::after($authHeader, 'Bearer ');
+
+        $token = PersonalAccessToken::findToken($accessToken);
+
+        if (!$token || !$token->can(TokenAbility::ACCESS_API->value)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or unauthorized token',
+            ], 403);
+        }
+
+        $user = $token->tokenable;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Token is valid',
+            'user' => $user,
+        ]);
+    });
+
     Route::middleware([
         'auth:sanctum',
         'ability:' . TokenAbility::ACCESS_API->value
     ])->group(function () {
-        Route::get('check-token', function (Request $request) {
+        /* Route::get('check-token', function (Request $request) {
             return response()->json([
                 'success' => true,
                 'message' => 'Token is valid',
                 'user' => $request->user(),
-            ]);
-        });
+            ],403);
+        }); */
         Route::post('password/change', [ResetPasswordController::class, 'changePassword']);
         Route::post('logout', [AuthenticationController::class, 'delete']);
         Route::post('account/delete', [RegistrationController::class, 'deleteAccount']);

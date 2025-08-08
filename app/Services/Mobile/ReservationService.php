@@ -23,13 +23,13 @@ class ReservationService
     public function getReceivedReservations(Request $request)
     {
         $array = request()->user()->ads()->pluck("id")->toArray();
-        $reservation = Reservation::query()->whereIn("advertisement_id", $array);
+        $reservation = Reservation::query()->with('reservationDates')->whereIn("advertisement_id", $array);
         return $this->filter->apply($reservation)->get();
     }
 
     public function getSendedReservations(Request $request)
     {
-        $reservation = request()->user()->reservations()->getQuery();
+        $reservation = request()->user()->reservations()->with('reservationDates')->getQuery();
         return $this->filter->apply($reservation)->get();
     }
 
@@ -53,14 +53,16 @@ class ReservationService
         }
 
         return DB::transaction(function () use ($advertisement, $request) {
+            $start = Carbon::parse($request->start_date);
+            $end = Carbon::parse($request->end_date);
+            $period = $start->diffInDays($end);
             $reservation = Reservation::create([
                 'user_id' => auth()->id(),
                 'advertisement_id' => $advertisement->id,
+                'total_cost' =>  $advertisement->price * $period,
                 'status' => 'pending',
             ]);
 
-            $start = Carbon::parse($request->start_date);
-            $end = Carbon::parse($request->end_date);
 
             for ($date = $start; $date->lte($end); $date->addDay()) {
                 $reservation->reservationDates()->create([

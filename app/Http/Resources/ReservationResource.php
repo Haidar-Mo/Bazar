@@ -18,14 +18,15 @@ class ReservationResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'advertisement_id' => $this->advertisement_id,
+            'total_cost' => (string) $this->total_cost,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user_name' => $this->user_name,
             'advertisement_title' => $this->advertisement_title,
             'reservation_dates' => $this->reservationDates->pluck('date'),
-            'user' => $this->user,
-            'advertisement' => $this->advertisement,
+            'user' => $this->user ?: null,
+            'advertisement' => $this->advertisement ?: null,
         ];
     }
 }

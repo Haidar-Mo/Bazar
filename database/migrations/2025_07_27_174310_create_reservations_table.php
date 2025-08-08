@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('advertisement_id')->constrained('advertisements')->cascadeOnDelete();
+            $table->double('total_cost')->nullable();
             $table->string('status')->default('pending');
             $table->timestamps();
         });
