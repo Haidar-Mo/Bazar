@@ -16,7 +16,7 @@ class ShareLinkController extends Controller
         $isIOS = preg_match('/iphone|ipad|ipod/i', $userAgent);
         $appStoreUrl = $isIOS
             ? 'https://apps.apple.com/app/idYOUR_APP_ID'
-            : 'https://play.google.com/store/apps/details?id=com.bazar.app';
+            : 'https://play.google.com/store/apps/details?id=com.bazarcompany.shop';
 
         $appLink = "bazarapp://share-link/advertisement/$id";
         return view('ads/share-link', compact('appStoreUrl', 'ad', 'appLink'));

@@ -35,10 +35,7 @@ Route::prefix('auth/')->group(function () {
 
 
 
-    Route::post('refresh-token', [AuthenticationController::class, 'refreshToken'])->middleware([
-        'auth:sanctum',
-        'ability:' . TokenAbility::ISSUE_ACCESS_TOKEN->value
-    ]);
+    Route::post('refresh-token', [AuthenticationController::class, 'refreshToken']);
 
     Route::get('check-token', function (Request $request) {
         $authHeader = $request->header('Authorization');

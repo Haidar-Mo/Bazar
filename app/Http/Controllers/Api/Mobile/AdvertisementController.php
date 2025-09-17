@@ -79,12 +79,14 @@ class AdvertisementController extends Controller
         DB::beginTransaction();
         try {
             $ad = Advertisement::with(['user'])->where('id', $id)->first();
+            if ($ad->status == 'inactive')
+                throw new Exception('عذراً, عذا الإعلان منتهي الصلاحية', 400);
             $user?->views()->firstOrCreate(['advertisement_id' => $id]);
             DB::commit();
             return $this->showResponse($ad->append('attributes'), 'done successfully....!');
         } catch (Exception $e) {
             DB::rollBack();
-            return $this->showError($e, 'something goes wrong....!');
+            return $this->showError($e, $e->getMessage() ?? 'something goes wrong....!', $e->getCode());
 
         }
     }

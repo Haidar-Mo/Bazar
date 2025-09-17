@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Mobile;
 use App\Http\Controllers\Controller;
 use App\Services\Mobile\AdvertisementService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use App\Models\{
     Advertisement,
@@ -32,7 +33,7 @@ class HomePageController extends Controller
                 ->paginate(10);
             return $this->showResponse($ads, 'done successfully...!');
         } catch (Exception $e) {
-            return $this->showError($e, 'something goes wrong...!');
+            return $this->showError($e, 'something goes wrong...!', $e->getCode());
         }
     }
 }
