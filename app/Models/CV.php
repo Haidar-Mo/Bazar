@@ -26,6 +26,8 @@ class Cv extends Model
         'birth_date',
     ];
 
+    protected $hidden = [ 'image'];
+
     /**
      * Get the attributes that should be cast.
      *
